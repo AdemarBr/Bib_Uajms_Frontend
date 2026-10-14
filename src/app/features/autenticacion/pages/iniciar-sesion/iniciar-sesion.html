@@ -1,0 +1,63 @@
+<div class="flex min-h-[700px] items-center justify-center px-xl py-3xl">
+  <form
+    class="flex min-h-[452px] w-[552px] flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    novalidate
+    [formGroup]="formulario"
+    (ngSubmit)="iniciarSesion()"
+  >
+    <h1 class="text-titulo-panel font-bold text-gray-900">Iniciar sesión</h1>
+
+    <label for="nombre-usuario" class="text-label text-gray-600">Usuario institucional</label>
+    <div class="flex flex-col gap-xs">
+      <input
+        id="nombre-usuario"
+        type="text"
+        class="campo-texto"
+        placeholder="Usuario o RU"
+        autocomplete="username"
+        formControlName="nombreUsuario"
+        [class.border-gray-900]="campoVacio('nombreUsuario')"
+        [attr.aria-invalid]="campoVacio('nombreUsuario')"
+        [attr.aria-describedby]="campoVacio('nombreUsuario') ? 'nombre-usuario-error' : null"
+      />
+      @if (campoVacio('nombreUsuario')) {
+        <p id="nombre-usuario-error" class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <label for="contrasena" class="text-label text-gray-600">Contraseña</label>
+    <div class="flex flex-col gap-xs">
+      <div class="relative">
+        <input
+          id="contrasena"
+          class="campo-texto pr-[96px]"
+          autocomplete="current-password"
+          formControlName="contrasena"
+          [type]="mostrarContrasena() ? 'text' : 'password'"
+          [class.border-gray-900]="campoVacio('contrasena')"
+          [attr.aria-invalid]="campoVacio('contrasena')"
+          [attr.aria-describedby]="campoVacio('contrasena') ? 'contrasena-error' : null"
+        />
+        <button
+          type="button"
+          class="absolute top-1/2 right-md -translate-y-1/2 cursor-pointer text-body text-gray-600 hover:text-gray-900"
+          [attr.aria-pressed]="mostrarContrasena()"
+          (click)="mostrarContrasena.set(!mostrarContrasena())"
+        >
+          {{ mostrarContrasena() ? '(ocultar)' : '(mostrar)' }}
+        </button>
+      </div>
+      @if (campoVacio('contrasena')) {
+        <p id="contrasena-error" class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <button type="submit" class="btn-primario w-full" [disabled]="enviando()">
+      Iniciar sesión
+    </button>
+
+    @if (credencialesRechazadas()) {
+      <app-alerta titulo="No se pudo iniciar sesión" mensaje="Usuario o contraseña incorrectos." />
+    }
+  </form>
+</div>

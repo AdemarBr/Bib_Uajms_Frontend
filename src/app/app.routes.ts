@@ -14,13 +14,29 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutPublico,
-    children: [],
+    children: [
+      // P.1 Home (`/`): su pantalla se construye en RF6; mientras tanto, solo barra superior y pie.
+      { path: '', pathMatch: 'full', children: [] },
+      {
+        path: 'iniciar-sesion',
+        loadChildren: () =>
+          import('./features/autenticacion/autenticacion.routes').then(
+            (m) => m.RUTAS_INICIAR_SESION,
+          ),
+      },
+    ],
   },
   {
     path: '',
     component: LayoutPrivado,
     canActivate: [sesionGuard],
-    children: [],
+    children: [
+      {
+        path: 'perfil',
+        loadChildren: () =>
+          import('./features/autenticacion/autenticacion.routes').then((m) => m.RUTAS_PERFIL),
+      },
+    ],
   },
   { path: '**', redirectTo: '' },
 ];

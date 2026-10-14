@@ -1,0 +1,30 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Perfil de usuario</h1>
+
+  @if (perfil(); as p) {
+    <section
+      class="flex w-[463px] flex-col gap-5 rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    >
+      <h2 class="text-body-strong text-gray-600">Datos personales</h2>
+      @for (dato of datosPersonales(); track dato.etiqueta) {
+        <div class="flex flex-col gap-xs">
+          <p class="text-label text-gray-600">{{ dato.etiqueta }}</p>
+          <p class="text-dato text-gray-900">{{ dato.valor }}</p>
+        </div>
+      }
+
+      <h2 class="text-body-strong text-gray-600">Rol asignado</h2>
+      <div>
+        <app-badge-estado [texto]="p.rolNombre" />
+      </div>
+
+      @if (dependencia(); as d) {
+        <h2 class="text-body-strong text-gray-600">Biblioteca / facultad relacionada</h2>
+        <div class="flex flex-col gap-xs">
+          <p class="text-label text-gray-600">{{ d.etiqueta }}</p>
+          <p class="text-dato text-gray-900">{{ d.valor }}</p>
+        </div>
+      }
+    </section>
+  }
+</div>
