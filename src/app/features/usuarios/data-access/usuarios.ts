@@ -184,7 +184,11 @@ function noEncontrado(): Observable<never> {
 
 /** Minúsculas y sin tildes, para comparar textos. */
 function normalizar(texto: string): string {
-  return texto.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  return texto
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
 }
 
 /** Inicial del nombre y último apellido («Juan Pérez» → «jperez»), con un número si ya existe. */

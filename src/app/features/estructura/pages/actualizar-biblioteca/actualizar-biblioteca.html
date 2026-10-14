@@ -1,0 +1,131 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Actualizar biblioteca física</h1>
+
+  <form
+    class="flex w-[917px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    novalidate
+    [formGroup]="formulario"
+    (ngSubmit)="guardar()"
+  >
+    <div class="flex flex-col gap-xs">
+      <span class="text-label text-gray-600">Biblioteca</span>
+      <app-select
+        class="w-60"
+        etiqueta="Seleccionar biblioteca…"
+        nombreAccesible="Biblioteca"
+        formControlName="idBiblioteca"
+        [opciones]="opcionesBiblioteca()"
+      />
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <label for="nombre" class="text-label text-gray-600">Nombre</label>
+      <input
+        id="nombre"
+        type="text"
+        class="campo-texto"
+        [class.border-gray-500]="modo() !== 'ninguna'"
+        formControlName="nombre"
+        [attr.aria-invalid]="campoVacio('nombre')"
+      />
+      @if (campoVacio('nombre')) {
+        <p class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <label for="ubicacion" class="text-label text-gray-600">Ubicación física</label>
+      <input
+        id="ubicacion"
+        type="text"
+        class="campo-texto"
+        [class.border-gray-500]="modo() !== 'ninguna'"
+        formControlName="ubicacion"
+        [attr.aria-invalid]="campoVacio('ubicacion')"
+      />
+      @if (campoVacio('ubicacion')) {
+        <p class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <label for="descripcion" class="text-label text-gray-600">Descripción</label>
+      <input
+        id="descripcion"
+        type="text"
+        class="campo-texto"
+        [class.border-gray-500]="modo() !== 'ninguna'"
+        formControlName="descripcion"
+      />
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <span class="text-label text-gray-600">Facultad</span>
+      <!-- 256 px: «No aplica — Biblioteca Central» (RF3.7.5) completo -->
+      <app-select
+        class="w-64"
+        nombreAccesible="Facultad"
+        formControlName="idFacultad"
+        [etiqueta]="textoNoAplica() ?? 'Seleccionar facultad…'"
+        [opciones]="opcionesFacultad()"
+      />
+      @if (campoVacio('idFacultad')) {
+        <p class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <span class="text-label text-gray-600">Carrera</span>
+      <app-select
+        class="w-64"
+        nombreAccesible="Carrera"
+        formControlName="carrera"
+        [etiqueta]="
+          textoNoAplica() ??
+          (carreraHabilitada() ? 'Seleccionar carrera…' : 'Seleccionar facultad primero')
+        "
+        [opciones]="opcionesCarrera()"
+      />
+      @if (campoVacio('carrera')) {
+        <p class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <span class="text-label text-gray-600">Estado</span>
+      <div class="flex items-center gap-2.5">
+        <span
+          class="text-body"
+          [class]="modo() === 'ninguna' || modo() === 'central' ? 'text-gray-400' : 'text-gray-900'"
+        >
+          {{ estado() ? 'Activo' : 'Inactivo' }}
+        </span>
+        <app-interruptor
+          etiqueta="Estado"
+          [activo]="estado()"
+          [deshabilitado]="modo() === 'ninguna' || modo() === 'central'"
+          (cambio)="cambiarEstado($event)"
+        />
+      </div>
+    </div>
+
+    @if (modo() === 'central') {
+      <p class="text-mini text-gray-600">
+        Caso especial: al seleccionar Biblioteca Central solo se pueden editar nombre, ubicación y
+        descripción; Facultad y Carrera no aplican y el estado permanece Activo.
+      </p>
+    }
+
+    <button
+      type="submit"
+      class="btn-primario w-full"
+      [disabled]="modo() === 'ninguna' || enviando()"
+    >
+      Guardar cambios
+    </button>
+
+    @if (duplicado(); as d) {
+      <app-alerta [titulo]="d" />
+    }
+  </form>
+</div>

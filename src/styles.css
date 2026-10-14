@@ -95,6 +95,15 @@
   .campo-texto {
     @apply w-full rounded-sm border border-gray-300 bg-gray-0 px-md py-sm text-body text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:outline-none disabled:bg-gray-100 disabled:text-gray-400;
   }
+
+  /* Radio de Figma (18 px): aro gray/500 y, marcado, punto brand/accent. Sobre <input type="radio">. */
+  .radio {
+    @apply size-[18px] shrink-0 cursor-pointer appearance-none rounded-full border-[1.5px] border-gray-500 bg-gray-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900;
+  }
+
+  .radio:checked {
+    background-image: radial-gradient(circle, var(--color-brand-accent) 5px, transparent 5.5px);
+  }
 }
 
 /* Comprobantes impresos (credenciales de P2.1 y P2.4): al imprimir solo se ve el elemento `.imprimible`.

@@ -1,0 +1,65 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Registrar facultad o carrera</h1>
+
+  <form
+    class="flex w-[363px] flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    novalidate
+    [formGroup]="formulario"
+    (ngSubmit)="guardar()"
+  >
+    <fieldset class="flex flex-col gap-lg">
+      <legend class="mb-lg text-label text-gray-600">Tipo de registro</legend>
+      <div class="flex gap-5">
+        @if (puedeFacultad) {
+          <label class="flex cursor-pointer items-center gap-sm text-body text-gray-900">
+            <input type="radio" class="radio" value="facultad" formControlName="tipo" />
+            Facultad
+          </label>
+        }
+        @if (puedeCarrera) {
+          <label class="flex cursor-pointer items-center gap-sm text-body text-gray-900">
+            <input type="radio" class="radio" value="carrera" formControlName="tipo" />
+            Carrera
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <label for="nombre" class="text-label text-gray-600">Nombre</label>
+    <div class="flex flex-col gap-xs">
+      <input
+        id="nombre"
+        type="text"
+        class="campo-texto"
+        formControlName="nombre"
+        [placeholder]="tipo() === 'facultad' ? 'Nombre de la facultad' : 'Nombre de la carrera'"
+        [attr.aria-invalid]="campoVacio('nombre')"
+      />
+      @if (campoVacio('nombre')) {
+        <p class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <span class="text-label" [class]="tipo() === 'facultad' ? 'text-gray-400' : 'text-gray-600'">
+      Facultad a la que pertenece (solo si Tipo = Carrera)
+    </span>
+    <div class="flex flex-col gap-xs">
+      <app-select
+        class="w-60"
+        nombreAccesible="Facultad a la que pertenece"
+        formControlName="idFacultad"
+        [etiqueta]="tipo() === 'facultad' ? 'No aplica para Facultad' : 'Seleccionar facultad…'"
+        [opciones]="opcionesFacultad()"
+      />
+      @if (campoVacio('idFacultad')) {
+        <p class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <button type="submit" class="btn-primario w-full" [disabled]="enviando()">Guardar</button>
+
+    @if (duplicado(); as d) {
+      <app-alerta [titulo]="d" />
+    }
+  </form>
+</div>

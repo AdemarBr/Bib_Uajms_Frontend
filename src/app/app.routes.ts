@@ -41,6 +41,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/usuarios/usuarios.routes').then((m) => m.RUTAS_USUARIOS),
       },
+      {
+        path: 'estructura',
+        loadChildren: () =>
+          import('./features/estructura/estructura.routes').then((m) => m.RUTAS_ESTRUCTURA),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

@@ -61,7 +61,8 @@ Este repositorio contiene solo el frontend. El backend (Spring Boot) está en ot
 - Códigos de permiso: `core/config/permisos.ts` (`PERMISOS`, tipo `CodigoPermiso`). Constantes: `core/config/constantes.ts`.
 - Menú lateral: `core/layout/menu-lateral/opciones-menu.ts` (textos de Figma, rutas y permisos de `docs/rutas.md`). Se despliega el módulo de la pantalla actual. Las opciones cuya pantalla necesita un id (p. ej. «Actualizar datos de usuario») llevan a la pantalla desde donde se elige el registro (`destino`) y se marcan activas cuando se está en la pantalla con id.
 - Componentes compartidos (`shared/components/`): `app-tabla` (columnas + filas; plantillas por columna con `<ng-template appCelda="clave" let-fila>`; `mensajeVacio`), `app-paginador` (`pagina` desde 0, `tamanio`, `totalElementos`, salida `cambio`), `app-modal-confirmacion` (`titulo`, `mensaje`, `textoCancelar`, `textoConfirmar`, `abierto`, `procesando`; contenido proyectado para campos como «Motivo (opcional)»), `app-select` (ControlValueAccessor; `opciones` `{valor, etiqueta}`, `etiqueta` = texto sin valor elegido), `app-badge-estado` (`texto`), `app-interruptor` (`activo`, `etiqueta`; emite `cambio` sin cambiar solo, para confirmar antes), `app-alerta` (`titulo`, `mensaje`, `tono` `'error'` | `'exito'`; Alerta Tone=Error y Tone=Success de Figma).
-- Botones y campos: clases `.btn-primario`, `.btn-secundario`, `.campo-texto` de `src/styles.css`.
+- Botones y campos: clases `.btn-primario`, `.btn-secundario`, `.campo-texto` y `.radio` (sobre `<input type="radio">`) de `src/styles.css`.
+- Anchos de Figma: el borde de Figma va por dentro y no cuenta en el ancho; en CSS sí, así que una tarjeta de N px en Figma se escribe `w-[N+2px]` (ver `docs/diseno.md`).
 - Modelos comunes en `shared/models/`: `Pagina<T>`, `ErrorRespuesta`, `LoginRequest`, `LoginResponse` (+ `UsuarioSesion`, `TipoUsuario`) y `UsuarioVerificadoResponse` (lo devuelve `validarRuSimulado` de `core/auth/servicio-institucional.mock.ts`).
 
 ## Estructura de carpetas
@@ -128,6 +129,13 @@ features/<feature>/
   - P2.3 muestra la línea «El nombre de usuario no puede modificarse» (RF2.3.4). P2.4 lista las coincidencias (solo internos) bajo el buscador y no tiene modal de confirmación.
   - Comprobantes: «Imprimir» llama a `window.print()`; la clase global `.imprimible` (`src/styles.css`) hace que solo ese elemento salga en papel, y lo que no debe imprimirse lleva `print:hidden`.
   - La lógica de formulario común de P2.1 y P2.3 está en `features/usuarios/formulario-usuario.ts`.
+- RF3 (decisiones del estudiante):
+  - Los servicios `Facultades`, `Carreras` y `Bibliotecas` comparten las tablas simuladas de `DatosEstructura` (`features/estructura/data-access/datos-estructura.ts`), que arma los nombres relacionados como lo haría el backend y desaparece en la Iteración 5. Duplicados: 409 con «Ya existe una facultad con ese nombre.», «Esa carrera ya está registrada en la facultad seleccionada.» o «Ya existe una biblioteca con ese nombre.», mostrados con `app-alerta` bajo el botón (RF3.2, RF3.4 y RF3.6).
+  - P3.1: pestañas con chips y `?pestana=facultades|carreras|bibliotecas`; pestaña vacía: «Aún no hay facultades registradas.», «Aún no hay carreras registradas.» o «Aún no hay bibliotecas registradas.». Columna «Carreras»: «N carreras»; «Facultad / Carrera» de Bibliotecas: nombre completo de la facultad o de la carrera, o «No aplica» (Central y Postgrado).
+  - Tras «Guardar» o «Guardar cambios» en P3.2 a P3.5 se vuelve a P3.1 en la pestaña del tipo guardado, sin mensaje.
+  - P3.3 y P3.5: estado con `app-interruptor` (RF3.3.3, RF3.5.3 y RF3.7.3), no con el desplegable de Figma; campos deshabilitados y vacíos hasta elegir el registro. En P3.3 con «Facultad», «Carreras relacionadas» es de solo lectura (la relación se cambia desde cada carrera).
+  - P3.5: con la Central, Facultad y Carrera deshabilitados y vacíos con «No aplica — Biblioteca Central», estado encendido y deshabilitado, y la línea de ayuda de Figma (solo con la Central). Con la de Postgrado (sin facultad ni carrera), Facultad y Carrera deshabilitados con «No aplica»; nombre, ubicación, descripción y estado editables.
+  - Desplegables en cascada de P3.4 y P3.5: `features/estructura/pertenencia-biblioteca.ts` («Toda la facultad» → `idFacultad` con valor e `idCarrera` nulo).
 - Perfil (P1.2): servicio `Perfil` (`features/autenticacion/data-access/perfil.ts`, `obtenerPerfil()` = `GET /auth/perfil`); qué se muestra según el usuario está en `docs/usuarios-falsos.md` («Perfil (P1.2)»).
 
 ## Guards, menú y permisos
@@ -178,7 +186,7 @@ Actualiza esta lista al terminar cada etapa (marca con [x]):
 - [x] Base: Tailwind con tokens, layout, menú, login simulado, guards, directiva, componentes compartidos
 - [x] RF1 Autenticación
 - [x] RF2 Usuarios
-- [ ] RF3 Estructura
+- [x] RF3 Estructura
 - [ ] RF4 Gestión del catálogo
 - [ ] RF5 Ejemplares
 - [ ] RF6 Consulta del catálogo

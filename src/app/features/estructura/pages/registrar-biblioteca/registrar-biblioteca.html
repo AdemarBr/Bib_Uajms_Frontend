@@ -1,0 +1,92 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Registrar biblioteca física</h1>
+
+  <form
+    class="flex w-[725px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    novalidate
+    [formGroup]="formulario"
+    (ngSubmit)="guardar()"
+  >
+    <div class="flex flex-col gap-xs">
+      <label for="nombre" class="text-label text-gray-600">Nombre de la biblioteca</label>
+      <input
+        id="nombre"
+        type="text"
+        class="campo-texto"
+        placeholder="Biblioteca Facultad de Derecho"
+        formControlName="nombre"
+        [attr.aria-invalid]="campoVacio('nombre')"
+      />
+      @if (campoVacio('nombre')) {
+        <p class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <label for="ubicacion" class="text-label text-gray-600">Ubicación física</label>
+      <input
+        id="ubicacion"
+        type="text"
+        class="campo-texto"
+        placeholder="Edificio central, planta baja"
+        formControlName="ubicacion"
+        [attr.aria-invalid]="campoVacio('ubicacion')"
+      />
+      @if (campoVacio('ubicacion')) {
+        <p class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <label for="descripcion" class="text-label text-gray-600">Descripción</label>
+      <input
+        id="descripcion"
+        type="text"
+        class="campo-texto"
+        placeholder="Breve descripción de la biblioteca"
+        formControlName="descripcion"
+      />
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <span class="text-label text-gray-600">Facultad</span>
+      <app-select
+        class="w-60"
+        etiqueta="Seleccionar facultad…"
+        nombreAccesible="Facultad"
+        formControlName="idFacultad"
+        [opciones]="opcionesFacultad()"
+      />
+      @if (campoVacio('idFacultad')) {
+        <p class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <span class="text-label text-gray-600">
+        Carrera (se habilita al elegir Facultad; incluye «Toda la facultad»)
+      </span>
+      <app-select
+        class="w-60"
+        nombreAccesible="Carrera"
+        formControlName="carrera"
+        [etiqueta]="carreraHabilitada() ? 'Seleccionar carrera…' : 'Seleccionar facultad primero'"
+        [opciones]="opcionesCarrera()"
+      />
+      @if (campoVacio('carrera')) {
+        <p class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    <p class="text-mini text-gray-600">
+      Ninguno de los dos campos acepta texto libre. Si la biblioteca atiende a toda la facultad, en
+      Carrera se elige «Toda la facultad».
+    </p>
+
+    <button type="submit" class="btn-primario w-full" [disabled]="enviando()">Guardar</button>
+
+    @if (duplicado(); as d) {
+      <app-alerta [titulo]="d" />
+    }
+  </form>
+</div>

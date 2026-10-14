@@ -50,7 +50,9 @@ Tamaños que los componentes de Figma usan sin estilo de texto propio (interline
 - En Tailwind: `p-lg`, `gap-sm`, `rounded-md`, `text-h2`, `text-body-strong`, `bg-brand-accent`, `text-gray-600`, etc. (definidos con `@theme` en `src/styles.css`; la escala `gray` de Tailwind se reemplaza por la de Figma).
 - Alerta: `app-alerta`, recuadro de hasta 320 px con fondo gray/100, título body-strong y mensaje caption; borde gray/500 (Tone=Error) o gray/300 (Tone=Success, P2.4).
 - Chip (P2.5): fondo gray/100, borde gray/300, radio full, padding 4 × 8, texto caption gray/900. Tarjeta de rol: borde gray/300, radio md, padding lg, título 15 Semi Bold (`--text-dato`).
-- Formularios de RF2: tarjeta con borde gray/300, radio lg, padding 2xl y separación lg (anchos de Figma: P2.1 1050 px, P2.3 626 px, P2.4 350 px); selects de 240 px. Modal «Usuario registrado correctamente»: 560 px, padding 24 × 32, título 18 Bold.
+- Chip seleccionado (pestañas de P3.1): fondo brand/dark, borde gray/300 y texto gray/0; los no seleccionados, como el Chip de P2.5.
+- Radio (P3.2 y P3.3): clase `.radio` de `src/styles.css` sobre `<input type="radio">`, 18 px, aro de 1,5 px gray/500 y, marcado, punto de 5 px brand/accent; separación de 8 px con su texto y de 20 px entre opciones.
+- Tarjetas de formulario (RF2 y RF3): borde gray/300, radio lg, padding 2xl y separación lg. Figma dibuja el borde por dentro y no lo cuenta en el ancho; en CSS sí cuenta, así que el ancho en código es el de Figma + 2 px: P2.1 1052, P2.3 628, P2.4 352, P3.2 363, P3.3 250, P3.4 725 y P3.5 917 px. Selects de 240 px (en P3.3, de todo el ancho; en Facultad y Carrera de P3.5, 256 px para que «No aplica — Biblioteca Central» se lea completo). Textos de ayuda de P3.4 y P3.5: 11 px (`--text-mini`) gray/600. Modal «Usuario registrado correctamente»: 560 px, padding 24 × 32, título 18 Bold.
 - Botones y campos: clases `.btn-primario`, `.btn-secundario` y `.campo-texto` en `src/styles.css` (Button Primary/Secondary e Input/Text de Figma).
 
 ## Pantalla

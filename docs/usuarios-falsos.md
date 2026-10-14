@@ -29,9 +29,17 @@ Los datos de `GET /auth/perfil` están en `features/autenticacion/data-access/pe
 La lista de «Consultar usuarios del sistema» (`features/usuarios/data-access/usuarios.mock.ts`) tiene 14 usuarios, como el contador de Figma: los nueve de la tabla anterior, «Bibliotecario FCyT» (`bibliotecario.fcyt`, inactivo, Biblioteca FCyT; fila de Figma) y cuatro internos ficticios: Lucía Fernández (`catalogador.fcyt`, Catalogador, Biblioteca FCyT), Pedro Cruz (`bibliotecario.derecho`, Bibliotecario, Biblioteca Facultad de Derecho), Ana Quiroga (`admin.derecho`, Administrador de biblioteca, Biblioteca Facultad de Derecho) y Mario Vaca (`catalogador.derecho`, Catalogador, Biblioteca Facultad de Derecho).
 
 - Esta lista es independiente de `core/auth/usuarios.mock.ts`: los cinco usuarios añadidos y los que se registran en P2.1 no pueden iniciar sesión, y activar, desactivar o editar un usuario en P2.2/P2.3 no cambia su login en el prototipo (en la Iteración 5 ambos leen la misma tabla `usuario`).
-- Bibliotecas (`features/estructura/data-access/bibliotecas.mock.ts`, pestaña Bibliotecas de P3.1 en Figma): 1 Biblioteca Central, 2 Biblioteca FCyT, 3 Biblioteca Facultad de Derecho.
+- Bibliotecas: las de «Bibliotecas, facultades y carreras» (sección siguiente). La validación de P2.1 y P2.3 usa los datos iniciales de `bibliotecas.mock.ts`: renombrar o crear una biblioteca en P3.4/P3.5 no cambia los nombres que se ven en P2.2 ni las opciones de P2.1 y P2.3 durante la sesión (decisión del estudiante; en la Iteración 5 todo sale de la misma tabla `biblioteca`).
 - Roles (`features/usuarios/data-access/roles.mock.ts`): ids 1 a 8 en el orden de `docs/permisos.md` (Estudiante, Docente, Usuario académico, Bibliotecario = 4 como en el contrato, Catalogador, Administrador de biblioteca, Responsable de tesis y solvencias, Administrador general del sistema).
 - P2.1 genera el nombre de usuario con la inicial del nombre y el último apellido, sin tildes («Juan Pérez» → `jperez`, con un número si ya existe), y una contraseña aleatoria de 10 caracteres.
+
+## Bibliotecas, facultades y carreras (RF3)
+
+Datos de `features/estructura/data-access/` (`facultades.mock.ts`, `carreras.mock.ts`, `bibliotecas.mock.ts`), compartidos por los servicios `Facultades`, `Carreras` y `Bibliotecas` a través de `DatosEstructura`. Se toma todo lo que aparece en las pestañas de P3.1 en Figma y lo mínimo para que cuadre (decisión del estudiante):
+
+- Facultades: 1 Facultad de Ciencias y Tecnología, 2 Facultad de Ciencias Económicas, 3 Facultad de Ciencias de la Salud (inactiva, como en Figma) y 4 Facultad de Derecho (agregada porque existe «Biblioteca Facultad de Derecho»).
+- Carreras: Ingeniería de Sistemas, Ingeniería Civil y Contaduría Pública (inactiva) salen de Figma; el resto son ficticias, con nombres verosímiles, para que los conteos coincidan con Figma (8, 4 y 3): FCyT — Ingeniería Informática, Química, de Alimentos, del Petróleo y Gas Natural, Industrial y Topografía y Geodesia; Ciencias Económicas — Economía, Administración de Empresas e Ingeniería Comercial; Ciencias de la Salud — Medicina, Enfermería y Odontología (inactivas); Derecho — Derecho.
+- Bibliotecas: 1 Biblioteca Central (`esBibliotecaCentral`), 2 Biblioteca FCyT, 3 Biblioteca Facultad de Derecho, 4 Biblioteca de Economía, 5 Biblioteca de Salud (todas de toda la facultad) y 6 Biblioteca de Postgrado (sin facultad ni carrera, como la Central). Ubicaciones de la Central, FCyT y Derecho de Figma; las de Economía, Salud y Postgrado son ficticias.
 
 ## Servicio de validación institucional simulado
 

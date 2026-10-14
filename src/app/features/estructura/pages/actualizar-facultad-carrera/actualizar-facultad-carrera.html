@@ -1,0 +1,97 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Actualizar facultad o carrera</h1>
+
+  <form
+    class="flex w-[250px] flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    novalidate
+    [formGroup]="formulario"
+    (ngSubmit)="guardar()"
+  >
+    <fieldset class="flex flex-col gap-lg">
+      <legend class="mb-lg text-label text-gray-600">Tipo de registro</legend>
+      <div class="flex gap-5">
+        @if (puedeFacultad) {
+          <label class="flex cursor-pointer items-center gap-sm text-body text-gray-900">
+            <input type="radio" class="radio" value="facultad" formControlName="tipo" />
+            Facultad
+          </label>
+        }
+        @if (puedeCarrera) {
+          <label class="flex cursor-pointer items-center gap-sm text-body text-gray-900">
+            <input type="radio" class="radio" value="carrera" formControlName="tipo" />
+            Carrera
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <span class="text-label text-gray-600">
+      {{
+        tipo() === 'facultad'
+          ? 'Seleccionar facultad a actualizar'
+          : 'Seleccionar carrera a actualizar'
+      }}
+    </span>
+    <app-select
+      formControlName="seleccion"
+      [nombreAccesible]="tipo() === 'facultad' ? 'Facultad a actualizar' : 'Carrera a actualizar'"
+      [etiqueta]="tipo() === 'facultad' ? 'Seleccionar facultad…' : 'Seleccionar carrera…'"
+      [opciones]="opcionesSeleccion()"
+    />
+
+    <label for="nombre" class="text-label text-gray-600">Nombre</label>
+    <div class="flex flex-col gap-xs">
+      <input
+        id="nombre"
+        type="text"
+        class="campo-texto"
+        [class.border-gray-500]="elegido()"
+        formControlName="nombre"
+        [attr.aria-invalid]="campoVacio('nombre')"
+      />
+      @if (campoVacio('nombre')) {
+        <p class="text-label text-gray-900">Es obligatorio.</p>
+      }
+    </div>
+
+    @if (tipo() === 'carrera') {
+      <span class="text-label text-gray-600">Facultad a la que pertenece</span>
+      <div class="flex flex-col gap-xs">
+        <app-select
+          nombreAccesible="Facultad a la que pertenece"
+          formControlName="idFacultad"
+          [opciones]="opcionesFacultad()"
+        />
+        @if (campoVacio('idFacultad')) {
+          <p class="text-label text-gray-900">Es obligatorio.</p>
+        }
+      </div>
+    } @else {
+      <span class="text-label text-gray-600">Carreras relacionadas</span>
+      <p class="text-body" [class]="elegido() ? 'text-gray-900' : 'text-gray-400'">
+        {{ carrerasRelacionadas() || '—' }}
+      </p>
+    }
+
+    <span class="text-label text-gray-600">Estado</span>
+    <div class="flex items-center gap-2.5">
+      <span class="text-body" [class]="elegido() ? 'text-gray-900' : 'text-gray-400'">
+        {{ estado() ? 'Activo' : 'Inactivo' }}
+      </span>
+      <app-interruptor
+        etiqueta="Estado"
+        [activo]="estado()"
+        [deshabilitado]="!elegido()"
+        (cambio)="cambiarEstado($event)"
+      />
+    </div>
+
+    <button type="submit" class="btn-primario w-full" [disabled]="!elegido() || enviando()">
+      Guardar cambios
+    </button>
+
+    @if (duplicado(); as d) {
+      <app-alerta [titulo]="d" />
+    }
+  </form>
+</div>
