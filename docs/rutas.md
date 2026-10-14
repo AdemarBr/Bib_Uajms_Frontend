@@ -14,10 +14,14 @@ Reglas:
 - Las rutas fijas se declaran antes que las que tienen parámetro (por ejemplo `/comunicacion/nueva` antes de `/comunicacion/:id`).
 - Los botones de acción dentro de una pantalla (desactivar, asignar rol, confirmar, rechazar, exportar, responder, etc.) se muestran con `*appTienePermiso` según el permiso de su caso de uso en `docs/permisos.md`.
 - El menú lateral muestra solo las opciones cuyo permiso tiene el usuario (los códigos llegan en el login).
+- Tras un login correcto se vuelve a `returnUrl` (solo rutas internas) o, si no hay, a `/` (P.1 Home).
+- Layout (RF1.2.10): sin sesión, las pantallas públicas (P.1, P6.1, P6.2, P11.1, P11.2) y el inicio de sesión (P1.1) usan el layout público, sin menú lateral (marco 9:7). Con sesión activa, **todas** las pantallas excepto P1.1, incluidas las públicas, usan el layout privado: barra superior con sesión (con «Catálogo» y «Tesis»), menú lateral filtrado por los permisos del usuario y pie. Referencia de Home con sesión: marco [396:132](https://www.figma.com/design/a1bTBfFBoWOFxdfUamTrsd/Biblioteca-UAJMS?node-id=396-132). Ese marco muestra el menú del Administrador general (todos los módulos): el menú no se copia fijo del marco; se usa el menú lateral de siempre (`opciones-menu.ts`) filtrado por permisos.
+- Con sesión activa, entrar a `/iniciar-sesion` redirige a `/`.
+- Cerrar sesión (confirmación «¿Cerrar sesión?») lleva a `/` (RF1.5.4). Solo una sesión vencida o una renovación rechazada (Iteración 5) llevan a `/iniciar-sesion`.
 
 | Pantalla | Título (según el documento) | Ruta | Acceso | Permiso | Casos de uso | Marco en Figma |
 |---|---|---|---|---|---|---|
-| P.1 | Principal / Home | `/` | público | — | RF1.5, RF6.1, RF6.2, RF6.3 | [9:7](https://www.figma.com/design/a1bTBfFBoWOFxdfUamTrsd/Biblioteca-UAJMS?node-id=9-7) |
+| P.1 | Principal / Home | `/` | público | — | RF1.2, RF1.5, RF6.1, RF6.2, RF6.3 | [9:7](https://www.figma.com/design/a1bTBfFBoWOFxdfUamTrsd/Biblioteca-UAJMS?node-id=9-7) (con sesión: [396:132](https://www.figma.com/design/a1bTBfFBoWOFxdfUamTrsd/Biblioteca-UAJMS?node-id=396-132)) |
 | P1.1 | Iniciar Sesión | `/iniciar-sesion` | público | — | RF1.1, RF1.2, RF1.3 | [10:3](https://www.figma.com/design/a1bTBfFBoWOFxdfUamTrsd/Biblioteca-UAJMS?node-id=10-3) |
 | P6.1 | Buscar Material Bibliográfico | `/catalogo` | público | — | RF6.1, RF6.1.1, RF6.3 | [22:1344](https://www.figma.com/design/a1bTBfFBoWOFxdfUamTrsd/Biblioteca-UAJMS?node-id=22-1344) |
 | P6.2 | Detalle del Libro | `/catalogo/:id` | público | — | RF6.1.2, RF6.1.2.1, RF6.1.2.2, RF6.1.2.3, RF6.2, RF7.2 | [22:1448](https://www.figma.com/design/a1bTBfFBoWOFxdfUamTrsd/Biblioteca-UAJMS?node-id=22-1448) |

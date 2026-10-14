@@ -29,6 +29,8 @@ Cada DTO se definió a partir de las columnas, tarjetas, campos y filtros que el
   "errores": [ { "campo": "titulo", "mensaje": "Es obligatorio." } ] }
 ```
 
+Mensajes de error: los textos que ve el usuario ante un error los define **el backend** en `titulo` y `detalle` de `ErrorRespuesta` (y en `errores[].mensaje` por campo). El frontend los muestra tal como llegan y no escribe esos textos en sus componentes. Únicas excepciones del frontend: las validaciones del formulario antes de enviar (campo obligatorio, formato) y la falta de respuesta del servidor («No se pudo conectar con el servidor. Intente nuevamente.»).
+
 Filtro de periodo (reportes y dashboards, RF13.6.4): `periodo` = `ULTIMO_MES` | `ULTIMO_TRIMESTRE` | `SEMESTRE_ACTUAL` | `GESTION_ACTUAL` | `RANGO`; con `RANGO` se envían `desde` y `hasta` (fechas).
 
 ## 3. Autenticación y sesión (RF1)
@@ -53,7 +55,7 @@ Reglas de la sesión (detalle en `docs/reglas-negocio.md`, sección «Sesión»)
 
 ```json
 // ErrorRespuesta de credenciales incorrectas (siempre igual, sin indicar qué dato falló)
-{ "status": 401, "titulo": "Credenciales no válidas",
+{ "status": 401, "titulo": "No se pudo iniciar sesión",
   "detalle": "El usuario o la contraseña no son válidos, o la cuenta no se encuentra vigente.", "errores": [] }
 ```
 
@@ -62,7 +64,7 @@ Reglas de la sesión (detalle en `docs/reglas-negocio.md`, sección «Sesión»)
 { "token": "eyJ...",
   "expiraEn": 900,
   "usuario": { "idUsuario": 1, "nombre": "Ademar Mendez", "nombreUsuario": "admin.general",
-               "idBiblioteca": 1, "bibliotecaNombre": "Biblioteca Central", "idCarrera": null, "carreraNombre": null },
+               "idBiblioteca": null, "bibliotecaNombre": null, "idCarrera": null, "carreraNombre": null },
   "rol": "Administrador general del sistema",
   "tipoUsuario": "interno",
   "permisos": ["USUARIO_REGISTRAR", "USUARIO_CONSULTAR"] }
@@ -70,9 +72,9 @@ Reglas de la sesión (detalle en `docs/reglas-negocio.md`, sección «Sesión»)
 
 ```json
 // PerfilResponse (P1.2, RF1.4)
-{ "idUsuario": 1, "nombre": "Ademar Mendez", "nombreUsuario": "admin.general", "correo": "correo@uajms.edu.bo",
+{ "idUsuario": 1, "nombre": "Ademar Mendez", "nombreUsuario": "admin.general", "correo": "admin.general@uajms.edu.bo",
   "ru": null, "rolNombre": "Administrador general del sistema", "tipoUsuario": "interno",
-  "bibliotecaNombre": "Biblioteca Central", "facultadNombre": null, "carreraNombre": null }
+  "bibliotecaNombre": null, "facultadNombre": null, "carreraNombre": null }
 ```
 
 ## 4. Usuarios y roles (RF2)
@@ -100,7 +102,7 @@ Reglas de la sesión (detalle en `docs/reglas-negocio.md`, sección «Sesión»)
 
 ```json
 // RegistroUsuarioResponse (la contraseña se muestra una sola vez)
-{ "usuario": { "idUsuario": 5, "nombreUsuario": "carla.rios" }, "contrasenaGenerada": "Xk7#p2Qa" }
+{ "usuario": { "idUsuario": 15, "nombreUsuario": "crios" }, "contrasenaGenerada": "Xk7#p2Qa9m" }
 ```
 
 ```json
@@ -127,7 +129,7 @@ Reglas de la sesión (detalle en `docs/reglas-negocio.md`, sección «Sesión»)
 ```json
 // FacultadResponse (pestaña Facultades: Nombre, Carreras, Biblioteca, Estado, RF3.1.7)
 { "idFacultad": 1, "nombre": "Facultad de Ciencias y Tecnología", "estado": true,
-  "carreras": ["Ingeniería de Sistemas"], "bibliotecas": ["Biblioteca de Ciencias y Tecnología"] }
+  "carreras": ["Ingeniería de Sistemas"], "bibliotecas": ["Biblioteca FCyT"] }
 ```
 
 ```json
@@ -157,7 +159,7 @@ Reglas de la sesión (detalle en `docs/reglas-negocio.md`, sección «Sesión»)
 
 ```json
 // BibliotecaRequest. «Toda la facultad»: idFacultad con valor e idCarrera nulo. Estado solo al actualizar.
-{ "nombre": "Biblioteca de Ciencias y Tecnología", "ubicacion": "Campus El Tejar", "descripcion": null,
+{ "nombre": "Biblioteca FCyT", "ubicacion": "Edificio FCyT, planta baja", "descripcion": null,
   "idFacultad": 1, "idCarrera": null, "estado": true }
 ```
 
@@ -399,10 +401,10 @@ La ruta interna del archivo no se envía al frontend; el archivo se abre por su 
 ```json
 // ConversacionResponse (P12.2)
 { "consulta": { "idMensaje": 20, "contenido": "Buen día, quisiera saber si es posible extender el plazo…",
-                "fecha": "2026-07-26T09:10:00", "estado": "Respondido", "idRemitente": 12, "remitenteNombre": "Estudiante Rojas",
+                "fecha": "2026-07-26T09:10:00", "estado": "Respondido", "idRemitente": 13, "remitenteNombre": "Estudiante Rojas",
                 "idDestinatario": null, "destinatarioNombre": null, "idMensajeRespondido": null },
   "respuestas": [ { "idMensaje": 21, "contenido": "Buen día, sí es posible…", "fecha": "2026-07-26T10:02:00", "estado": "Respondido",
-                    "idRemitente": 1, "remitenteNombre": "Ademar Mendez", "idDestinatario": 12, "destinatarioNombre": "Estudiante Rojas",
+                    "idRemitente": 1, "remitenteNombre": "Ademar Mendez", "idDestinatario": 13, "destinatarioNombre": "Estudiante Rojas",
                     "idMensajeRespondido": 20 } ] }
 ```
 

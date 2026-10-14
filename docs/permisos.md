@@ -3,7 +3,7 @@
 Los permisos se guardan en las tablas `permiso` y `rol_permiso` (datos iniciales de la migración V2). El backend los envía en el login y los vuelve a verificar en cada petición; el frontend los usa para el menú, los guards y la directiva `*appTienePermiso`.
 
 - Funcionalidades públicas sin permiso: consultar catálogo y tesis digitales (incluye visitantes).
-- Iniciar sesión, ver perfil y cerrar sesión solo requieren sesión.
+- Iniciar sesión es público; ver perfil y cerrar sesión solo requieren sesión.
 - El Administrador general del sistema tiene **todos** los permisos (RF08 de seguridad).
 - El ámbito por biblioteca del Administrador de biblioteca no es un permiso: se filtra con `usuario.id_biblioteca`.
 

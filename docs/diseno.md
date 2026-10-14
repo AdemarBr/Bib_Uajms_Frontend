@@ -57,5 +57,5 @@ Tamaños que los componentes de Figma usan sin estilo de texto propio (interline
 
 ## Pantalla
 
-- Diseño de escritorio a 1440 px de ancho: barra superior, menú lateral oscuro (brand/dark) y pie de página, como en Figma.
+- Diseño de escritorio a 1440 px de ancho: barra superior y pie de página; con sesión, además el menú lateral oscuro (brand/dark) en todas las pantallas (RF1.2.10), como en Figma.
 - Íconos: `@lucide/angular`. Los íconos del menú lateral de Figma son dibujos propios; se usan sus equivalentes de Lucide: User, School, Book, Layers (Ejemplares), Bookmark, Calendar, ArrowRightLeft (Préstamos), GraduationCap, MessageSquare, ChartNoAxesColumn; en la barra superior, CircleUser con un punto brand/accent. Gráficos: Chart.js con `ng2-charts`.

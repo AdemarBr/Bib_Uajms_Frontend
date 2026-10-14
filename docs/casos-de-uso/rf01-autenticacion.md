@@ -75,7 +75,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Tipo:** Primario
 
-**Referencias:** RF1.2.1; RF1.2.2; RF1.2.3; RF1.2.4; RF1.2.5; RF1.2.6; RF1.2.7; RF1.2.8; RF1.2.9
+**Referencias:** RF1.2.1; RF1.2.2; RF1.2.3; RF1.2.4; RF1.2.5; RF1.2.6; RF1.2.7; RF1.2.8; RF1.2.9; RF1.2.10
 
 **Propósito:** Permitir verificar si las credenciales ingresadas corresponden a un usuario vigente: los usuarios académicos con el Servicio de validación institucional y el personal interno con el registro de credenciales propio del sistema.
 
@@ -111,6 +111,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 - [Interfaz] RF1.2.7: Si el usuario está vigente, el servicio responde con el nombre, el RU, la carrera y, cuando lo informa, si es estudiante o docente, y el sistema permite continuar con el registro del préstamo.
 - [Interfaz] RF1.2.8: Si el usuario no está vigente o no existe, el servicio responde con un código HTTP distinto, y el sistema informa que el usuario no está vigente e impide continuar.
 - [Interfaz] RF1.2.9: La interfaz de registro de préstamo (P9.1 en sala, P9.3 a domicilio) debe incluir un campo para ingresar el RU del usuario y mostrar los datos institucionales verificados antes de continuar con el registro.
+- [Interfaz] RF1.2.10: Tras una validación correcta para iniciar sesión, la interfaz debe dirigir al usuario a la pantalla que había solicitado o, si no solicitó ninguna, a la pantalla de inicio (P.1 Home) y, mientras la sesión esté activa, mostrar en todas las pantallas el menú lateral con las opciones permitidas para su rol; sin sesión, las pantallas públicas (P.1 Home, P6.1, P6.2, P11.1 y P11.2) se muestran sin menú lateral.
 
 ## RF1.3 Registrar datos mínimos del usuario validado
 

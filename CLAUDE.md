@@ -38,8 +38,7 @@ Este repositorio contiene solo el frontend. El backend (Spring Boot) está en ot
 ## Stack y reglas técnicas
 
 - Angular en la versión estable con la que se creó el proyecto (ver `package.json`), con componentes **standalone** (sin `NgModule`).
-- **Zoneless**: la aplicación funciona sin `zone.js` (es el comportamiento por defecto de los proyectos nuevos; si no lo fuera, se activa con `provideZonelessChangeDetection()` en `app.config.ts`).
-- Todos los componentes con detección de cambios **OnPush**. Si la versión instalada ya lo aplica por defecto, no hace falta declararlo; si no, se declara `ChangeDetectionStrategy.OnPush`.
+- **Zoneless** (sin `zone.js`) y detección de cambios **OnPush** en todos los componentes (en Angular 22 ambos vienen por defecto; ver más abajo).
 - Estado con **señales**: `signal`, `computed`; `effect` solo cuando sea imprescindible. Entradas y salidas con `input()`, `output()`, `model()`. Inyección con `inject()`.
 - Servicios, componentes, guards, directivas y pipes se crean con `ng generate` y se mantiene la forma y los nombres que genera la versión instalada (guía de estilo 2025: sin sufijos `.component`/`.service`; por ejemplo, `ng g service core/auth/sesion` crea `sesion.ts` con la clase `Sesion`, y `ng g guard core/auth/sesion` crea `sesion-guard.ts` con `sesionGuard`).
 - Plantillas con control de flujo nativo (`@if`, `@for` con `track`, `@switch`). Nada de `*ngIf` ni `*ngFor`.
@@ -52,12 +51,13 @@ Este repositorio contiene solo el frontend. El backend (Spring Boot) está en ot
 - Archivos y carpetas en kebab-case, con los nombres que genera Angular CLI. Nombres del dominio en español (`listarLibros`, `fechaLimiteDevolucion`); términos del framework en inglés.
 - Sin pruebas automatizadas en esta iteración: no crees archivos `.spec.ts`; usa siempre `ng generate ... --skip-tests`.
 - Nada de `localStorage`, `sessionStorage` ni cookies escritas desde el frontend.
+- **Mensajes de error:** la pantalla muestra el `titulo` y el `detalle` del `ErrorRespuesta` que recibe (y `errores[].mensaje` junto a cada campo). Nunca escribas en un componente el texto de un error de negocio: en el prototipo ese texto vive en el servicio simulado (`data-access` o `core/auth`), igual que en la Iteración 5 vivirá en el backend. Solo son del frontend las validaciones del formulario antes de enviar (campo obligatorio, formato) y el mensaje sin conexión «No se pudo conectar con el servidor. Intente nuevamente.». Ver `docs/contrato-api.md`, sección 2.
 - Angular 22 instalado: zoneless y OnPush ya vienen por defecto (no se declaran). `ng g service` genera `@Service()` (se provee solo en la raíz); se mantiene así. `provideRouter` usa `withComponentInputBinding()`: los parámetros de ruta y de consulta (`:id`, `?idReserva`) llegan como `input()` de la página.
 - Formato con Prettier (`npx prettier --write --end-of-line auto "src/**/*.{ts,html,css}"`, configuración en `.prettierrc`; `--end-of-line auto` respeta el CRLF que deja Git en Windows).
 
 ## Base ya construida (reutilizar, no duplicar)
 
-- Rutas raíz en `app.routes.ts`: las públicas van dentro de `LayoutPublico` (barra superior + pie) y las de sesión o permiso dentro de `LayoutPrivado` (además, menú lateral; ya tiene `sesionGuard`). Cada feature agrega sus rutas con `loadChildren` y `permisoGuard` + `data: { permisos: [PERMISOS.X] }` (lista = basta uno).
+- Rutas raíz en `app.routes.ts`: hoy las públicas van dentro de `LayoutPublico` (barra superior + pie) y las de sesión o permiso dentro de `LayoutPrivado` (además, menú lateral; ya tiene `sesionGuard`). **Pendiente (tarea `fix/layout-y-mensajes`):** aplicar RF1.2.10 («Guards, menú y permisos»): las pantallas públicas (P.1, P6.1, P6.2, P11.1, P11.2) eligen el layout según `Sesion.haySesion()`, sin repetir sus rutas; `sesionGuard` pasa a cada ruta de tipo «sesión» o «permiso»; P1.1 queda siempre fuera del layout privado. Cada feature agrega sus rutas con `loadChildren` y `permisoGuard` + `data: { permisos: [PERMISOS.X] }` (lista = basta uno).
 - Códigos de permiso: `core/config/permisos.ts` (`PERMISOS`, tipo `CodigoPermiso`). Constantes: `core/config/constantes.ts`.
 - Menú lateral: `core/layout/menu-lateral/opciones-menu.ts` (textos de Figma, rutas y permisos de `docs/rutas.md`). Se despliega el módulo de la pantalla actual. Las opciones cuya pantalla necesita un id (p. ej. «Actualizar datos de usuario») llevan a la pantalla desde donde se elige el registro (`destino`) y se marcan activas cuando se está en la pantalla con id.
 - Componentes compartidos (`shared/components/`): `app-tabla` (columnas + filas; plantillas por columna con `<ng-template appCelda="clave" let-fila>`; `mensajeVacio`), `app-paginador` (`pagina` desde 0, `tamanio`, `totalElementos`, salida `cambio`), `app-modal-confirmacion` (`titulo`, `mensaje`, `textoCancelar`, `textoConfirmar`, `abierto`, `procesando`; contenido proyectado para campos como «Motivo (opcional)»), `app-select` (ControlValueAccessor; `opciones` `{valor, etiqueta}`, `etiqueta` = texto sin valor elegido), `app-badge-estado` (`texto`), `app-interruptor` (`activo`, `etiqueta`; emite `cambio` sin cambiar solo, para confirmar antes), `app-alerta` (`titulo`, `mensaje`, `tono` `'error'` | `'exito'`; Alerta Tone=Error y Tone=Success de Figma).
@@ -75,7 +75,7 @@ src/app/
 │   ├── layout/            # barra superior, menú lateral (filtrado por permisos), pie; layout público y privado
 │   └── config/            # constantes: códigos de permiso y PLAZO_MAXIMO_PRESTAMO_DIAS = 30
 ├── shared/
-│   ├── components/        # tabla, paginador, modal de confirmación, select, badge de estado, interruptor
+│   ├── components/        # tabla, paginador, modal de confirmación, select, badge de estado, interruptor, alerta
 │   ├── directives/        # tiene-permiso.ts (directiva appTienePermiso)
 │   ├── pipes/             # estados de reserva, préstamo y ejemplar; fechas; roles
 │   └── models/            # Pagina<T>, ErrorRespuesta, LoginRequest, LoginResponse
@@ -117,11 +117,11 @@ features/<feature>/
 - `core/auth/login-simulado.ts` exporta una función `loginSimulado(solicitud: LoginRequest): Observable<LoginResponse>` que:
   - busca el usuario en `usuarios.mock.ts` (datos de `docs/usuarios-falsos.md`) y compara la contraseña;
   - si coinciden y el usuario está activo, devuelve exactamente la forma de `LoginResponse` del contrato, con `token: "token-simulado"`, `expiraEn: 900` y los permisos de su rol según `docs/permisos.md`;
-  - si no, devuelve con `throwError` un `ErrorRespuesta` con `status: 401`, `titulo: "Credenciales no válidas"` y `detalle: "El usuario o la contraseña no son válidos, o la cuenta no se encuentra vigente."`: el mismo mensaje para cualquier fallo, sin indicar qué dato falló (RF1.2.4 y RF1.2.5).
+  - si no, devuelve con `throwError` un `ErrorRespuesta` con `status: 401`, `titulo: "No se pudo iniciar sesión"` y `detalle: "El usuario o la contraseña no son válidos, o la cuenta no se encuentra vigente."` y `errores: []`: el mismo mensaje para cualquier fallo, sin indicar qué dato falló (RF1.2.4 y RF1.2.5).
 - El servicio `Sesion` (`core/auth/sesion.ts`) es el único que llama a `loginSimulado`. Guarda la sesión **solo en memoria**, en señales (`usuario`, `rol`, `permisos`, `token`), y expone `iniciarSesion()`, `cerrarSesion()`, `tienePermiso(codigo)` y `haySesion` (computed). Al recargar la página la sesión se pierde y hay que volver a iniciar sesión: es lo esperado en el prototipo.
 - La validación por RU de los préstamos (P9.1 y P9.3) usa `servicio-institucional.mock.ts` y devuelve `UsuarioVerificadoResponse` o un `ErrorRespuesta` 404 si el RU no está vigente.
 - Las contraseñas de prueba existen solo en el prototipo; nunca van a la base de datos ni al backend.
-- P1.1 (decisión del estudiante): ante cualquier error de login la pantalla muestra el texto de Figma, «No se pudo iniciar sesión» / «Usuario o contraseña incorrectos.», y no el `titulo`/`detalle` del 401 (que se mantiene igual en el contrato y en `loginSimulado`). El campo de usuario tiene el placeholder «Usuario o RU». Tras un login correcto vuelve a `returnUrl` (solo rutas internas) o, si no hay, a `/`.
+- P1.1: ante cualquier error de login la pantalla muestra el `titulo` y el `detalle` del 401 que devuelve `loginSimulado` («No se pudo iniciar sesión» / «El usuario o la contraseña no son válidos, o la cuenta no se encuentra vigente.»), igual que el marco de Figma 10:3; no escribe el texto en el componente. El campo de usuario tiene el placeholder «Usuario o RU». Tras un login correcto vuelve a `returnUrl` (solo rutas internas) o, si no hay, a `/`.
 - RF2 (decisiones del estudiante):
   - P2.5 y la descripción del rol en P2.3 muestran **módulos**, no permisos: se calculan con `modulosDePermisos()` (`core/config/permisos.ts`, `MODULOS_PERMISOS` = columna «Módulo» de `docs/permisos.md`). Se muestran los 8 roles y se sigue la matriz, no los chips de Figma. No hay campo `descripcion` en el contrato.
   - Biblioteca responsable obligatoria para Bibliotecario, Catalogador y Administrador de biblioteca (`ROLES_CON_BIBLIOTECA` en `core/config/constantes.ts`); para Administrador general y Responsable de tesis queda sin asignar y deshabilitada con «No aplica».
@@ -130,7 +130,7 @@ features/<feature>/
   - Comprobantes: «Imprimir» llama a `window.print()`; la clase global `.imprimible` (`src/styles.css`) hace que solo ese elemento salga en papel, y lo que no debe imprimirse lleva `print:hidden`.
   - La lógica de formulario común de P2.1 y P2.3 está en `features/usuarios/formulario-usuario.ts`.
 - RF3 (decisiones del estudiante):
-  - Los servicios `Facultades`, `Carreras` y `Bibliotecas` comparten las tablas simuladas de `DatosEstructura` (`features/estructura/data-access/datos-estructura.ts`), que arma los nombres relacionados como lo haría el backend y desaparece en la Iteración 5. Duplicados: 409 con «Ya existe una facultad con ese nombre.», «Esa carrera ya está registrada en la facultad seleccionada.» o «Ya existe una biblioteca con ese nombre.», mostrados con `app-alerta` bajo el botón (RF3.2, RF3.4 y RF3.6).
+  - Los servicios `Facultades`, `Carreras` y `Bibliotecas` comparten las tablas simuladas de `DatosEstructura` (`features/estructura/data-access/datos-estructura.ts`), que arma los nombres relacionados como lo haría el backend y desaparece en la Iteración 5. Duplicados (RF3.2, RF3.4 y RF3.6): `DatosEstructura` responde 409 con un `ErrorRespuesta` cuyo `detalle` es «Ya existe una facultad con ese nombre.», «Esa carrera ya está registrada en la facultad seleccionada.» o «Ya existe una biblioteca con ese nombre.»; la página muestra `titulo` y `detalle` con `app-alerta` bajo el botón. El texto vive en `DatosEstructura` (como en el backend), no en el componente.
   - P3.1: pestañas con chips y `?pestana=facultades|carreras|bibliotecas`; pestaña vacía: «Aún no hay facultades registradas.», «Aún no hay carreras registradas.» o «Aún no hay bibliotecas registradas.». Columna «Carreras»: «N carreras»; «Facultad / Carrera» de Bibliotecas: nombre completo de la facultad o de la carrera, o «No aplica» (Central y Postgrado).
   - Tras «Guardar» o «Guardar cambios» en P3.2 a P3.5 se vuelve a P3.1 en la pestaña del tipo guardado, sin mensaje.
   - P3.3 y P3.5: estado con `app-interruptor` (RF3.3.3, RF3.5.3 y RF3.7.3), no con el desplegable de Figma; campos deshabilitados y vacíos hasta elegir el registro. En P3.3 con «Facultad», «Carreras relacionadas» es de solo lectura (la relación se cambia desde cada carrera).
@@ -140,6 +140,9 @@ features/<feature>/
 
 ## Guards, menú y permisos
 
+- **Layout (RF1.2.10):** sin sesión, las pantallas públicas (P.1 Home, P6.1, P6.2, P11.1, P11.2) y el inicio de sesión (P1.1) usan el layout público, sin menú lateral (Figma 9:7). Con sesión activa, **todas** las pantallas, también las públicas (no P1.1), usan el layout privado con menú lateral (Home con sesión: Figma 396:132). Ese marco muestra el menú del Administrador general (todos los módulos): el menú no se copia fijo del diseño, es el mismo menú lateral de siempre, filtrado por los permisos del usuario. Ejemplos para comprobar en Home: `admin.general` ve todos los módulos; `catalogador.central`, solo Gestión de catálogo y Ejemplares; `2019001234` (Estudiante), solo Mis reservas y Comunicación. La barra superior con sesión mantiene «Catálogo» y «Tesis».
+- Con sesión activa, entrar a `/iniciar-sesion` redirige a `/`.
+- Cerrar sesión (confirmación «¿Cerrar sesión?») lleva a `/` (RF1.5.4). Solo una sesión vencida o una renovación rechazada (Iteración 5) llevan a `/iniciar-sesion`.
 - `sesionGuard` exige sesión: sin sesión redirige a `/iniciar-sesion` con `returnUrl` y, tras el login, vuelve a la ruta pedida.
 - `permisoGuard` exige el permiso de la ruta según `docs/rutas.md` (si se indican dos con «o», basta uno); sin permiso redirige a `/`. Ruta inexistente → `/`.
 - El menú lateral y los botones de acción usan la directiva `*appTienePermiso="'CODIGO'"`.
@@ -187,6 +190,7 @@ Actualiza esta lista al terminar cada etapa (marca con [x]):
 - [x] RF1 Autenticación
 - [x] RF2 Usuarios
 - [x] RF3 Estructura
+- [ ] fix/layout-y-mensajes: layout de RF1.2.10 y mensajes de error desde el servicio
 - [ ] RF4 Gestión del catálogo
 - [ ] RF5 Ejemplares
 - [ ] RF6 Consulta del catálogo
