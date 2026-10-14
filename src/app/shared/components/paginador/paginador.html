@@ -1,0 +1,39 @@
+<nav class="flex items-center gap-xs" aria-label="Paginación">
+  <button
+    type="button"
+    class="cursor-pointer px-xs text-subtitulo text-gray-600 disabled:cursor-default disabled:text-gray-400"
+    aria-label="Página anterior"
+    [disabled]="pagina() === 0"
+    (click)="ir(pagina())"
+  >
+    ‹
+  </button>
+  @for (
+    elemento of elementos();
+    track elemento.tipo === 'pagina' ? elemento.numero : elemento.clave
+  ) {
+    @if (elemento.tipo === 'pagina') {
+      @let actual = elemento.numero === pagina() + 1;
+      <button
+        type="button"
+        class="flex size-8 cursor-pointer items-center justify-center rounded-sm text-tabla font-semibold"
+        [class]="actual ? 'bg-brand-accent text-gray-0' : 'text-gray-900 hover:bg-gray-100'"
+        [attr.aria-current]="actual ? 'page' : null"
+        (click)="ir(elemento.numero)"
+      >
+        {{ elemento.numero }}
+      </button>
+    } @else {
+      <span class="text-body text-gray-600">…</span>
+    }
+  }
+  <button
+    type="button"
+    class="cursor-pointer px-xs text-subtitulo text-gray-600 disabled:cursor-default disabled:text-gray-400"
+    aria-label="Página siguiente"
+    [disabled]="pagina() + 1 >= totalPaginas()"
+    (click)="ir(pagina() + 2)"
+  >
+    ›
+  </button>
+</nav>

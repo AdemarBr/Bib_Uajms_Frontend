@@ -1,0 +1,25 @@
+<div class="relative">
+  <select
+    class="w-full cursor-pointer appearance-none rounded-sm border border-gray-300 bg-gray-0 py-sm pr-2xl pl-md text-body focus:border-gray-900 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+    [class.text-gray-600]="indiceActual() < 0"
+    [class.text-gray-900]="indiceActual() >= 0"
+    [attr.aria-label]="nombreAccesible()"
+    [disabled]="deshabilitado()"
+    (change)="seleccionar($any($event.target).value)"
+    (blur)="alTocar()"
+  >
+    @if (etiqueta()) {
+      <option value="-1" [selected]="indiceActual() < 0">{{ etiqueta() }}</option>
+    }
+    @for (opcion of opciones(); track $index) {
+      <option class="text-gray-900" [value]="$index" [selected]="$index === indiceActual()">
+        {{ opcion.etiqueta }}
+      </option>
+    }
+  </select>
+  <span
+    class="pointer-events-none absolute top-1/2 right-md -translate-y-1/2 text-body text-gray-600"
+    aria-hidden="true"
+    >⌄</span
+  >
+</div>

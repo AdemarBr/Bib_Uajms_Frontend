@@ -1,0 +1,40 @@
+<div class="w-full overflow-hidden rounded-sm border border-gray-300">
+  <table class="w-full table-fixed border-collapse">
+    <thead class="bg-gray-100">
+      <tr class="border-b border-gray-300">
+        @for (columna of columnas(); track columna.clave) {
+          <th
+            scope="col"
+            class="py-lg pr-xs text-left text-tabla font-semibold text-gray-600 first:pl-md last:pr-md"
+            [style.width]="columna.ancho"
+          >
+            {{ columna.titulo }}
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (fila of filas(); track $index) {
+        <tr class="border-b border-gray-300 bg-gray-0 last:border-b-0">
+          @for (columna of columnas(); track columna.clave) {
+            <td class="py-lg pr-xs align-middle text-tabla text-gray-900 first:pl-md last:pr-md">
+              @if (plantillas().get(columna.clave); as plantilla) {
+                <ng-container *ngTemplateOutlet="plantilla; context: { $implicit: fila }" />
+              } @else {
+                {{ valor(fila, columna.clave) }}
+              }
+            </td>
+          }
+        </tr>
+      } @empty {
+        @if (mensajeVacio()) {
+          <tr class="bg-gray-0">
+            <td class="px-md py-lg text-tabla text-gray-600" [attr.colspan]="columnas().length">
+              {{ mensajeVacio() }}
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>

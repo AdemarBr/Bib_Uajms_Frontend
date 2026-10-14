@@ -1,0 +1,36 @@
+@if (abierto()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-1000/40">
+    <div
+      class="flex w-[360px] flex-col gap-md rounded-lg bg-gray-0 p-xl shadow-[0px_4px_10px_0px_rgba(0,0,0,0.16)]"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="modal-confirmacion-titulo"
+    >
+      <h2 id="modal-confirmacion-titulo" class="text-subtitulo font-bold text-gray-900">
+        {{ titulo() }}
+      </h2>
+      @if (mensaje()) {
+        <p class="text-tabla text-gray-600">{{ mensaje() }}</p>
+      }
+      <ng-content />
+      <div class="flex justify-end gap-md">
+        <button
+          type="button"
+          class="btn-secundario"
+          [disabled]="procesando()"
+          (click)="alCancelar()"
+        >
+          {{ textoCancelar() }}
+        </button>
+        <button
+          type="button"
+          class="btn-primario"
+          [disabled]="procesando()"
+          (click)="confirmar.emit()"
+        >
+          {{ textoConfirmar() }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
