@@ -54,3 +54,107 @@ export const PERMISOS = {
 } as const;
 
 export type CodigoPermiso = (typeof PERMISOS)[keyof typeof PERMISOS];
+
+const P = PERMISOS;
+
+/**
+ * Módulos de la matriz de docs/permisos.md (columna «Módulo»), en su orden, con sus permisos.
+ * P2.5 y P2.3 muestran los módulos de un rol a partir de sus permisos (RF2.9.4 y RF2.4.4).
+ */
+export const MODULOS_PERMISOS: readonly { modulo: string; permisos: readonly CodigoPermiso[] }[] = [
+  {
+    modulo: 'Usuarios y roles',
+    permisos: [
+      P.USUARIO_REGISTRAR,
+      P.USUARIO_CONSULTAR,
+      P.USUARIO_ACTUALIZAR,
+      P.USUARIO_ASIGNAR_ROL,
+      P.USUARIO_ASIGNAR_BIBLIOTECA,
+      P.USUARIO_CAMBIAR_ESTADO,
+      P.USUARIO_RESTABLECER_PASSWORD,
+      P.PERMISO_CONSULTAR,
+    ],
+  },
+  {
+    modulo: 'Bibliotecas, facultades y carreras',
+    permisos: [
+      P.BIBLIOTECA_REGISTRAR,
+      P.BIBLIOTECA_ACTUALIZAR,
+      P.FACULTAD_REGISTRAR,
+      P.FACULTAD_ACTUALIZAR,
+      P.CARRERA_REGISTRAR,
+      P.CARRERA_ACTUALIZAR,
+      P.ESTRUCTURA_CONSULTAR,
+    ],
+  },
+  {
+    modulo: 'Catálogo de libros',
+    permisos: [
+      P.LIBRO_REGISTRAR,
+      P.LIBRO_CONSULTAR,
+      P.LIBRO_ACTUALIZAR,
+      P.LIBRO_DESACTIVAR,
+      P.LIBRO_IMPORTAR,
+      P.LIBRO_HISTORIAL_CONSULTAR,
+    ],
+  },
+  {
+    modulo: 'Ejemplares',
+    permisos: [
+      P.EJEMPLAR_REGISTRAR,
+      P.EJEMPLAR_CONSULTAR,
+      P.EJEMPLAR_ACTUALIZAR,
+      P.EJEMPLAR_CAMBIAR_ESTADO,
+    ],
+  },
+  {
+    modulo: 'Reservas propias',
+    permisos: [P.RESERVA_REALIZAR, P.RESERVA_PROPIA_CONSULTAR, P.RESERVA_PROPIA_CANCELAR],
+  },
+  {
+    modulo: 'Administración de reservas',
+    permisos: [
+      P.RESERVA_CONSULTAR,
+      P.RESERVA_CONFIRMAR,
+      P.RESERVA_RECHAZAR,
+      P.RESERVA_CANCELAR,
+      P.RESERVA_HISTORIAL_CONSULTAR,
+    ],
+  },
+  {
+    modulo: 'Préstamos y devoluciones',
+    permisos: [
+      P.PRESTAMO_SALA_REGISTRAR,
+      P.PRESTAMO_DOMICILIO_REGISTRAR,
+      P.PRESTAMO_CONSULTAR,
+      P.PRESTAMO_AMPLIAR,
+      P.DEVOLUCION_REGISTRAR,
+      P.DEVOLUCION_HISTORIAL_CONSULTAR,
+    ],
+  },
+  {
+    modulo: 'Tesis',
+    permisos: [
+      P.TESIS_REGISTRAR,
+      P.TESIS_CONSULTAR,
+      P.TESIS_ACTUALIZAR,
+      P.TESIS_DESACTIVAR,
+      P.TESIS_DOCUMENTO_CARGAR,
+      P.TESIS_DOCUMENTO_ACTUALIZAR,
+    ],
+  },
+  { modulo: 'Comunicación: enviar consulta', permisos: [P.MENSAJE_ENVIAR_CONSULTA] },
+  { modulo: 'Comunicación: consultar mensajes', permisos: [P.MENSAJE_CONSULTAR] },
+  { modulo: 'Comunicación: responder', permisos: [P.MENSAJE_RESPONDER] },
+  {
+    modulo: 'Reportes y dashboards',
+    permisos: [P.DASHBOARD_VER, P.REPORTE_GENERAR, P.REPORTE_EXPORTAR],
+  },
+];
+
+/** Módulos (en el orden de la matriz) en los que el rol tiene al menos un permiso. */
+export function modulosDePermisos(codigos: readonly string[]): string[] {
+  return MODULOS_PERMISOS.filter((m) => m.permisos.some((p) => codigos.includes(p))).map(
+    (m) => m.modulo,
+  );
+}

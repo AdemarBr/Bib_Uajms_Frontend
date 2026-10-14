@@ -1,0 +1,33 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-1000/40">
+  <div
+    class="imprimible flex w-[560px] flex-col gap-lg rounded-lg bg-gray-0 px-2xl py-xl shadow-[0px_4px_10px_0px_rgba(0,0,0,0.16)]"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="credenciales-titulo"
+  >
+    <div class="flex items-center justify-between gap-md">
+      <h2 id="credenciales-titulo" class="text-h3 font-bold text-gray-900">
+        Usuario registrado correctamente
+      </h2>
+      <button
+        type="button"
+        class="cursor-pointer text-subtitulo text-gray-600 hover:text-gray-900 print:hidden"
+        aria-label="Cerrar"
+        (click)="cerrar.emit()"
+      >
+        ✕
+      </button>
+    </div>
+    <div class="flex flex-col gap-5 text-body text-gray-600">
+      <p>Se creó el usuario interno y se generó automáticamente sus credenciales.</p>
+      <div>
+        <p>Usuario: {{ nombreUsuario() }}</p>
+        <p>Contraseña: {{ contrasena() }}</p>
+      </div>
+    </div>
+    <div class="flex justify-end gap-md print:hidden">
+      <button type="button" class="btn-secundario" (click)="imprimir()">Imprimir</button>
+      <button type="button" class="btn-primario" (click)="cerrar.emit()">Cerrar</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="flex flex-col gap-5">
+  <h1 class="text-h2 text-gray-900">Consultar permisos por rol</h1>
+
+  @for (rol of roles(); track rol.idRol) {
+    <section class="flex w-fit flex-col gap-2.5 rounded-md border border-gray-300 bg-gray-0 p-lg">
+      <h2 class="text-dato font-semibold text-gray-900">{{ rol.nombre }}</h2>
+      @if (rol.modulos.length > 0) {
+        <ul class="flex flex-wrap gap-sm">
+          @for (modulo of rol.modulos; track modulo) {
+            <li
+              class="rounded-full border border-gray-300 bg-gray-100 px-sm py-xs text-caption whitespace-nowrap text-gray-900"
+            >
+              {{ modulo }}
+            </li>
+          }
+        </ul>
+      } @else {
+        <!-- RF2.9, curso alternativo -->
+        <p class="text-caption text-gray-600">
+          Este rol todavía no tiene funcionalidades habilitadas.
+        </p>
+      }
+    </section>
+  }
+</div>

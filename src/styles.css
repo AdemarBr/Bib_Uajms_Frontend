@@ -96,3 +96,23 @@
     @apply w-full rounded-sm border border-gray-300 bg-gray-0 px-md py-sm text-body text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:outline-none disabled:bg-gray-100 disabled:text-gray-400;
   }
 }
+
+/* Comprobantes impresos (credenciales de P2.1 y P2.4): al imprimir solo se ve el elemento `.imprimible`.
+   Lo que no debe salir en papel dentro de él lleva `print:hidden`. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .imprimible,
+  .imprimible * {
+    visibility: visible;
+  }
+
+  .imprimible {
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-shadow: none;
+  }
+}

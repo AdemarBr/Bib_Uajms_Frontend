@@ -1,6 +1,8 @@
 <div
-  class="flex w-80 flex-col gap-xs rounded-sm border border-gray-500 bg-gray-100 p-md"
-  role="alert"
+  class="flex w-full max-w-80 flex-col gap-xs rounded-sm border bg-gray-100 p-md"
+  [class.border-gray-500]="tono() === 'error'"
+  [class.border-gray-300]="tono() === 'exito'"
+  [attr.role]="tono() === 'error' ? 'alert' : 'status'"
 >
   <p class="text-body-strong text-gray-900">{{ titulo() }}</p>
   @if (mensaje()) {

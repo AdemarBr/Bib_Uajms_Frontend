@@ -36,6 +36,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/autenticacion/autenticacion.routes').then((m) => m.RUTAS_PERFIL),
       },
+      {
+        path: 'usuarios',
+        loadChildren: () =>
+          import('./features/usuarios/usuarios.routes').then((m) => m.RUTAS_USUARIOS),
+      },
     ],
   },
   { path: '**', redirectTo: '' },
