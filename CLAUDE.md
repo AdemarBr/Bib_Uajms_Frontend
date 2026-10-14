@@ -169,6 +169,16 @@ Reglas:
 Actualiza esta lista al terminar cada etapa (marca con [x]):
 
 - [x] Base: Tailwind con tokens, layout, menú, login simulado, guards, directiva, componentes compartidos
-- [x] RF1 Autenticación · [ ] RF2 Usuarios · [ ] RF3 Estructura · [ ] RF4 Gestión del catálogo · [ ] RF5 Ejemplares
-- [ ] RF6 Consulta del catálogo · [ ] RF7 Reservas propias · [ ] RF8 Administrar reservas · [ ] RF9 Préstamos
-- [ ] RF10 Gestión de tesis · [ ] RF11 Consulta de tesis · [ ] RF12 Comunicación · [ ] RF13 Reportes y dashboards
+- [x] RF1 Autenticación
+- [ ] RF2 Usuarios
+- [ ] RF3 Estructura
+- [ ] RF4 Gestión del catálogo
+- [ ] RF5 Ejemplares
+- [ ] RF6 Consulta del catálogo
+- [ ] RF7 Reservas propias
+- [ ] RF8 Administrar reservas
+- [ ] RF9 Préstamos
+- [ ] RF10 Gestión de tesis
+- [ ] RF11 Consulta de tesis
+- [ ] RF12 Comunicación
+- [ ] RF13 Reportes y dashboards
