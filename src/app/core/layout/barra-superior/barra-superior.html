@@ -1,0 +1,43 @@
+<header class="flex items-center gap-xl border-b border-gray-300 bg-gray-0 px-xl py-md">
+  <a routerLink="/" class="text-subtitulo font-bold whitespace-nowrap text-gray-900"
+    >Biblioteca UAJMS</a
+  >
+  <nav
+    class="flex gap-lg text-body-strong whitespace-nowrap text-gray-900"
+    aria-label="Consulta pública"
+  >
+    <a routerLink="/catalogo">Catálogo</a>
+    <a routerLink="/tesis">Tesis</a>
+  </nav>
+  <div class="flex-1"></div>
+
+  @if (sesion.usuario(); as usuario) {
+    <div class="flex items-center gap-md">
+      <span class="relative size-7 shrink-0 text-gray-600" aria-hidden="true">
+        <svg lucideCircleUser [size]="28" [strokeWidth]="1.3"></svg>
+        <span class="absolute top-0 right-0 size-2 rounded-full bg-brand-accent"></span>
+      </span>
+      <a routerLink="/perfil" class="text-body-strong whitespace-nowrap text-gray-900">{{
+        usuario.nombre
+      }}</a>
+      <button
+        type="button"
+        class="cursor-pointer text-body whitespace-nowrap text-gray-600 hover:text-gray-900"
+        (click)="confirmandoCierre.set(true)"
+      >
+        Cerrar sesión
+      </button>
+    </div>
+  } @else {
+    <a routerLink="/iniciar-sesion" class="btn-primario">Iniciar sesión</a>
+  }
+</header>
+
+<app-modal-confirmacion
+  titulo="¿Cerrar sesión?"
+  mensaje="Se finalizará tu sesión activa y volverás a la pantalla de inicio."
+  [abierto]="confirmandoCierre()"
+  [procesando]="cerrando()"
+  (cancelar)="confirmandoCierre.set(false)"
+  (confirmar)="cerrarSesion()"
+/>

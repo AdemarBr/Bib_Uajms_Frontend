@@ -1,0 +1,38 @@
+<nav
+  class="flex w-[260px] shrink-0 flex-col gap-xs bg-brand-dark px-sm py-lg"
+  aria-label="Menú principal"
+>
+  @for (modulo of modulos(); track modulo.texto) {
+    @let abierto = moduloAbierto() === modulo.texto;
+    <button
+      type="button"
+      class="flex w-full cursor-pointer items-center gap-sm rounded-sm px-md py-sm text-left text-body text-gray-0 hover:bg-brand-dark-alt"
+      [class.bg-brand-dark-alt]="modulo.activo"
+      [class.font-semibold]="modulo.activo"
+      [attr.aria-expanded]="abierto"
+      (click)="alternar(modulo.texto)"
+    >
+      <svg [lucideIcon]="modulo.icono" [size]="16" class="shrink-0"></svg>
+      <span class="flex-1">{{ modulo.texto }}</span>
+    </button>
+
+    @if (abierto) {
+      @for (opcion of modulo.opciones; track opcion.ruta) {
+        @if (opcion.encabezado) {
+          <p class="py-[5px] pl-2xl text-mini font-semibold text-menu-grupo">
+            {{ opcion.encabezado }}
+          </p>
+        }
+        <a
+          class="block rounded-sm py-sm pr-md pl-2xl text-body text-gray-0 hover:bg-brand-dark-alt"
+          [class.bg-brand-dark-alt]="opcion.activa"
+          [class.font-semibold]="opcion.activa"
+          [attr.aria-current]="opcion.activa ? 'page' : null"
+          [routerLink]="opcion.enlace"
+        >
+          {{ opcion.texto }}
+        </a>
+      }
+    }
+  }
+</nav>
