@@ -53,7 +53,7 @@ Este repositorio contiene solo el frontend. El backend (Spring Boot) está en ot
 - Sin pruebas automatizadas en esta iteración: no crees archivos `.spec.ts`; usa siempre `ng generate ... --skip-tests`.
 - Nada de `localStorage`, `sessionStorage` ni cookies escritas desde el frontend.
 - Angular 22 instalado: zoneless y OnPush ya vienen por defecto (no se declaran). `ng g service` genera `@Service()` (se provee solo en la raíz); se mantiene así. `provideRouter` usa `withComponentInputBinding()`: los parámetros de ruta y de consulta (`:id`, `?idReserva`) llegan como `input()` de la página.
-- Formato con Prettier (`npx prettier --write "src/**/*.{ts,html,css}"`, configuración en `.prettierrc`).
+- Formato con Prettier (`npx prettier --write --end-of-line auto "src/**/*.{ts,html,css}"`, configuración en `.prettierrc`; `--end-of-line auto` respeta el CRLF que deja Git en Windows).
 
 ## Base ya construida (reutilizar, no duplicar)
 
