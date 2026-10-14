@@ -16,6 +16,14 @@ Datos falsos que viven en el frontend (`core/auth/usuarios.mock.ts`). Sirven par
 | Administrador general del sistema | `admin.general` | `demo123` | Ademar Mendez, Biblioteca Central (como en el ejemplo de `LoginResponse`); todos los permisos |
 | Bibliotecario (inactivo) | `bibliotecario.inactivo` | `demo123` | Hugo Torrez; usuario desactivado: su login debe fallar con el mismo 401 genérico |
 
+## Perfil (P1.2)
+
+Los datos de `GET /auth/perfil` están en `features/autenticacion/data-access/perfil.mock.ts`:
+
+- Internos: correo `<usuario>@uajms.edu.bo` (como `admin.general@uajms.edu.bo` en Figma) y sin RU.
+- Académicos: sin correo (la fila no se muestra) y con su RU. Estudiante Pérez y Docente Gómez: Facultad de Ciencias y Tecnología / Ingeniería de Sistemas; Académico Vargas: sin facultad ni carrera («—»).
+- Sección «Biblioteca / facultad relacionada»: Administrador general → «Facultad / Carrera: No aplica — acceso a todas» (Figma); académicos → «Facultad / Carrera: <facultad> / <carrera>»; internos con biblioteca → «Biblioteca: <nombre>»; internos sin biblioteca (Responsable de tesis) → «Biblioteca: No aplica».
+
 ## Servicio de validación institucional simulado
 
 En el prototipo, la validación por RU (préstamos P9.1 y P9.3) consulta una lista de RU vigentes dentro del frontend (`core/auth/servicio-institucional.mock.ts`):

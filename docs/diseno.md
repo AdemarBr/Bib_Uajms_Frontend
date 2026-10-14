@@ -37,6 +37,7 @@ Tamaños que los componentes de Figma usan sin estilo de texto propio (interline
 
 | Uso en Figma | Tamaño | Token |
 |---|---|---|
+| Título «Iniciar sesión» del panel de P1.1 | 20 | `--text-titulo-panel` |
 | Título «Biblioteca UAJMS» de la barra superior, título del modal, flechas del paginador | 16 | `--text-subtitulo` |
 | Valores de datos en P1.2 | 15 | `--text-dato` |
 | Celdas de tabla, mensaje del modal, números del paginador | 13 | `--text-tabla` |
@@ -47,6 +48,7 @@ Tamaños que los componentes de Figma usan sin estilo de texto propio (interline
 - Espaciado: xs 4, sm 8, md 12, lg 16, xl 24, 2xl 32, 3xl 48 (px).
 - Radios: none 0, sm 4, md 8, lg 12, full 999 (px).
 - En Tailwind: `p-lg`, `gap-sm`, `rounded-md`, `text-h2`, `text-body-strong`, `bg-brand-accent`, `text-gray-600`, etc. (definidos con `@theme` en `src/styles.css`; la escala `gray` de Tailwind se reemplaza por la de Figma).
+- Alerta (Tone=Error): `app-alerta`, recuadro de 320 px con fondo gray/100, borde gray/500, título body-strong y mensaje caption.
 - Botones y campos: clases `.btn-primario`, `.btn-secundario` y `.campo-texto` en `src/styles.css` (Button Primary/Secondary e Input/Text de Figma).
 
 ## Pantalla

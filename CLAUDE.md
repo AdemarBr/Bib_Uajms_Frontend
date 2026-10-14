@@ -60,7 +60,7 @@ Este repositorio contiene solo el frontend. El backend (Spring Boot) está en ot
 - Rutas raíz en `app.routes.ts`: las públicas van dentro de `LayoutPublico` (barra superior + pie) y las de sesión o permiso dentro de `LayoutPrivado` (además, menú lateral; ya tiene `sesionGuard`). Cada feature agrega sus rutas con `loadChildren` y `permisoGuard` + `data: { permisos: [PERMISOS.X] }` (lista = basta uno).
 - Códigos de permiso: `core/config/permisos.ts` (`PERMISOS`, tipo `CodigoPermiso`). Constantes: `core/config/constantes.ts`.
 - Menú lateral: `core/layout/menu-lateral/opciones-menu.ts` (textos de Figma, rutas y permisos de `docs/rutas.md`). Se despliega el módulo de la pantalla actual. Las opciones cuya pantalla necesita un id (p. ej. «Actualizar datos de usuario») llevan a la pantalla desde donde se elige el registro (`destino`) y se marcan activas cuando se está en la pantalla con id.
-- Componentes compartidos (`shared/components/`): `app-tabla` (columnas + filas; plantillas por columna con `<ng-template appCelda="clave" let-fila>`; `mensajeVacio`), `app-paginador` (`pagina` desde 0, `tamanio`, `totalElementos`, salida `cambio`), `app-modal-confirmacion` (`titulo`, `mensaje`, `textoCancelar`, `textoConfirmar`, `abierto`, `procesando`; contenido proyectado para campos como «Motivo (opcional)»), `app-select` (ControlValueAccessor; `opciones` `{valor, etiqueta}`, `etiqueta` = texto sin valor elegido), `app-badge-estado` (`texto`), `app-interruptor` (`activo`, `etiqueta`; emite `cambio` sin cambiar solo, para confirmar antes).
+- Componentes compartidos (`shared/components/`): `app-tabla` (columnas + filas; plantillas por columna con `<ng-template appCelda="clave" let-fila>`; `mensajeVacio`), `app-paginador` (`pagina` desde 0, `tamanio`, `totalElementos`, salida `cambio`), `app-modal-confirmacion` (`titulo`, `mensaje`, `textoCancelar`, `textoConfirmar`, `abierto`, `procesando`; contenido proyectado para campos como «Motivo (opcional)»), `app-select` (ControlValueAccessor; `opciones` `{valor, etiqueta}`, `etiqueta` = texto sin valor elegido), `app-badge-estado` (`texto`), `app-interruptor` (`activo`, `etiqueta`; emite `cambio` sin cambiar solo, para confirmar antes), `app-alerta` (`titulo`, `mensaje`; Alerta Tone=Error de Figma).
 - Botones y campos: clases `.btn-primario`, `.btn-secundario`, `.campo-texto` de `src/styles.css`.
 - Modelos comunes en `shared/models/`: `Pagina<T>`, `ErrorRespuesta`, `LoginRequest`, `LoginResponse` (+ `UsuarioSesion`, `TipoUsuario`) y `UsuarioVerificadoResponse` (lo devuelve `validarRuSimulado` de `core/auth/servicio-institucional.mock.ts`).
 
@@ -120,6 +120,8 @@ features/<feature>/
 - El servicio `Sesion` (`core/auth/sesion.ts`) es el único que llama a `loginSimulado`. Guarda la sesión **solo en memoria**, en señales (`usuario`, `rol`, `permisos`, `token`), y expone `iniciarSesion()`, `cerrarSesion()`, `tienePermiso(codigo)` y `haySesion` (computed). Al recargar la página la sesión se pierde y hay que volver a iniciar sesión: es lo esperado en el prototipo.
 - La validación por RU de los préstamos (P9.1 y P9.3) usa `servicio-institucional.mock.ts` y devuelve `UsuarioVerificadoResponse` o un `ErrorRespuesta` 404 si el RU no está vigente.
 - Las contraseñas de prueba existen solo en el prototipo; nunca van a la base de datos ni al backend.
+- P1.1 (decisión del estudiante): ante cualquier error de login la pantalla muestra el texto de Figma, «No se pudo iniciar sesión» / «Usuario o contraseña incorrectos.», y no el `titulo`/`detalle` del 401 (que se mantiene igual en el contrato y en `loginSimulado`). El campo de usuario tiene el placeholder «Usuario o RU». Tras un login correcto vuelve a `returnUrl` (solo rutas internas) o, si no hay, a `/`.
+- Perfil (P1.2): servicio `Perfil` (`features/autenticacion/data-access/perfil.ts`, `obtenerPerfil()` = `GET /auth/perfil`); qué se muestra según el usuario está en `docs/usuarios-falsos.md` («Perfil (P1.2)»).
 
 ## Guards, menú y permisos
 
@@ -167,6 +169,6 @@ Reglas:
 Actualiza esta lista al terminar cada etapa (marca con [x]):
 
 - [x] Base: Tailwind con tokens, layout, menú, login simulado, guards, directiva, componentes compartidos
-- [ ] RF1 Autenticación · [ ] RF2 Usuarios · [ ] RF3 Estructura · [ ] RF4 Gestión del catálogo · [ ] RF5 Ejemplares
+- [x] RF1 Autenticación · [ ] RF2 Usuarios · [ ] RF3 Estructura · [ ] RF4 Gestión del catálogo · [ ] RF5 Ejemplares
 - [ ] RF6 Consulta del catálogo · [ ] RF7 Reservas propias · [ ] RF8 Administrar reservas · [ ] RF9 Préstamos
 - [ ] RF10 Gestión de tesis · [ ] RF11 Consulta de tesis · [ ] RF12 Comunicación · [ ] RF13 Reportes y dashboards
