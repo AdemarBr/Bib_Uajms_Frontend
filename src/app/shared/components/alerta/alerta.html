@@ -1,0 +1,9 @@
+<div
+  class="flex w-80 flex-col gap-xs rounded-sm border border-gray-500 bg-gray-100 p-md"
+  role="alert"
+>
+  <p class="text-body-strong text-gray-900">{{ titulo() }}</p>
+  @if (mensaje()) {
+    <p class="text-caption text-gray-600">{{ mensaje() }}</p>
+  }
+</div>

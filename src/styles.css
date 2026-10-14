@@ -53,6 +53,7 @@
   --text-label--font-weight: 600;
 
   /* Tamaños usados en componentes de Figma sin estilo de texto propio */
+  --text-titulo-panel: 20px;
   --text-subtitulo: 16px;
   --text-dato: 15px;
   --text-tabla: 13px;
