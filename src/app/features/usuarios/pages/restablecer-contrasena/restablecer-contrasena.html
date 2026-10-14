@@ -1,1 +1,72 @@
-<p>restablecer-contrasena works!</p>
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Restablecer contraseña de usuario interno</h1>
+
+  <section
+    class="imprimible flex w-[350px] flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+  >
+    <form class="flex flex-col gap-lg print:hidden" (submit)="$event.preventDefault(); buscar()">
+      <label for="criterio" class="text-label text-gray-600">Buscar cuenta del empleado</label>
+      <div class="flex gap-sm">
+        <input
+          id="criterio"
+          type="search"
+          class="campo-texto min-w-0 flex-1"
+          placeholder="Nombre o usuario…"
+          [formControl]="criterio"
+        />
+        <button type="submit" class="btn-secundario shrink-0" [disabled]="buscando()">
+          Buscar
+        </button>
+      </div>
+    </form>
+
+    @if (coincidencias(); as lista) {
+      @if (lista.length > 0) {
+        <ul
+          class="flex max-h-60 flex-col overflow-y-auto rounded-sm border border-gray-300 print:hidden"
+          aria-label="Cuentas encontradas"
+        >
+          @for (usuario of lista; track usuario.idUsuario) {
+            <li class="border-b border-gray-300 last:border-b-0">
+              <button
+                type="button"
+                class="w-full cursor-pointer px-md py-sm text-left text-body text-gray-900 hover:bg-gray-100"
+                (click)="seleccionar(usuario)"
+              >
+                {{ usuario.nombre }} — {{ usuario.nombreUsuario }}
+              </button>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-caption text-gray-600 print:hidden" aria-live="polite">
+          Ningún usuario cumple los criterios seleccionados.
+        </p>
+      }
+    }
+
+    @if (seleccionado(); as u) {
+      <p class="text-label text-gray-600">Cuenta seleccionada</p>
+      <p class="text-body text-gray-900">{{ u.nombre }} — {{ u.nombreUsuario }}</p>
+      <button
+        type="button"
+        class="btn-primario w-full print:hidden"
+        [disabled]="restableciendo()"
+        (click)="restablecer()"
+      >
+        Restablecer contraseña
+      </button>
+
+      @if (contrasenaNueva(); as c) {
+        <app-alerta
+          tono="exito"
+          titulo="Contraseña restablecida"
+          [mensaje]="'Nueva contraseña: ' + c"
+        />
+        <button type="button" class="btn-secundario w-full print:hidden" (click)="imprimir()">
+          Imprimir
+        </button>
+      }
+    }
+  </section>
+</div>

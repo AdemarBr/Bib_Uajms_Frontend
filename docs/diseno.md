@@ -48,7 +48,9 @@ Tamaños que los componentes de Figma usan sin estilo de texto propio (interline
 - Espaciado: xs 4, sm 8, md 12, lg 16, xl 24, 2xl 32, 3xl 48 (px).
 - Radios: none 0, sm 4, md 8, lg 12, full 999 (px).
 - En Tailwind: `p-lg`, `gap-sm`, `rounded-md`, `text-h2`, `text-body-strong`, `bg-brand-accent`, `text-gray-600`, etc. (definidos con `@theme` en `src/styles.css`; la escala `gray` de Tailwind se reemplaza por la de Figma).
-- Alerta (Tone=Error): `app-alerta`, recuadro de 320 px con fondo gray/100, borde gray/500, título body-strong y mensaje caption.
+- Alerta: `app-alerta`, recuadro de hasta 320 px con fondo gray/100, título body-strong y mensaje caption; borde gray/500 (Tone=Error) o gray/300 (Tone=Success, P2.4).
+- Chip (P2.5): fondo gray/100, borde gray/300, radio full, padding 4 × 8, texto caption gray/900. Tarjeta de rol: borde gray/300, radio md, padding lg, título 15 Semi Bold (`--text-dato`).
+- Formularios de RF2: tarjeta con borde gray/300, radio lg, padding 2xl y separación lg (anchos de Figma: P2.1 1050 px, P2.3 626 px, P2.4 350 px); selects de 240 px. Modal «Usuario registrado correctamente»: 560 px, padding 24 × 32, título 18 Bold.
 - Botones y campos: clases `.btn-primario`, `.btn-secundario` y `.campo-texto` en `src/styles.css` (Button Primary/Secondary e Input/Text de Figma).
 
 ## Pantalla

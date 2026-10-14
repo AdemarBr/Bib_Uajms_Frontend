@@ -170,7 +170,7 @@ export const USUARIOS_MOCK: UsuarioMock[] = [
     activo: true,
     rol: 'Administrador general del sistema',
     tipoUsuario: 'interno',
-    ...CENTRAL,
+    ...SIN_BIBLIOTECA,
     ...SIN_CARRERA,
   },
   {

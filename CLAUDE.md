@@ -60,7 +60,7 @@ Este repositorio contiene solo el frontend. El backend (Spring Boot) está en ot
 - Rutas raíz en `app.routes.ts`: las públicas van dentro de `LayoutPublico` (barra superior + pie) y las de sesión o permiso dentro de `LayoutPrivado` (además, menú lateral; ya tiene `sesionGuard`). Cada feature agrega sus rutas con `loadChildren` y `permisoGuard` + `data: { permisos: [PERMISOS.X] }` (lista = basta uno).
 - Códigos de permiso: `core/config/permisos.ts` (`PERMISOS`, tipo `CodigoPermiso`). Constantes: `core/config/constantes.ts`.
 - Menú lateral: `core/layout/menu-lateral/opciones-menu.ts` (textos de Figma, rutas y permisos de `docs/rutas.md`). Se despliega el módulo de la pantalla actual. Las opciones cuya pantalla necesita un id (p. ej. «Actualizar datos de usuario») llevan a la pantalla desde donde se elige el registro (`destino`) y se marcan activas cuando se está en la pantalla con id.
-- Componentes compartidos (`shared/components/`): `app-tabla` (columnas + filas; plantillas por columna con `<ng-template appCelda="clave" let-fila>`; `mensajeVacio`), `app-paginador` (`pagina` desde 0, `tamanio`, `totalElementos`, salida `cambio`), `app-modal-confirmacion` (`titulo`, `mensaje`, `textoCancelar`, `textoConfirmar`, `abierto`, `procesando`; contenido proyectado para campos como «Motivo (opcional)»), `app-select` (ControlValueAccessor; `opciones` `{valor, etiqueta}`, `etiqueta` = texto sin valor elegido), `app-badge-estado` (`texto`), `app-interruptor` (`activo`, `etiqueta`; emite `cambio` sin cambiar solo, para confirmar antes), `app-alerta` (`titulo`, `mensaje`; Alerta Tone=Error de Figma).
+- Componentes compartidos (`shared/components/`): `app-tabla` (columnas + filas; plantillas por columna con `<ng-template appCelda="clave" let-fila>`; `mensajeVacio`), `app-paginador` (`pagina` desde 0, `tamanio`, `totalElementos`, salida `cambio`), `app-modal-confirmacion` (`titulo`, `mensaje`, `textoCancelar`, `textoConfirmar`, `abierto`, `procesando`; contenido proyectado para campos como «Motivo (opcional)»), `app-select` (ControlValueAccessor; `opciones` `{valor, etiqueta}`, `etiqueta` = texto sin valor elegido), `app-badge-estado` (`texto`), `app-interruptor` (`activo`, `etiqueta`; emite `cambio` sin cambiar solo, para confirmar antes), `app-alerta` (`titulo`, `mensaje`, `tono` `'error'` | `'exito'`; Alerta Tone=Error y Tone=Success de Figma).
 - Botones y campos: clases `.btn-primario`, `.btn-secundario`, `.campo-texto` de `src/styles.css`.
 - Modelos comunes en `shared/models/`: `Pagina<T>`, `ErrorRespuesta`, `LoginRequest`, `LoginResponse` (+ `UsuarioSesion`, `TipoUsuario`) y `UsuarioVerificadoResponse` (lo devuelve `validarRuSimulado` de `core/auth/servicio-institucional.mock.ts`).
 
@@ -121,6 +121,13 @@ features/<feature>/
 - La validación por RU de los préstamos (P9.1 y P9.3) usa `servicio-institucional.mock.ts` y devuelve `UsuarioVerificadoResponse` o un `ErrorRespuesta` 404 si el RU no está vigente.
 - Las contraseñas de prueba existen solo en el prototipo; nunca van a la base de datos ni al backend.
 - P1.1 (decisión del estudiante): ante cualquier error de login la pantalla muestra el texto de Figma, «No se pudo iniciar sesión» / «Usuario o contraseña incorrectos.», y no el `titulo`/`detalle` del 401 (que se mantiene igual en el contrato y en `loginSimulado`). El campo de usuario tiene el placeholder «Usuario o RU». Tras un login correcto vuelve a `returnUrl` (solo rutas internas) o, si no hay, a `/`.
+- RF2 (decisiones del estudiante):
+  - P2.5 y la descripción del rol en P2.3 muestran **módulos**, no permisos: se calculan con `modulosDePermisos()` (`core/config/permisos.ts`, `MODULOS_PERMISOS` = columna «Módulo» de `docs/permisos.md`). Se muestran los 8 roles y se sigue la matriz, no los chips de Figma. No hay campo `descripcion` en el contrato.
+  - Biblioteca responsable obligatoria para Bibliotecario, Catalogador y Administrador de biblioteca (`ROLES_CON_BIBLIOTECA` en `core/config/constantes.ts`); para Administrador general y Responsable de tesis queda sin asignar y deshabilitada con «No aplica».
+  - P2.2: el nombre enlaza a `/usuarios/:id/editar` solo para internos; los académicos no tienen enlace pero sí interruptor de estado. Tabla vacía sin filtros: «No hay usuarios internos registrados.» + botón «Registrar usuario interno»; sin resultados: «Ningún usuario cumple los criterios seleccionados.» + «Limpiar filtros». «Guardar cambios» de P2.3 vuelve a P2.2 sin mensaje.
+  - P2.3 muestra la línea «El nombre de usuario no puede modificarse» (RF2.3.4). P2.4 lista las coincidencias (solo internos) bajo el buscador y no tiene modal de confirmación.
+  - Comprobantes: «Imprimir» llama a `window.print()`; la clase global `.imprimible` (`src/styles.css`) hace que solo ese elemento salga en papel, y lo que no debe imprimirse lleva `print:hidden`.
+  - La lógica de formulario común de P2.1 y P2.3 está en `features/usuarios/formulario-usuario.ts`.
 - Perfil (P1.2): servicio `Perfil` (`features/autenticacion/data-access/perfil.ts`, `obtenerPerfil()` = `GET /auth/perfil`); qué se muestra según el usuario está en `docs/usuarios-falsos.md` («Perfil (P1.2)»).
 
 ## Guards, menú y permisos
@@ -170,7 +177,7 @@ Actualiza esta lista al terminar cada etapa (marca con [x]):
 
 - [x] Base: Tailwind con tokens, layout, menú, login simulado, guards, directiva, componentes compartidos
 - [x] RF1 Autenticación
-- [ ] RF2 Usuarios
+- [x] RF2 Usuarios
 - [ ] RF3 Estructura
 - [ ] RF4 Gestión del catálogo
 - [ ] RF5 Ejemplares

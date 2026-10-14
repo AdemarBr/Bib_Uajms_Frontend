@@ -1,1 +1,83 @@
-<p>registrar-usuario works!</p>
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Registrar usuario interno</h1>
+
+  <form
+    class="flex w-[1050px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    novalidate
+    [formGroup]="formulario"
+    (ngSubmit)="guardar()"
+  >
+    <div class="flex flex-col gap-xs">
+      <label for="nombre" class="text-label text-gray-600">Nombre *</label>
+      <input
+        id="nombre"
+        type="text"
+        class="campo-texto"
+        placeholder="Nombre completo del empleado"
+        formControlName="nombre"
+        [attr.aria-invalid]="!!error('nombre')"
+      />
+      @if (error('nombre'); as e) {
+        <p class="text-label text-gray-900">{{ e }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <label for="correo" class="text-label text-gray-600">Correo institucional (opcional)</label>
+      <input
+        id="correo"
+        type="email"
+        class="campo-texto"
+        placeholder="nombre@uajms.edu.bo"
+        formControlName="correo"
+        [attr.aria-invalid]="!!error('correo')"
+      />
+      @if (error('correo'); as e) {
+        <p class="text-label text-gray-900">{{ e }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <span class="text-label text-gray-600">Rol inicial</span>
+      <app-select
+        class="w-60"
+        etiqueta="Seleccionar rol…"
+        nombreAccesible="Rol inicial"
+        formControlName="idRol"
+        [opciones]="opcionesRol()"
+      />
+      @if (error('idRol'); as e) {
+        <p class="text-label text-gray-900">{{ e }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <span class="text-label text-gray-600">Biblioteca responsable</span>
+      <app-select
+        class="w-60"
+        nombreAccesible="Biblioteca responsable"
+        formControlName="idBiblioteca"
+        [etiqueta]="bibliotecaNoAplica() ? 'No aplica' : 'Seleccionar biblioteca…'"
+        [opciones]="opcionesBiblioteca()"
+      />
+      @if (error('idBiblioteca'); as e) {
+        <p class="text-label text-gray-900">{{ e }}</p>
+      }
+    </div>
+
+    <p class="text-caption text-gray-600">
+      El usuario y la contraseña se generan automáticamente al guardar y se muestran una sola vez en
+      pantalla al Administrador general, quien los entrega en persona al empleado.
+    </p>
+
+    <button type="submit" class="btn-primario w-full" [disabled]="enviando()">Guardar</button>
+  </form>
+</div>
+
+@if (credenciales(); as c) {
+  <app-credenciales-generadas
+    [nombreUsuario]="c.usuario.nombreUsuario"
+    [contrasena]="c.contrasenaGenerada"
+    (cerrar)="cerrarCredenciales()"
+  />
+}

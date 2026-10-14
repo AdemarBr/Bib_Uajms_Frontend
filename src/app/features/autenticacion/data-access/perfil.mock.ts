@@ -97,7 +97,7 @@ export const PERFILES_MOCK: PerfilResponse[] = [
     ru: null,
     rolNombre: 'Administrador general del sistema',
     tipoUsuario: 'interno',
-    bibliotecaNombre: 'Biblioteca Central',
+    bibliotecaNombre: null,
     facultadNombre: null,
     carreraNombre: null,
   },

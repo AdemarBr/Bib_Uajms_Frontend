@@ -1,1 +1,78 @@
-<p>actualizar-usuario works!</p>
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Actualizar datos de usuario</h1>
+
+  @if (cargado()) {
+    <form
+      class="flex w-[626px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+      novalidate
+      [formGroup]="formulario"
+      (ngSubmit)="guardar()"
+    >
+      <!-- RF2.3.4 -->
+      <p class="text-caption text-gray-600">El nombre de usuario no puede modificarse</p>
+
+      <div class="flex flex-col gap-xs">
+        <label for="nombre" class="text-label text-gray-600">Nombre</label>
+        <input
+          id="nombre"
+          type="text"
+          class="campo-texto border-gray-500"
+          formControlName="nombre"
+          [attr.aria-invalid]="!!error('nombre')"
+        />
+        @if (error('nombre'); as e) {
+          <p class="text-label text-gray-900">{{ e }}</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label for="correo" class="text-label text-gray-600">Correo institucional</label>
+        <input
+          id="correo"
+          type="email"
+          class="campo-texto border-gray-500"
+          formControlName="correo"
+          [attr.aria-invalid]="!!error('correo')"
+        />
+        @if (error('correo'); as e) {
+          <p class="text-label text-gray-900">{{ e }}</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <span class="text-label text-gray-600">Rol</span>
+        <app-select
+          class="w-60"
+          nombreAccesible="Rol"
+          formControlName="idRol"
+          [opciones]="opcionesRol()"
+        />
+        @if (error('idRol'); as e) {
+          <p class="text-label text-gray-900">{{ e }}</p>
+        }
+      </div>
+
+      @if (descripcionRol(); as d) {
+        <p class="text-caption text-gray-600">{{ d }}</p>
+      }
+
+      <div class="flex flex-col gap-xs">
+        <span class="text-label text-gray-600">Biblioteca responsable</span>
+        <app-select
+          class="w-60"
+          nombreAccesible="Biblioteca responsable"
+          formControlName="idBiblioteca"
+          [etiqueta]="bibliotecaNoAplica() ? 'No aplica' : 'Seleccionar biblioteca…'"
+          [opciones]="opcionesBiblioteca()"
+        />
+        @if (error('idBiblioteca'); as e) {
+          <p class="text-label text-gray-900">{{ e }}</p>
+        }
+      </div>
+
+      <button type="submit" class="btn-primario w-full" [disabled]="enviando()">
+        Guardar cambios
+      </button>
+    </form>
+  }
+</div>
