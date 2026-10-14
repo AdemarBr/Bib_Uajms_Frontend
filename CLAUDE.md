@@ -52,6 +52,17 @@ Este repositorio contiene solo el frontend. El backend (Spring Boot) está en ot
 - Archivos y carpetas en kebab-case, con los nombres que genera Angular CLI. Nombres del dominio en español (`listarLibros`, `fechaLimiteDevolucion`); términos del framework en inglés.
 - Sin pruebas automatizadas en esta iteración: no crees archivos `.spec.ts`; usa siempre `ng generate ... --skip-tests`.
 - Nada de `localStorage`, `sessionStorage` ni cookies escritas desde el frontend.
+- Angular 22 instalado: zoneless y OnPush ya vienen por defecto (no se declaran). `ng g service` genera `@Service()` (se provee solo en la raíz); se mantiene así. `provideRouter` usa `withComponentInputBinding()`: los parámetros de ruta y de consulta (`:id`, `?idReserva`) llegan como `input()` de la página.
+- Formato con Prettier (`npx prettier --write "src/**/*.{ts,html,css}"`, configuración en `.prettierrc`).
+
+## Base ya construida (reutilizar, no duplicar)
+
+- Rutas raíz en `app.routes.ts`: las públicas van dentro de `LayoutPublico` (barra superior + pie) y las de sesión o permiso dentro de `LayoutPrivado` (además, menú lateral; ya tiene `sesionGuard`). Cada feature agrega sus rutas con `loadChildren` y `permisoGuard` + `data: { permisos: [PERMISOS.X] }` (lista = basta uno).
+- Códigos de permiso: `core/config/permisos.ts` (`PERMISOS`, tipo `CodigoPermiso`). Constantes: `core/config/constantes.ts`.
+- Menú lateral: `core/layout/menu-lateral/opciones-menu.ts` (textos de Figma, rutas y permisos de `docs/rutas.md`). Se despliega el módulo de la pantalla actual. Las opciones cuya pantalla necesita un id (p. ej. «Actualizar datos de usuario») llevan a la pantalla desde donde se elige el registro (`destino`) y se marcan activas cuando se está en la pantalla con id.
+- Componentes compartidos (`shared/components/`): `app-tabla` (columnas + filas; plantillas por columna con `<ng-template appCelda="clave" let-fila>`; `mensajeVacio`), `app-paginador` (`pagina` desde 0, `tamanio`, `totalElementos`, salida `cambio`), `app-modal-confirmacion` (`titulo`, `mensaje`, `textoCancelar`, `textoConfirmar`, `abierto`, `procesando`; contenido proyectado para campos como «Motivo (opcional)»), `app-select` (ControlValueAccessor; `opciones` `{valor, etiqueta}`, `etiqueta` = texto sin valor elegido), `app-badge-estado` (`texto`), `app-interruptor` (`activo`, `etiqueta`; emite `cambio` sin cambiar solo, para confirmar antes).
+- Botones y campos: clases `.btn-primario`, `.btn-secundario`, `.campo-texto` de `src/styles.css`.
+- Modelos comunes en `shared/models/`: `Pagina<T>`, `ErrorRespuesta`, `LoginRequest`, `LoginResponse` (+ `UsuarioSesion`, `TipoUsuario`) y `UsuarioVerificadoResponse` (lo devuelve `validarRuSimulado` de `core/auth/servicio-institucional.mock.ts`).
 
 ## Estructura de carpetas
 
@@ -155,7 +166,7 @@ Reglas:
 
 Actualiza esta lista al terminar cada etapa (marca con [x]):
 
-- [ ] Base: Tailwind con tokens, layout, menú, login simulado, guards, directiva, componentes compartidos
+- [x] Base: Tailwind con tokens, layout, menú, login simulado, guards, directiva, componentes compartidos
 - [ ] RF1 Autenticación · [ ] RF2 Usuarios · [ ] RF3 Estructura · [ ] RF4 Gestión del catálogo · [ ] RF5 Ejemplares
 - [ ] RF6 Consulta del catálogo · [ ] RF7 Reservas propias · [ ] RF8 Administrar reservas · [ ] RF9 Préstamos
 - [ ] RF10 Gestión de tesis · [ ] RF11 Consulta de tesis · [ ] RF12 Comunicación · [ ] RF13 Reportes y dashboards
