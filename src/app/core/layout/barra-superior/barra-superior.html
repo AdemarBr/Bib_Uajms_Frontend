@@ -38,6 +38,10 @@
   mensaje="Se finalizará tu sesión activa y volverás a la pantalla de inicio."
   [abierto]="confirmandoCierre()"
   [procesando]="cerrando()"
-  (cancelar)="confirmandoCierre.set(false)"
+  (cancelar)="cancelarCierre()"
   (confirmar)="cerrarSesion()"
-/>
+>
+  @if (errorCierre()) {
+    <app-alerta titulo="No fue posible cerrar la sesión" />
+  }
+</app-modal-confirmacion>
