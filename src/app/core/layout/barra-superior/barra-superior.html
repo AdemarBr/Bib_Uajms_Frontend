@@ -41,7 +41,7 @@
   (cancelar)="cancelarCierre()"
   (confirmar)="cerrarSesion()"
 >
-  @if (errorCierre()) {
-    <app-alerta titulo="No fue posible cerrar la sesión" />
+  @if (errorCierre(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
   }
 </app-modal-confirmacion>

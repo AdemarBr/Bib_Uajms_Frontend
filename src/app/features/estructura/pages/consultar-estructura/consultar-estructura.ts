@@ -1,10 +1,12 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { map } from 'rxjs';
+import { Observable, OperatorFunction, catchError, map, of } from 'rxjs';
 
+import { Alerta } from '../../../../shared/components/alerta/alerta';
 import { Celda } from '../../../../shared/components/tabla/celda';
 import { ColumnaTabla, Tabla } from '../../../../shared/components/tabla/tabla';
+import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
 import { Bibliotecas } from '../../data-access/bibliotecas';
 import { Carreras } from '../../data-access/carreras';
 import { Facultades } from '../../data-access/facultades';
@@ -46,7 +48,7 @@ const MENSAJES_VACIO: Record<Pestana, string> = {
 
 /** P3.1 Consultar bibliotecas, facultades y carreras (RF3.1): solo lectura, en pestañas. */
 @Component({
-  imports: [Tabla, Celda],
+  imports: [Tabla, Celda, Alerta],
   selector: 'app-consultar-estructura',
   styleUrl: './consultar-estructura.css',
   templateUrl: './consultar-estructura.html',
@@ -65,8 +67,15 @@ export class ConsultarEstructura {
   protected readonly columnas = computed(() => COLUMNAS[this.actual()]);
   protected readonly mensajeVacio = computed(() => MENSAJES_VACIO[this.actual()]);
 
-  private readonly facultades = toSignal(inject(Facultades).listarFacultades());
-  private readonly carreras = toSignal(inject(Carreras).listarCarreras());
+  /** Error del servicio al pedir las listas: se muestran su título y detalle. */
+  protected readonly error = signal<ErrorRespuesta | null>(null);
+
+  private readonly facultades = toSignal(
+    inject(Facultades).listarFacultades().pipe(this.capturarError()),
+  );
+  private readonly carreras = toSignal(
+    inject(Carreras).listarCarreras().pipe(this.capturarError()),
+  );
   private readonly bibliotecas = toSignal(
     inject(Bibliotecas)
       .listarBibliotecas()
@@ -77,6 +86,7 @@ export class ConsultarEstructura {
             pertenencia: b.carreraNombre ?? b.facultadNombre ?? 'No aplica',
           })),
         ),
+        this.capturarError(),
       ),
   );
 
@@ -90,6 +100,13 @@ export class ConsultarEstructura {
         return this.bibliotecas();
     }
   });
+
+  private capturarError<T>(): OperatorFunction<T, T | undefined> {
+    return catchError((error: unknown): Observable<undefined> => {
+      this.error.set(comoErrorRespuesta(error));
+      return of(undefined);
+    });
+  }
 
   protected elegir(pestana: Pestana): void {
     this.router.navigate([], { queryParams: { pestana }, replaceUrl: true });

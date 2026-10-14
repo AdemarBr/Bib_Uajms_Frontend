@@ -8,7 +8,7 @@ import { PERMISOS_POR_ROL, USUARIOS_MOCK } from './usuarios.mock';
 /** Mismo error para cualquier fallo, sin indicar qué dato falló (RF1.2.4 y RF1.2.5). */
 const CREDENCIALES_NO_VALIDAS: ErrorRespuesta = {
   status: 401,
-  titulo: 'Credenciales no válidas',
+  titulo: 'No se pudo iniciar sesión',
   detalle: 'El usuario o la contraseña no son válidos, o la cuenta no se encuentra vigente.',
   errores: [],
 };

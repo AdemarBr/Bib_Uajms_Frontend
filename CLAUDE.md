@@ -57,27 +57,28 @@ Este repositorio contiene solo el frontend. El backend (Spring Boot) está en ot
 
 ## Base ya construida (reutilizar, no duplicar)
 
-- Rutas raíz en `app.routes.ts`: hoy las públicas van dentro de `LayoutPublico` (barra superior + pie) y las de sesión o permiso dentro de `LayoutPrivado` (además, menú lateral; ya tiene `sesionGuard`). **Pendiente (tarea `fix/layout-y-mensajes`):** aplicar RF1.2.10 («Guards, menú y permisos»): las pantallas públicas (P.1, P6.1, P6.2, P11.1, P11.2) eligen el layout según `Sesion.haySesion()`, sin repetir sus rutas; `sesionGuard` pasa a cada ruta de tipo «sesión» o «permiso»; P1.1 queda siempre fuera del layout privado. Cada feature agrega sus rutas con `loadChildren` y `permisoGuard` + `data: { permisos: [PERMISOS.X] }` (lista = basta uno).
+- Rutas raíz en `app.routes.ts`: todas van dentro de un único `LayoutAplicacion` (`core/layout/layout-aplicacion`: barra superior + pie; con sesión, además el menú lateral y el contenido con `p-3xl`), que elige según `Sesion.haySesion()` (RF1.2.10, «Guards, menú y permisos»). Las rutas públicas se escriben una sola vez y no llevan guard; las de tipo «sesión» o «permiso» llevan `sesionGuard` en su ruta raíz (`perfil`, `usuarios`, `estructura`…), y `/iniciar-sesion` lleva `sinSesionGuard`. Cada feature agrega sus rutas con `loadChildren` y `permisoGuard` + `data: { permisos: [PERMISOS.X] }` (lista = basta uno).
 - Códigos de permiso: `core/config/permisos.ts` (`PERMISOS`, tipo `CodigoPermiso`). Constantes: `core/config/constantes.ts`.
 - Menú lateral: `core/layout/menu-lateral/opciones-menu.ts` (textos de Figma, rutas y permisos de `docs/rutas.md`). Se despliega el módulo de la pantalla actual. Las opciones cuya pantalla necesita un id (p. ej. «Actualizar datos de usuario») llevan a la pantalla desde donde se elige el registro (`destino`) y se marcan activas cuando se está en la pantalla con id.
 - Componentes compartidos (`shared/components/`): `app-tabla` (columnas + filas; plantillas por columna con `<ng-template appCelda="clave" let-fila>`; `mensajeVacio`), `app-paginador` (`pagina` desde 0, `tamanio`, `totalElementos`, salida `cambio`), `app-modal-confirmacion` (`titulo`, `mensaje`, `textoCancelar`, `textoConfirmar`, `abierto`, `procesando`; contenido proyectado para campos como «Motivo (opcional)»), `app-select` (ControlValueAccessor; `opciones` `{valor, etiqueta}`, `etiqueta` = texto sin valor elegido), `app-badge-estado` (`texto`), `app-interruptor` (`activo`, `etiqueta`; emite `cambio` sin cambiar solo, para confirmar antes), `app-alerta` (`titulo`, `mensaje`, `tono` `'error'` | `'exito'`; Alerta Tone=Error y Tone=Success de Figma).
 - Botones y campos: clases `.btn-primario`, `.btn-secundario`, `.campo-texto` y `.radio` (sobre `<input type="radio">`) de `src/styles.css`.
 - Anchos de Figma: el borde de Figma va por dentro y no cuenta en el ancho; en CSS sí, así que una tarjeta de N px en Figma se escribe `w-[N+2px]` (ver `docs/diseno.md`).
-- Modelos comunes en `shared/models/`: `Pagina<T>`, `ErrorRespuesta`, `LoginRequest`, `LoginResponse` (+ `UsuarioSesion`, `TipoUsuario`) y `UsuarioVerificadoResponse` (lo devuelve `validarRuSimulado` de `core/auth/servicio-institucional.mock.ts`).
+- Mensajes de error en pantalla: cada página guarda `error = signal<ErrorRespuesta | null>(null)` con `comoErrorRespuesta(error)` (`shared/models/error-respuesta.ts`; si el error no tiene la forma de `ErrorRespuesta`, da `ERROR_SIN_CONEXION`, «No se pudo conectar con el servidor. Intente nuevamente.»), muestra `<app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />` y, junto a cada campo, `error() | errorCampo: 'campo'` (pipe `shared/pipes/error-campo-pipe.ts`) después de la validación propia del formulario. En RF2, `errorCampo(formulario, campo, error)` de `formulario-usuario.ts` junta ambas. Un error al cambiar estado desde un modal se muestra dentro del modal, que sigue abierto.
+- Modelos comunes en `shared/models/`: `Pagina<T>`, `ErrorRespuesta` (+ `ERROR_SIN_CONEXION`, `comoErrorRespuesta`), `LoginRequest`, `LoginResponse` (+ `UsuarioSesion`, `TipoUsuario`) y `UsuarioVerificadoResponse` (lo devuelve `validarRuSimulado` de `core/auth/servicio-institucional.mock.ts`).
 
 ## Estructura de carpetas
 
 ```
 src/app/
 ├── core/                  # se carga una sola vez
-│   ├── auth/              # sesion.ts (servicio Sesion), login-simulado.ts, sesion-guard.ts, permiso-guard.ts, usuarios.mock.ts, servicio-institucional.mock.ts
+│   ├── auth/              # sesion.ts (servicio Sesion), login-simulado.ts, sesion-guard.ts, sin-sesion-guard.ts, permiso-guard.ts, usuarios.mock.ts, servicio-institucional.mock.ts
 │   ├── interceptors/      # token y errores: se crean y registran en la Iteración 5 con provideHttpClient(withInterceptors([...]))
-│   ├── layout/            # barra superior, menú lateral (filtrado por permisos), pie; layout público y privado
+│   ├── layout/            # barra superior, menú lateral (filtrado por permisos), pie; layout-aplicacion (uno solo, con menú solo con sesión)
 │   └── config/            # constantes: códigos de permiso y PLAZO_MAXIMO_PRESTAMO_DIAS = 30
 ├── shared/
 │   ├── components/        # tabla, paginador, modal de confirmación, select, badge de estado, interruptor, alerta
 │   ├── directives/        # tiene-permiso.ts (directiva appTienePermiso)
-│   ├── pipes/             # estados de reserva, préstamo y ejemplar; fechas; roles
+│   ├── pipes/             # error-campo-pipe.ts (errorCampo); estados de reserva, préstamo y ejemplar; fechas; roles
 │   └── models/            # Pagina<T>, ErrorRespuesta, LoginRequest, LoginResponse
 └── features/
     ├── autenticacion/     # RF1
@@ -141,7 +142,7 @@ features/<feature>/
 ## Guards, menú y permisos
 
 - **Layout (RF1.2.10):** sin sesión, las pantallas públicas (P.1 Home, P6.1, P6.2, P11.1, P11.2) y el inicio de sesión (P1.1) usan el layout público, sin menú lateral (Figma 9:7). Con sesión activa, **todas** las pantallas, también las públicas (no P1.1), usan el layout privado con menú lateral (Home con sesión: Figma 396:132). Ese marco muestra el menú del Administrador general (todos los módulos): el menú no se copia fijo del diseño, es el mismo menú lateral de siempre, filtrado por los permisos del usuario. Ejemplos para comprobar en Home: `admin.general` ve todos los módulos; `catalogador.central`, solo Gestión de catálogo y Ejemplares; `2019001234` (Estudiante), solo Mis reservas y Comunicación. La barra superior con sesión mantiene «Catálogo» y «Tesis».
-- Con sesión activa, entrar a `/iniciar-sesion` redirige a `/`.
+- Con sesión activa, entrar a `/iniciar-sesion` redirige a `/` (`sinSesionGuard`).
 - Cerrar sesión (confirmación «¿Cerrar sesión?») lleva a `/` (RF1.5.4). Solo una sesión vencida o una renovación rechazada (Iteración 5) llevan a `/iniciar-sesion`.
 - `sesionGuard` exige sesión: sin sesión redirige a `/iniciar-sesion` con `returnUrl` y, tras el login, vuelve a la ruta pedida.
 - `permisoGuard` exige el permiso de la ruta según `docs/rutas.md` (si se indican dos con «o», basta uno); sin permiso redirige a `/`. Ruta inexistente → `/`.
@@ -190,7 +191,7 @@ Actualiza esta lista al terminar cada etapa (marca con [x]):
 - [x] RF1 Autenticación
 - [x] RF2 Usuarios
 - [x] RF3 Estructura
-- [ ] fix/layout-y-mensajes: layout de RF1.2.10 y mensajes de error desde el servicio
+- [x] fix/layout-y-mensajes: layout de RF1.2.10 y mensajes de error desde el servicio
 - [ ] RF4 Gestión del catálogo
 - [ ] RF5 Ejemplares
 - [ ] RF6 Consulta del catálogo

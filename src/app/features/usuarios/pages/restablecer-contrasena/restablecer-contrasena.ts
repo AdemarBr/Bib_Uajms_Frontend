@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { Alerta } from '../../../../shared/components/alerta/alerta';
+import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
 import { Usuarios } from '../../data-access/usuarios';
 import { UsuarioResponse } from '../../models/usuario-response';
 
@@ -28,9 +29,12 @@ export class RestablecerContrasena {
   protected readonly contrasenaNueva = signal<string | null>(null);
   protected readonly buscando = signal(false);
   protected readonly restableciendo = signal(false);
+  /** Error del servicio al buscar o restablecer: se muestran su título y detalle. */
+  protected readonly error = signal<ErrorRespuesta | null>(null);
 
   protected buscar(): void {
     this.buscando.set(true);
+    this.error.set(null);
     this.usuarios
       .listarUsuarios({
         q: this.criterio.value.trim(),
@@ -42,7 +46,10 @@ export class RestablecerContrasena {
           this.buscando.set(false);
           this.coincidencias.set(pagina.contenido);
         },
-        error: () => this.buscando.set(false),
+        error: (error: unknown) => {
+          this.buscando.set(false);
+          this.error.set(comoErrorRespuesta(error));
+        },
       });
   }
 
@@ -50,18 +57,23 @@ export class RestablecerContrasena {
     this.seleccionado.set(usuario);
     this.coincidencias.set(null);
     this.contrasenaNueva.set(null);
+    this.error.set(null);
   }
 
   protected restablecer(): void {
     const usuario = this.seleccionado();
     if (!usuario) return;
     this.restableciendo.set(true);
+    this.error.set(null);
     this.usuarios.restablecerContrasena(usuario.idUsuario).subscribe({
       next: (respuesta) => {
         this.restableciendo.set(false);
         this.contrasenaNueva.set(respuesta.contrasenaGenerada);
       },
-      error: () => this.restableciendo.set(false),
+      error: (error: unknown) => {
+        this.restableciendo.set(false);
+        this.error.set(comoErrorRespuesta(error));
+      },
     });
   }
 

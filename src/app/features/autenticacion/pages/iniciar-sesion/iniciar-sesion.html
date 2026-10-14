@@ -56,8 +56,8 @@
       Iniciar sesión
     </button>
 
-    @if (credencialesRechazadas()) {
-      <app-alerta titulo="No se pudo iniciar sesión" mensaje="Usuario o contraseña incorrectos." />
+    @if (error(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
     }
   </form>
 </div>

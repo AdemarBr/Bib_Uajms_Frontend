@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 import { permisoGuard } from '../../core/auth/permiso-guard';
 import { PERMISOS } from '../../core/config/permisos';
 
-/** RF2 Usuarios y roles (P2.1 a P2.5), dentro de LayoutPrivado (`/usuarios`). Fijas antes que `:id`. */
+/** RF2 Usuarios y roles (P2.1 a P2.5) (`/usuarios`, con `sesionGuard`). Fijas antes que `:id`. */
 export const RUTAS_USUARIOS: Routes = [
   {
     path: '',

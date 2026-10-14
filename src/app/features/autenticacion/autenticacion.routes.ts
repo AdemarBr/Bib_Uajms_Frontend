@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-/** P1.1 Iniciar sesión: pública, dentro de LayoutPublico (`/iniciar-sesion`). */
+/** P1.1 Iniciar sesión: pública y solo sin sesión (`/iniciar-sesion`, con `sinSesionGuard`). */
 export const RUTAS_INICIAR_SESION: Routes = [
   {
     path: '',
@@ -10,7 +10,7 @@ export const RUTAS_INICIAR_SESION: Routes = [
   },
 ];
 
-/** P1.2 Perfil de usuario: solo requiere sesión, dentro de LayoutPrivado (`/perfil`). */
+/** P1.2 Perfil de usuario: solo requiere sesión (`/perfil`, con `sesionGuard`). */
 export const RUTAS_PERFIL: Routes = [
   {
     path: '',

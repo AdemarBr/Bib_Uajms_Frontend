@@ -6,7 +6,9 @@ import { forkJoin, map } from 'rxjs';
 
 import { Sesion } from '../../../../core/auth/sesion';
 import { PERMISOS } from '../../../../core/config/permisos';
+import { Alerta } from '../../../../shared/components/alerta/alerta';
 import { Select } from '../../../../shared/components/select/select';
+import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
 import { Bibliotecas } from '../../../estructura/data-access/bibliotecas';
 import { Roles } from '../../data-access/roles';
 import { Usuarios } from '../../data-access/usuarios';
@@ -24,7 +26,7 @@ import { RolResponse } from '../../models/rol-response';
  * responsable (RF2.5). Solo usuarios internos; los académicos no tienen enlace desde P2.2.
  */
 @Component({
-  imports: [ReactiveFormsModule, Select],
+  imports: [ReactiveFormsModule, Select, Alerta],
   selector: 'app-actualizar-usuario',
   styleUrl: './actualizar-usuario.css',
   templateUrl: './actualizar-usuario.html',
@@ -52,6 +54,8 @@ export class ActualizarUsuario implements OnInit {
   protected readonly formulario = crearFormularioUsuario();
   protected readonly cargado = signal(false);
   protected readonly enviando = signal(false);
+  /** Error del servicio: se muestran su título y detalle, y `errores[]` junto a cada campo. */
+  protected readonly error = signal<ErrorRespuesta | null>(null);
   protected readonly bibliotecaNoAplica = signal(false);
   private readonly rolSeleccionado = signal<RolResponse | undefined>(undefined);
   /** RF2.4.4: descripción de los permisos del rol antes de confirmar. */
@@ -90,12 +94,12 @@ export class ActualizarUsuario implements OnInit {
         this.alCambiarRol(usuario.idRol);
         this.cargado.set(true);
       },
-      error: () => this.router.navigateByUrl('/usuarios'),
+      error: (error: unknown) => this.error.set(comoErrorRespuesta(error)),
     });
   }
 
-  protected error(campo: 'nombre' | 'correo' | 'idRol' | 'idBiblioteca'): string | null {
-    return errorCampo(this.formulario, campo);
+  protected mensajeCampo(campo: 'nombre' | 'correo' | 'idRol' | 'idBiblioteca'): string | null {
+    return errorCampo(this.formulario, campo, this.error());
   }
 
   /** RF2.3, curso alternativo: con datos inválidos no se aplica la modificación. */
@@ -105,9 +109,13 @@ export class ActualizarUsuario implements OnInit {
       return;
     }
     this.enviando.set(true);
+    this.error.set(null);
     this.usuarios.actualizarUsuario(Number(this.id()), aSolicitud(this.formulario)).subscribe({
       next: () => this.router.navigateByUrl('/usuarios'),
-      error: () => this.enviando.set(false),
+      error: (error: unknown) => {
+        this.enviando.set(false);
+        this.error.set(comoErrorRespuesta(error));
+      },
     });
   }
 

@@ -39,6 +39,10 @@
     />
   </form>
 
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
   @if (resultado(); as r) {
     <p class="text-caption text-gray-600" aria-live="polite">
       {{ r.totalElementos }}
@@ -110,6 +114,10 @@
     "
     [procesando]="procesando()"
     (confirmar)="confirmarCambioEstado()"
-    (cancelar)="pendiente.set(null)"
-  />
+    (cancelar)="cancelarCambioEstado()"
+  >
+    @if (errorEstado(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
+  </app-modal-confirmacion>
 }

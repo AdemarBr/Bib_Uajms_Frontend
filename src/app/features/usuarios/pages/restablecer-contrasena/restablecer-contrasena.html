@@ -68,5 +68,11 @@
         </button>
       }
     }
+
+    @if (error(); as e) {
+      <div class="print:hidden">
+        <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+      </div>
+    }
   </section>
 </div>

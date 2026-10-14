@@ -8,7 +8,8 @@ import { Sesion } from '../../../../core/auth/sesion';
 import { PERMISOS } from '../../../../core/config/permisos';
 import { Alerta } from '../../../../shared/components/alerta/alerta';
 import { Select, ValorSelect } from '../../../../shared/components/select/select';
-import { ErrorRespuesta } from '../../../../shared/models/error-respuesta';
+import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
+import { ErrorCampoPipe } from '../../../../shared/pipes/error-campo-pipe';
 import { Carreras } from '../../data-access/carreras';
 import { Facultades } from '../../data-access/facultades';
 
@@ -16,7 +17,7 @@ type TipoRegistro = 'facultad' | 'carrera';
 
 /** P3.2 Registrar facultad o carrera (RF3.2 y RF3.4), con el selector «Tipo de registro». */
 @Component({
-  imports: [ReactiveFormsModule, Select, Alerta],
+  imports: [ReactiveFormsModule, Select, Alerta, ErrorCampoPipe],
   selector: 'app-registrar-facultad-carrera',
   styleUrl: './registrar-facultad-carrera.css',
   templateUrl: './registrar-facultad-carrera.html',
@@ -50,8 +51,8 @@ export class RegistrarFacultadCarrera {
     initialValue: this.formulario.controls.tipo.value,
   });
   protected readonly enviando = signal(false);
-  /** Texto del curso alternativo (registro duplicado). */
-  protected readonly duplicado = signal<string | null>(null);
+  /** Error del servicio (p. ej. 409 de registro duplicado): se muestran su título, detalle y errores por campo. */
+  protected readonly error = signal<ErrorRespuesta | null>(null);
 
   constructor() {
     this.ajustarFacultad(this.formulario.controls.tipo.value);
@@ -77,15 +78,15 @@ export class RegistrarFacultadCarrera {
         : this.carreras.registrarCarrera({ nombre, idFacultad: idFacultad as number });
 
     this.enviando.set(true);
-    this.duplicado.set(null);
+    this.error.set(null);
     solicitud.subscribe({
       next: () =>
         this.router.navigate(['/estructura'], {
           queryParams: { pestana: tipo === 'facultad' ? 'facultades' : 'carreras' },
         }),
-      error: (error: ErrorRespuesta) => {
+      error: (error: unknown) => {
         this.enviando.set(false);
-        if (error.status === 409) this.duplicado.set(error.detalle);
+        this.error.set(comoErrorRespuesta(error));
       },
     });
   }
@@ -93,7 +94,7 @@ export class RegistrarFacultadCarrera {
   /** RF3.2.4: con «Facultad», el desplegable queda deshabilitado con «No aplica para Facultad». */
   private ajustarFacultad(tipo: TipoRegistro): void {
     const control = this.formulario.controls.idFacultad;
-    this.duplicado.set(null);
+    this.error.set(null);
     if (tipo === 'facultad') {
       control.setValue(null);
       control.disable();

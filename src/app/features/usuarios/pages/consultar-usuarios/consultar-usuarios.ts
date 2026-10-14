@@ -2,10 +2,11 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { debounceTime, map, switchMap, tap } from 'rxjs';
+import { catchError, debounceTime, map, of, switchMap, tap } from 'rxjs';
 
 import { Sesion } from '../../../../core/auth/sesion';
 import { PERMISOS } from '../../../../core/config/permisos';
+import { Alerta } from '../../../../shared/components/alerta/alerta';
 import { Interruptor } from '../../../../shared/components/interruptor/interruptor';
 import { ModalConfirmacion } from '../../../../shared/components/modal-confirmacion/modal-confirmacion';
 import { Paginador } from '../../../../shared/components/paginador/paginador';
@@ -13,6 +14,7 @@ import { OpcionSelect, Select, ValorSelect } from '../../../../shared/components
 import { Celda } from '../../../../shared/components/tabla/celda';
 import { ColumnaTabla, Tabla } from '../../../../shared/components/tabla/tabla';
 import { TienePermiso } from '../../../../shared/directives/tiene-permiso';
+import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
 import { TipoUsuario } from '../../../../shared/models/login-response';
 import { Bibliotecas } from '../../../estructura/data-access/bibliotecas';
 import { Roles } from '../../data-access/roles';
@@ -37,6 +39,7 @@ const OPCIONES_TIPO: OpcionSelect[] = [
 @Component({
   imports: [
     ReactiveFormsModule,
+    Alerta,
     RouterLink,
     Celda,
     Interruptor,
@@ -122,8 +125,21 @@ export class ConsultarUsuarios {
     };
   });
 
+  /** Error del servicio al listar: se muestran su título y detalle en lugar de la tabla. */
+  protected readonly error = signal<ErrorRespuesta | null>(null);
+
   protected readonly resultado = toSignal(
-    toObservable(this.solicitud).pipe(switchMap((s) => this.usuarios.listarUsuarios(s))),
+    toObservable(this.solicitud).pipe(
+      switchMap((s) =>
+        this.usuarios.listarUsuarios(s).pipe(
+          tap(() => this.error.set(null)),
+          catchError((error: unknown) => {
+            this.error.set(comoErrorRespuesta(error));
+            return of(undefined);
+          }),
+        ),
+      ),
+    ),
   );
 
   /** RF2.2 (curso alternativo) y RF2.2.1.5. */
@@ -144,6 +160,8 @@ export class ConsultarUsuarios {
   /** Usuario cuyo cambio de estado espera confirmación. */
   protected readonly pendiente = signal<UsuarioResponse | null>(null);
   protected readonly procesando = signal(false);
+  /** Si el cambio de estado falla, el modal sigue abierto con el error del servicio. */
+  protected readonly errorEstado = signal<ErrorRespuesta | null>(null);
 
   protected limpiarFiltros(): void {
     this.filtros.reset();
@@ -153,15 +171,22 @@ export class ConsultarUsuarios {
     const usuario = this.pendiente();
     if (!usuario) return;
     this.procesando.set(true);
+    this.errorEstado.set(null);
     this.usuarios.cambiarEstado(usuario.idUsuario, !usuario.estado).subscribe({
-      next: () => this.terminarCambioEstado(true),
-      error: () => this.terminarCambioEstado(false),
+      next: () => {
+        this.procesando.set(false);
+        this.pendiente.set(null);
+        this.recarga.update((n) => n + 1);
+      },
+      error: (error: unknown) => {
+        this.procesando.set(false);
+        this.errorEstado.set(comoErrorRespuesta(error));
+      },
     });
   }
 
-  private terminarCambioEstado(recargar: boolean): void {
-    this.procesando.set(false);
+  protected cancelarCambioEstado(): void {
     this.pendiente.set(null);
-    if (recargar) this.recarga.update((n) => n + 1);
+    this.errorEstado.set(null);
   }
 }

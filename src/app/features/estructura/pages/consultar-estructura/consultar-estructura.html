@@ -19,6 +19,10 @@
     }
   </div>
 
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
   @if (filas(); as f) {
     <app-tabla role="tabpanel" [columnas]="columnas()" [filas]="f" [mensajeVacio]="mensajeVacio()">
       <ng-template appCelda="carreras" let-fila>

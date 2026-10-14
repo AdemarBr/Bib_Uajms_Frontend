@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { Sesion } from '../../../../core/auth/sesion';
 import { Alerta } from '../../../../shared/components/alerta/alerta';
+import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
 
 /** P1.1 Iniciar sesión (RF1.1 y RF1.2). */
 @Component({
@@ -26,8 +27,8 @@ export class IniciarSesion {
 
   protected readonly mostrarContrasena = signal(false);
   protected readonly enviando = signal(false);
-  /** RF1.2.5: el mismo mensaje para cualquier fallo, sin indicar qué dato falló. */
-  protected readonly credencialesRechazadas = signal(false);
+  /** RF1.2.5: el 401 de Sesion trae el mismo mensaje para cualquier fallo, sin indicar qué dato falló. */
+  protected readonly error = signal<ErrorRespuesta | null>(null);
 
   protected iniciarSesion(): void {
     if (this.formulario.invalid) {
@@ -35,12 +36,12 @@ export class IniciarSesion {
       return;
     }
     this.enviando.set(true);
-    this.credencialesRechazadas.set(false);
+    this.error.set(null);
     this.sesion.iniciarSesion(this.formulario.getRawValue()).subscribe({
       next: () => this.router.navigateByUrl(this.destino()),
-      error: () => {
+      error: (error: unknown) => {
         this.enviando.set(false);
-        this.credencialesRechazadas.set(true);
+        this.error.set(comoErrorRespuesta(error));
       },
     });
   }

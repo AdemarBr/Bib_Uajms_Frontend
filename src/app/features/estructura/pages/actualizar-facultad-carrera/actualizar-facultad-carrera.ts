@@ -9,7 +9,8 @@ import { PERMISOS } from '../../../../core/config/permisos';
 import { Alerta } from '../../../../shared/components/alerta/alerta';
 import { Interruptor } from '../../../../shared/components/interruptor/interruptor';
 import { Select, ValorSelect } from '../../../../shared/components/select/select';
-import { ErrorRespuesta } from '../../../../shared/models/error-respuesta';
+import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
+import { ErrorCampoPipe } from '../../../../shared/pipes/error-campo-pipe';
 import { Carreras } from '../../data-access/carreras';
 import { Facultades } from '../../data-access/facultades';
 
@@ -20,7 +21,7 @@ type TipoRegistro = 'facultad' | 'carrera';
  * elegir el registro; las carreras relacionadas de una facultad son de solo lectura.
  */
 @Component({
-  imports: [ReactiveFormsModule, Select, Interruptor, Alerta],
+  imports: [ReactiveFormsModule, Select, Interruptor, Alerta, ErrorCampoPipe],
   selector: 'app-actualizar-facultad-carrera',
   styleUrl: './actualizar-facultad-carrera.css',
   templateUrl: './actualizar-facultad-carrera.html',
@@ -78,7 +79,8 @@ export class ActualizarFacultadCarrera {
   });
 
   protected readonly enviando = signal(false);
-  protected readonly duplicado = signal<string | null>(null);
+  /** Error del servicio (p. ej. 409 de registro duplicado): se muestran su título, detalle y errores por campo. */
+  protected readonly error = signal<ErrorRespuesta | null>(null);
 
   constructor() {
     this.limpiar();
@@ -117,22 +119,22 @@ export class ActualizarFacultadCarrera {
           });
 
     this.enviando.set(true);
-    this.duplicado.set(null);
+    this.error.set(null);
     solicitud.subscribe({
       next: () =>
         this.router.navigate(['/estructura'], {
           queryParams: { pestana: tipo === 'facultad' ? 'facultades' : 'carreras' },
         }),
-      error: (error: ErrorRespuesta) => {
+      error: (error: unknown) => {
         this.enviando.set(false);
-        if (error.status === 409) this.duplicado.set(error.detalle);
+        this.error.set(comoErrorRespuesta(error));
       },
     });
   }
 
   /** Precarga el registro elegido (RF3.3, paso 4, y RF3.5, paso 4). */
   private cargar(id: ValorSelect): void {
-    this.duplicado.set(null);
+    this.error.set(null);
     const c = this.formulario.controls;
     if (c.tipo.value === 'facultad') {
       const facultad = this.facultades().find((f) => f.idFacultad === id);
@@ -156,7 +158,7 @@ export class ActualizarFacultadCarrera {
   /** Sin registro elegido: campos vacíos y deshabilitados. */
   private limpiar(): void {
     const c = this.formulario.controls;
-    this.duplicado.set(null);
+    this.error.set(null);
     c.nombre.reset('');
     c.idFacultad.reset(null);
     c.estado.setValue(true);

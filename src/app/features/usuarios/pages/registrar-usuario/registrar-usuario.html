@@ -15,9 +15,9 @@
         class="campo-texto"
         placeholder="Nombre completo del empleado"
         formControlName="nombre"
-        [attr.aria-invalid]="!!error('nombre')"
+        [attr.aria-invalid]="!!mensajeCampo('nombre')"
       />
-      @if (error('nombre'); as e) {
+      @if (mensajeCampo('nombre'); as e) {
         <p class="text-label text-gray-900">{{ e }}</p>
       }
     </div>
@@ -30,9 +30,9 @@
         class="campo-texto"
         placeholder="nombre@uajms.edu.bo"
         formControlName="correo"
-        [attr.aria-invalid]="!!error('correo')"
+        [attr.aria-invalid]="!!mensajeCampo('correo')"
       />
-      @if (error('correo'); as e) {
+      @if (mensajeCampo('correo'); as e) {
         <p class="text-label text-gray-900">{{ e }}</p>
       }
     </div>
@@ -46,7 +46,7 @@
         formControlName="idRol"
         [opciones]="opcionesRol()"
       />
-      @if (error('idRol'); as e) {
+      @if (mensajeCampo('idRol'); as e) {
         <p class="text-label text-gray-900">{{ e }}</p>
       }
     </div>
@@ -60,7 +60,7 @@
         [etiqueta]="bibliotecaNoAplica() ? 'No aplica' : 'Seleccionar biblioteca…'"
         [opciones]="opcionesBiblioteca()"
       />
-      @if (error('idBiblioteca'); as e) {
+      @if (mensajeCampo('idBiblioteca'); as e) {
         <p class="text-label text-gray-900">{{ e }}</p>
       }
     </div>
@@ -71,6 +71,10 @@
     </p>
 
     <button type="submit" class="btn-primario w-full" [disabled]="enviando()">Guardar</button>
+
+    @if (error(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
   </form>
 </div>
 

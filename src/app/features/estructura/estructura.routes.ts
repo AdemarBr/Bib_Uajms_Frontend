@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 import { permisoGuard } from '../../core/auth/permiso-guard';
 import { PERMISOS } from '../../core/config/permisos';
 
-/** RF3 Bibliotecas, facultades y carreras (P3.1 a P3.5), dentro de LayoutPrivado (`/estructura`). */
+/** RF3 Bibliotecas, facultades y carreras (P3.1 a P3.5) (`/estructura`, con `sesionGuard`). */
 export const RUTAS_ESTRUCTURA: Routes = [
   {
     path: '',

@@ -51,6 +51,8 @@
       />
       @if (campoVacio('nombre')) {
         <p class="text-label text-gray-900">Es obligatorio.</p>
+      } @else if (error() | errorCampo: 'nombre'; as m) {
+        <p class="text-label text-gray-900">{{ m }}</p>
       }
     </div>
 
@@ -64,6 +66,8 @@
         />
         @if (campoVacio('idFacultad')) {
           <p class="text-label text-gray-900">Es obligatorio.</p>
+        } @else if (error() | errorCampo: 'idFacultad'; as m) {
+          <p class="text-label text-gray-900">{{ m }}</p>
         }
       </div>
     } @else {
@@ -90,8 +94,8 @@
       Guardar cambios
     </button>
 
-    @if (duplicado(); as d) {
-      <app-alerta [titulo]="d" />
+    @if (error(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
     }
   </form>
 </div>

@@ -1,8 +1,10 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 
+import { Alerta } from '../../../../shared/components/alerta/alerta';
 import { BadgeEstado } from '../../../../shared/components/badge-estado/badge-estado';
+import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
 import { Perfil } from '../../data-access/perfil';
 import { PerfilResponse } from '../../models/perfil-response';
 
@@ -15,16 +17,23 @@ const ADMINISTRADOR_GENERAL = 'Administrador general del sistema';
 
 /** P1.2 Perfil de usuario (RF1.4): solo lectura, en secciones (RF1.4.4). */
 @Component({
-  imports: [BadgeEstado],
+  imports: [BadgeEstado, Alerta],
   selector: 'app-perfil-usuario',
   styleUrl: './perfil-usuario.css',
   templateUrl: './perfil-usuario.html',
 })
 export class PerfilUsuario {
+  protected readonly error = signal<ErrorRespuesta | null>(null);
+
   protected readonly perfil = toSignal(
     inject(Perfil)
       .obtenerPerfil()
-      .pipe(catchError(() => of(null))),
+      .pipe(
+        catchError((error: unknown) => {
+          this.error.set(comoErrorRespuesta(error));
+          return of(null);
+        }),
+      ),
   );
 
   /** Nombre completo, usuario y, cuando corresponde, correo institucional (RF1.4, paso 4). */

@@ -27,6 +27,10 @@ Cada DTO se definió a partir de las columnas, tarjetas, campos y filtros que el
 // ErrorRespuesta (todas las respuestas 4xx y 5xx)
 { "status": 400, "titulo": "Datos inválidos", "detalle": "Revise los campos marcados.",
   "errores": [ { "campo": "titulo", "mensaje": "Es obligatorio." } ] }
+
+// Registro duplicado (409): el detalle dice qué dato ya existe
+{ "status": 409, "titulo": "Registro duplicado", "detalle": "Ya existe una facultad con ese nombre.",
+  "errores": [] }
 ```
 
 Mensajes de error: los textos que ve el usuario ante un error los define **el backend** en `titulo` y `detalle` de `ErrorRespuesta` (y en `errores[].mensaje` por campo). El frontend los muestra tal como llegan y no escribe esos textos en sus componentes. Únicas excepciones del frontend: las validaciones del formulario antes de enviar (campo obligatorio, formato) y la falta de respuesta del servidor («No se pudo conectar con el servidor. Intente nuevamente.»).

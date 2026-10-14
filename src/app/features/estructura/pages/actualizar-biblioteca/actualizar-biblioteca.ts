@@ -7,7 +7,8 @@ import { Observable, map, of, switchMap, tap } from 'rxjs';
 import { Alerta } from '../../../../shared/components/alerta/alerta';
 import { Interruptor } from '../../../../shared/components/interruptor/interruptor';
 import { OpcionSelect, Select, ValorSelect } from '../../../../shared/components/select/select';
-import { ErrorRespuesta } from '../../../../shared/models/error-respuesta';
+import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
+import { ErrorCampoPipe } from '../../../../shared/pipes/error-campo-pipe';
 import { Bibliotecas } from '../../data-access/bibliotecas';
 import { Carreras } from '../../data-access/carreras';
 import { Facultades } from '../../data-access/facultades';
@@ -25,7 +26,7 @@ type Modo = 'ninguna' | 'central' | 'sinPertenencia' | 'normal';
 
 /** P3.5 Actualizar biblioteca física (RF3.7). Campos deshabilitados y vacíos hasta elegir la biblioteca. */
 @Component({
-  imports: [ReactiveFormsModule, Select, Interruptor, Alerta],
+  imports: [ReactiveFormsModule, Select, Interruptor, Alerta, ErrorCampoPipe],
   selector: 'app-actualizar-biblioteca',
   styleUrl: './actualizar-biblioteca.css',
   templateUrl: './actualizar-biblioteca.html',
@@ -70,7 +71,8 @@ export class ActualizarBiblioteca {
   });
   protected readonly carreraHabilitada = signal(false);
   protected readonly enviando = signal(false);
-  protected readonly duplicado = signal<string | null>(null);
+  /** Error del servicio (p. ej. 409 de registro duplicado): se muestran su título, detalle y errores por campo. */
+  protected readonly error = signal<ErrorRespuesta | null>(null);
 
   /** Texto de Facultad y Carrera cuando no aplican (RF3.7.5 y decisión para Postgrado). */
   protected readonly textoNoAplica = computed(() => {
@@ -126,7 +128,7 @@ export class ActualizarBiblioteca {
         ? aPertenencia(v.idFacultad, v.carrera)
         : { idFacultad: null, idCarrera: null };
     this.enviando.set(true);
-    this.duplicado.set(null);
+    this.error.set(null);
     this.bibliotecasServicio
       .actualizarBiblioteca(v.idBiblioteca as number, {
         nombre: v.nombre,
@@ -138,9 +140,9 @@ export class ActualizarBiblioteca {
       .subscribe({
         next: () =>
           this.router.navigate(['/estructura'], { queryParams: { pestana: 'bibliotecas' } }),
-        error: (error: ErrorRespuesta) => {
+        error: (error: unknown) => {
           this.enviando.set(false);
-          if (error.status === 409) this.duplicado.set(error.detalle);
+          this.error.set(comoErrorRespuesta(error));
         },
       });
   }
@@ -149,7 +151,7 @@ export class ActualizarBiblioteca {
   private cargar(biblioteca: BibliotecaResponse | undefined): void {
     if (!biblioteca) return this.limpiar();
     const c = this.formulario.controls;
-    this.duplicado.set(null);
+    this.error.set(null);
     c.nombre.reset(biblioteca.nombre);
     c.ubicacion.reset(biblioteca.ubicacion);
     c.descripcion.reset(biblioteca.descripcion ?? '');
@@ -206,7 +208,7 @@ export class ActualizarBiblioteca {
   private limpiar(): void {
     const c = this.formulario.controls;
     this.modo.set('ninguna');
-    this.duplicado.set(null);
+    this.error.set(null);
     this.carreraHabilitada.set(false);
     c.nombre.reset('');
     c.ubicacion.reset('');

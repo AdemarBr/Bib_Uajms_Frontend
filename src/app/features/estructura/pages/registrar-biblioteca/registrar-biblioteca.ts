@@ -6,7 +6,8 @@ import { map, of, switchMap, tap } from 'rxjs';
 
 import { Alerta } from '../../../../shared/components/alerta/alerta';
 import { OpcionSelect, Select, ValorSelect } from '../../../../shared/components/select/select';
-import { ErrorRespuesta } from '../../../../shared/models/error-respuesta';
+import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
+import { ErrorCampoPipe } from '../../../../shared/pipes/error-campo-pipe';
 import { Bibliotecas } from '../../data-access/bibliotecas';
 import { Carreras } from '../../data-access/carreras';
 import { Facultades } from '../../data-access/facultades';
@@ -17,7 +18,7 @@ import { aPertenencia, opcionesCarrera } from '../../pertenencia-biblioteca';
  * La Central y la de Postgrado no se registran aquí: toda biblioteca nueva es de una facultad o de una carrera.
  */
 @Component({
-  imports: [ReactiveFormsModule, Select, Alerta],
+  imports: [ReactiveFormsModule, Select, Alerta, ErrorCampoPipe],
   selector: 'app-registrar-biblioteca',
   styleUrl: './registrar-biblioteca.css',
   templateUrl: './registrar-biblioteca.html',
@@ -48,7 +49,8 @@ export class RegistrarBiblioteca {
 
   protected readonly carreraHabilitada = signal(false);
   protected readonly enviando = signal(false);
-  protected readonly duplicado = signal<string | null>(null);
+  /** Error del servicio (p. ej. 409 de registro duplicado): se muestran su título, detalle y errores por campo. */
+  protected readonly error = signal<ErrorRespuesta | null>(null);
 
   constructor() {
     const c = this.formulario.controls;
@@ -83,7 +85,7 @@ export class RegistrarBiblioteca {
     }
     const v = this.formulario.getRawValue();
     this.enviando.set(true);
-    this.duplicado.set(null);
+    this.error.set(null);
     this.bibliotecas
       .registrarBiblioteca({
         nombre: v.nombre,
@@ -94,9 +96,9 @@ export class RegistrarBiblioteca {
       .subscribe({
         next: () =>
           this.router.navigate(['/estructura'], { queryParams: { pestana: 'bibliotecas' } }),
-        error: (error: ErrorRespuesta) => {
+        error: (error: unknown) => {
           this.enviando.set(false);
-          if (error.status === 409) this.duplicado.set(error.detalle);
+          this.error.set(comoErrorRespuesta(error));
         },
       });
   }

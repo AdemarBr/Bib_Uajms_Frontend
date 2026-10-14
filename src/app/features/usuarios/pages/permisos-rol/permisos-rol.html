@@ -1,6 +1,10 @@
 <div class="flex flex-col gap-5">
   <h1 class="text-h2 text-gray-900">Consultar permisos por rol</h1>
 
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
   @for (rol of roles(); track rol.idRol) {
     <section class="flex w-fit flex-col gap-2.5 rounded-md border border-gray-300 bg-gray-0 p-lg">
       <h2 class="text-dato font-semibold text-gray-900">{{ rol.nombre }}</h2>

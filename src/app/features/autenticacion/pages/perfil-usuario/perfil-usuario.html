@@ -26,5 +26,7 @@
         </div>
       }
     </section>
+  } @else if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
   }
 </div>

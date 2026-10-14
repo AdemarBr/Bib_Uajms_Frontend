@@ -20,7 +20,7 @@ export class Perfil {
     if (!perfil) {
       const error: ErrorRespuesta = {
         status: 401,
-        titulo: 'Credenciales no válidas',
+        titulo: 'No se pudo iniciar sesión',
         detalle: 'El usuario o la contraseña no son válidos, o la cuenta no se encuentra vigente.',
         errores: [],
       };

@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ROLES_CON_BIBLIOTECA } from '../../core/config/constantes';
 import { modulosDePermisos } from '../../core/config/permisos';
 import { ValorSelect } from '../../shared/components/select/select';
+import { ErrorRespuesta } from '../../shared/models/error-respuesta';
 import { RolResponse } from './models/rol-response';
 import { UsuarioInternoRequest } from './models/usuario-interno-request';
 
@@ -50,14 +51,20 @@ export function aSolicitud(formulario: FormularioUsuario): UsuarioInternoRequest
   };
 }
 
-/** Mensaje de error de un campo tocado: «Es obligatorio.» o el del correo. */
+/**
+ * Mensaje junto a un campo: la validación del formulario si el campo tocado es inválido
+ * («Es obligatorio.» o el del correo) o, si no, el de `errores[]` que devolvió el servicio.
+ */
 export function errorCampo(
   formulario: FormularioUsuario,
   campo: keyof FormularioUsuario['controls'],
+  error: ErrorRespuesta | null,
 ): string | null {
   const control = formulario.controls[campo];
-  if (!control.touched || control.valid || control.disabled) return null;
-  return control.hasError('email') ? 'No es un correo válido.' : 'Es obligatorio.';
+  if (control.touched && control.invalid && control.enabled) {
+    return control.hasError('email') ? 'No es un correo válido.' : 'Es obligatorio.';
+  }
+  return error?.errores.find((e) => e.campo === campo)?.mensaje ?? null;
 }
 
 /** RF2.4.4: «Permisos del rol: módulo, módulo y módulo.» a partir de los módulos de la matriz. */
