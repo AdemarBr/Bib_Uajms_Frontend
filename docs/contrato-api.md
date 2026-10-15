@@ -131,8 +131,8 @@ Públicos (selectores y página de inicio): devuelven **solo los registros activ
 
 De gestión (P3.1, P3.3 y P3.5): devuelven **todos**, también los inactivos, con la misma forma de respuesta. Basta uno de los permisos indicados. Los inactivos no se exponen con un parámetro opcional del endpoint público, porque así seguirían siendo visibles sin permiso.
 
-- `GET /estructura/facultades` → `FacultadResponse[]` [ESTRUCTURA_CONSULTAR, FACULTAD_ACTUALIZAR o CARRERA_ACTUALIZAR]. Sus `carreras` y `bibliotecas` traen todos los nombres.
-- `GET /estructura/carreras?idFacultad` → `CarreraResponse[]` [ESTRUCTURA_CONSULTAR o CARRERA_ACTUALIZAR]
+- `GET /estructura/facultades` → `FacultadResponse[]` [ESTRUCTURA_CONSULTAR, FACULTAD_ACTUALIZAR, CARRERA_ACTUALIZAR o BIBLIOTECA_ACTUALIZAR]. Sus `carreras` y `bibliotecas` traen todos los nombres.
+- `GET /estructura/carreras?idFacultad` → `CarreraResponse[]` [ESTRUCTURA_CONSULTAR, CARRERA_ACTUALIZAR o BIBLIOTECA_ACTUALIZAR]
 - `GET /estructura/bibliotecas` → `BibliotecaResponse[]` [ESTRUCTURA_CONSULTAR o BIBLIOTECA_ACTUALIZAR]
 
 Escritura:

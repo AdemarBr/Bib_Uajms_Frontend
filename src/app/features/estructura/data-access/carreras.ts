@@ -31,7 +31,8 @@ export class Carreras {
   }
 
   /**
-   * GET /estructura/carreras?idFacultad [ESTRUCTURA_CONSULTAR o CARRERA_ACTUALIZAR]: todas, también las
+   * GET /estructura/carreras?idFacultad [ESTRUCTURA_CONSULTAR, CARRERA_ACTUALIZAR o
+   * BIBLIOTECA_ACTUALIZAR]: todas, también las
    * inactivas (P3.1, P3.3 y P3.5).
    */
   listarCarrerasEstructura(idFacultad?: number | null): Observable<CarreraResponse[]> {

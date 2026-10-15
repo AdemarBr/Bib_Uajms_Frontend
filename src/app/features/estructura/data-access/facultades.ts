@@ -31,7 +31,8 @@ export class Facultades {
   }
 
   /**
-   * GET /estructura/facultades [ESTRUCTURA_CONSULTAR, FACULTAD_ACTUALIZAR o CARRERA_ACTUALIZAR]:
+   * GET /estructura/facultades [ESTRUCTURA_CONSULTAR, FACULTAD_ACTUALIZAR, CARRERA_ACTUALIZAR o
+   * BIBLIOTECA_ACTUALIZAR]:
    * todas, también las inactivas (P3.1, P3.3 y P3.5).
    */
   listarFacultadesEstructura(): Observable<FacultadResponse[]> {

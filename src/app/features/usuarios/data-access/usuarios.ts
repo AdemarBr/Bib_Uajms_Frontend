@@ -1,10 +1,11 @@
-import { Service, signal } from '@angular/core';
+import { Service, inject, signal } from '@angular/core';
 import { Observable, delay, of, throwError } from 'rxjs';
 
 import { ROLES_CON_BIBLIOTECA } from '../../../core/config/constantes';
 import { ErrorCampo, ErrorRespuesta } from '../../../shared/models/error-respuesta';
 import { Pagina } from '../../../shared/models/pagina';
-import { BIBLIOTECAS_MOCK } from '../../estructura/data-access/bibliotecas.mock';
+import { BibliotecaMock } from '../../estructura/data-access/bibliotecas.mock';
+import { DatosEstructura } from '../../estructura/data-access/datos-estructura';
 import { FiltroUsuarios } from '../models/filtro-usuarios';
 import { RegistroUsuarioResponse } from '../models/registro-usuario-response';
 import { RestablecerContrasenaResponse } from '../models/restablecer-contrasena-response';
@@ -25,6 +26,8 @@ const LARGO_CONTRASENA = 10;
 @Service()
 export class Usuarios {
   private readonly usuarios = signal<UsuarioResponse[]>(USUARIOS_MOCK);
+  /** Tabla biblioteca del prototipo, la misma de RF3 (lo registrado en P3.4 o editado en P3.5 se ve aquí). */
+  private readonly estructura = inject(DatosEstructura);
 
   /** GET /usuarios?q&idRol&estado&tipoUsuario&idBiblioteca (RF2.2, RF2.2.1 y RF2.2.1.1). */
   listarUsuarios(filtro: FiltroUsuarios = {}): Observable<Pagina<UsuarioResponse>> {
@@ -58,7 +61,7 @@ export class Usuarios {
 
   /** POST /usuarios: genera el nombre de usuario y la contraseña, que se muestran una sola vez (RF2.1). */
   registrarUsuario(solicitud: UsuarioInternoRequest): Observable<RegistroUsuarioResponse> {
-    const datos = validar(solicitud);
+    const datos = validar(solicitud, this.estructura.bibliotecas(), null);
     if ('status' in datos) return throwError(() => datos).pipe(delay(DEMORA_MS));
 
     const usuarios = this.usuarios();
@@ -93,7 +96,7 @@ export class Usuarios {
   ): Observable<UsuarioResponse> {
     const actual = this.usuarios().find((u) => u.idUsuario === idUsuario);
     if (!actual || actual.tipoUsuario !== 'interno') return noEncontrado();
-    const datos = validar(solicitud);
+    const datos = validar(solicitud, this.estructura.bibliotecas(), actual.idBiblioteca);
     if ('status' in datos) return throwError(() => datos).pipe(delay(DEMORA_MS));
 
     const actualizado: UsuarioResponse = { ...actual, ...datos };
@@ -137,8 +140,15 @@ type DatosValidados = Pick<
   'nombre' | 'correo' | 'idRol' | 'rolNombre' | 'idBiblioteca' | 'bibliotecaNombre'
 >;
 
-/** Lo que el backend vuelve a validar: nombre obligatorio, rol interno y biblioteca según el rol (RF2.5). */
-function validar(solicitud: UsuarioInternoRequest): DatosValidados | ErrorRespuesta {
+/**
+ * Lo que el backend vuelve a validar: nombre obligatorio, rol interno y biblioteca según el rol (RF2.5).
+ * Solo se asigna una biblioteca activa, salvo que el usuario conserve la que ya tenía (`idBibliotecaActual`).
+ */
+function validar(
+  solicitud: UsuarioInternoRequest,
+  bibliotecas: readonly BibliotecaMock[],
+  idBibliotecaActual: number | null,
+): DatosValidados | ErrorRespuesta {
   const errores: ErrorCampo[] = [];
   const nombre = solicitud.nombre.trim();
   if (!nombre) errores.push({ campo: 'nombre', mensaje: 'Es obligatorio.' });
@@ -148,10 +158,12 @@ function validar(solicitud: UsuarioInternoRequest): DatosValidados | ErrorRespue
 
   const requiereBiblioteca = !!rol && ROLES_CON_BIBLIOTECA.includes(rol.nombre);
   const biblioteca = requiereBiblioteca
-    ? BIBLIOTECAS_MOCK.find((b) => b.idBiblioteca === solicitud.idBiblioteca)
+    ? bibliotecas.find((b) => b.idBiblioteca === solicitud.idBiblioteca)
     : undefined;
   if (requiereBiblioteca && !biblioteca) {
     errores.push({ campo: 'idBiblioteca', mensaje: 'Es obligatorio.' });
+  } else if (biblioteca && !biblioteca.estado && biblioteca.idBiblioteca !== idBibliotecaActual) {
+    errores.push({ campo: 'idBiblioteca', mensaje: 'La biblioteca seleccionada no está activa.' });
   }
 
   if (errores.length > 0 || !rol) {
