@@ -45,6 +45,12 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/estructura/estructura.routes').then((m) => m.RUTAS_ESTRUCTURA),
       },
+      {
+        path: 'gestion-catalogo',
+        canActivate: [sesionGuard],
+        loadChildren: () =>
+          import('./features/catalogo/catalogo.routes').then((m) => m.RUTAS_GESTION_CATALOGO),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

@@ -218,9 +218,19 @@ Escritura:
   "materia": "Informática", "clasificacionDewey": "005.1", "isbn": null }
 ```
 
+Validación de `LibroRequest` (`POST` y `PUT`; 400 con `errores[]` por campo): `titulo`, `autor`, `editorial`, `materia` y `clasificacionDewey` obligatorios; `isbn` opcional. Largos máximos de `docs/modelo-datos.md` (título 250, autor 200, editorial 120, materia 100, clasificación Dewey 30, ISBN 20). `clasificacionDewey`: tres dígitos, con decimales opcionales después de un punto (`005.1`, `346`, `515`). El ISBN es único: si ya lo tiene otro libro, 409 con el detalle «Ya existe un libro con ese ISBN.». La portada debe ser una imagen. Al actualizar, cada campo que cambia (también la portada, sin valores) se anota en `historial_cambio_libro`.
+
+Archivo de `POST /libros/importar` (RF4.2):
+
+- Formato admitido: CSV (`.csv`) en UTF-8, separado por comas; un valor con comas va entre comillas dobles (`"Pérez, Juan"`) y una comilla dentro de él se escribe doble (`""`).
+- Primera fila: la cabecera exacta `titulo,autor,editorial,materia,clasificacionDewey,isbn`. Cada fila siguiente es un libro; las filas vacías se ignoran.
+- Si el archivo no es CSV, no tiene esa cabecera o no tiene filas de libros, responde 400 con `ErrorRespuesta` y no importa nada.
+- Cada fila se valida con las reglas de `LibroRequest`. Las válidas se registran (con la fecha de hoy como `fechaIncorporacion`) y las inválidas se informan en `errores[]`, una entrada por fila con su primer error. `fila` es el número de fila del archivo (la cabecera es la fila 1).
+- Mensajes por fila, en minúscula para que la interfaz los muestre como «Fila 12: falta autor.»: «falta título.», «falta autor.», «falta editorial.», «falta materia.», «falta Dewey.», «título demasiado largo.» (igual con autor, editorial, materia, Dewey e ISBN), «Dewey inválido.» e «ISBN duplicado.» (ya registrado en el catálogo o repetido en una fila anterior del archivo).
+
 ```json
 // ImportacionResponse (RF4.2.5)
-{ "incorporados": 48, "errores": [ { "fila": 7, "mensaje": "Falta el título." } ] }
+{ "incorporados": 42, "errores": [ { "fila": 12, "mensaje": "falta autor." }, { "fila": 27, "mensaje": "Dewey inválido." } ] }
 ```
 
 ```json

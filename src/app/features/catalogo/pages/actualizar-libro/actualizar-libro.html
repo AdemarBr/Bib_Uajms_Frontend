@@ -1,0 +1,82 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Actualizar datos del libro</h1>
+
+  @if (libro(); as l) {
+    <div *appTienePermiso="permisoHistorial">
+      <a
+        class="text-body text-brand-accent underline"
+        [routerLink]="['/gestion-catalogo/libros', l.idLibro, 'historial']"
+        >Ver historial de cambios</a
+      >
+    </div>
+
+    <form
+      class="flex w-[562px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+      novalidate
+      [formGroup]="formulario"
+      (ngSubmit)="guardar()"
+    >
+      @for (c of campos; track c.campo) {
+        <div class="flex flex-col gap-xs">
+          <label class="text-label text-gray-600" [for]="c.campo">{{ c.etiqueta }}</label>
+          <input
+            type="text"
+            class="campo-texto border-gray-500"
+            [id]="c.campo"
+            [formControlName]="c.campo"
+            [attr.aria-invalid]="!!mensajeCampo(c.campo)"
+          />
+          @if (mensajeCampo(c.campo); as e) {
+            <p class="text-label text-gray-900">{{ e }}</p>
+          }
+        </div>
+      }
+
+      <app-portada-libro
+        [url]="urlPortada()"
+        [mensaje]="mensajePortada()"
+        [deshabilitado]="enviando()"
+        (seleccion)="elegirPortada($event)"
+      />
+
+      <div class="flex gap-md">
+        <!-- RF4.5.5 y RF4.7.5: «Activar libro» reemplaza a «Desactivar libro» mientras está inactivo. -->
+        <button
+          *appTienePermiso="permisoEstado"
+          type="button"
+          class="btn-secundario"
+          [disabled]="enviando()"
+          (click)="confirmandoEstado.set(true)"
+        >
+          {{ l.estado ? 'Desactivar libro' : 'Activar libro' }}
+        </button>
+        <button type="submit" class="btn-primario" [disabled]="enviando()">Guardar cambios</button>
+      </div>
+
+      @if (error(); as e) {
+        <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+      }
+    </form>
+
+    @if (confirmandoEstado()) {
+      <app-modal-confirmacion
+        [abierto]="true"
+        [titulo]="l.estado ? '¿Desactivar este libro?' : '¿Activar este libro?'"
+        [mensaje]="
+          l.estado
+            ? 'El libro dejará de aparecer en el catálogo público. Podrás reactivarlo después.'
+            : 'El libro volverá a aparecer en el catálogo público.'
+        "
+        [procesando]="procesandoEstado()"
+        (confirmar)="confirmarCambioEstado()"
+        (cancelar)="cancelarCambioEstado()"
+      >
+        @if (errorEstado(); as e) {
+          <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+        }
+      </app-modal-confirmacion>
+    }
+  } @else if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+</div>
