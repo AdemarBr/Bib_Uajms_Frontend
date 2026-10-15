@@ -83,138 +83,144 @@ Fuente: documento del proyecto. Incluye los requerimientos funcionales y no func
 - RF29. El sistema debe permitir aplicar filtros de libros registrados por biblioteca, facultad, autor, materia, estado, clasificación u otros criterios definidos.
 - RF30. El sistema debe permitir actualizar los datos de un libro registrado.
 - RF31. El sistema debe permitir desactivar libros registrados.
-- RF32. El sistema debe permitir consultar el historial de cambios de un libro registrado.
-- RF33. El sistema debe permitir registrar como parte del libro datos bibliográficos como título, autor, editorial, materia, clasificación Dewey, ISBN, portada y demás datos necesarios para su identificación.
+- RF32. El sistema debe permitir activar nuevamente un libro desactivado.
+- RF33. El sistema debe permitir consultar el historial de cambios de un libro registrado.
+- RF34. El sistema debe permitir registrar como parte del libro datos bibliográficos como título, autor, editorial, materia, clasificación Dewey, ISBN, portada y demás datos necesarios para su identificación.
 
 ### Administración de ejemplares y ubicación física
 
-- RF34. El sistema debe permitir registrar ejemplares físicos de libros.
-- RF35. El sistema debe permitir consultar ejemplares registrados.
-- RF36. El sistema debe permitir buscar ejemplares de libros mediante criterios de búsqueda.
-- RF37. El sistema debe permitir aplicar filtros de ejemplares por biblioteca física, facultad, estado, disponibilidad o ubicación.
-- RF38. El sistema debe permitir actualizar los datos de un ejemplar registrado.
-- RF39. El sistema debe permitir asignar un código de ejemplar.
-- RF40. El sistema debe permitir actualizar el estado del ejemplar.
-- RF41. El sistema debe permitir consultar la disponibilidad del ejemplar.
-- RF42. El sistema debe permitir consultar la ubicación física del ejemplar.
-- RF43. El sistema debe permitir identificar la ubicación del material considerando la biblioteca física y la clasificación Dewey registrada.
+- RF35. El sistema debe permitir registrar ejemplares físicos de libros.
+- RF36. El sistema debe permitir consultar ejemplares registrados.
+- RF37. El sistema debe permitir buscar ejemplares de libros mediante criterios de búsqueda.
+- RF38. El sistema debe permitir aplicar filtros de ejemplares por biblioteca física, facultad, estado, disponibilidad o ubicación.
+- RF39. El sistema debe permitir actualizar los datos de un ejemplar registrado.
+- RF40. El sistema debe permitir asignar un código de ejemplar.
+- RF41. El sistema debe permitir actualizar el estado del ejemplar.
+- RF42. El sistema debe permitir consultar la disponibilidad del ejemplar.
+- RF43. El sistema debe permitir consultar la ubicación física del ejemplar.
+- RF44. El sistema debe permitir identificar la ubicación del material considerando la biblioteca física y la clasificación Dewey registrada.
 
 ### Consulta del catálogo bibliográfico
 
-- RF44. El sistema debe permitir consultar el catálogo bibliográfico.
-- RF45. El sistema debe permitir buscar material bibliográfico por criterios como título, autor, materia, biblioteca, facultad o clasificación Dewey.
-- RF46. El sistema debe permitir aplicar filtros de búsqueda bibliográfica.
-- RF47. El sistema debe permitir visualizar el detalle del libro seleccionado.
-- RF48. El sistema debe permitir visualizar la portada del libro cuando se encuentre registrada.
-- RF49. El sistema debe permitir consultar la disponibilidad del libro o sus ejemplares.
-- RF50. El sistema debe permitir consultar la ubicación física del libro.
-- RF51. El sistema debe permitir visualizar novedades bibliográficas publicadas.
-- RF52. El sistema debe permitir la consulta pública del catálogo bibliográfico sin autenticación obligatoria.
-- RF53. El sistema debe permitir consultar el listado de bibliotecas físicas disponibles desde el catálogo bibliográfico.
+- RF45. El sistema debe permitir consultar el catálogo bibliográfico.
+- RF46. El sistema debe permitir buscar material bibliográfico por criterios como título, autor, materia, biblioteca, facultad o clasificación Dewey.
+- RF47. El sistema debe permitir aplicar filtros de búsqueda bibliográfica.
+- RF48. El sistema debe permitir visualizar el detalle del libro seleccionado.
+- RF49. El sistema debe permitir visualizar la portada del libro cuando se encuentre registrada.
+- RF50. El sistema debe permitir consultar la disponibilidad del libro o sus ejemplares.
+- RF51. El sistema debe permitir consultar la ubicación física del libro.
+- RF52. El sistema debe permitir visualizar novedades bibliográficas publicadas.
+- RF53. El sistema debe permitir la consulta pública del catálogo bibliográfico sin autenticación obligatoria.
+- RF54. El sistema debe permitir consultar el listado de bibliotecas físicas disponibles desde el catálogo bibliográfico.
 
 ### Reservas de libros
 
-- RF54. El sistema debe permitir que un usuario académico autenticado seleccione un libro para reserva.
-- RF55. El sistema debe verificar la disponibilidad del libro antes de registrar una reserva.
-- RF56. El sistema debe permitir registrar la reserva de un libro.
-- RF57. El sistema debe permitir consultar el estado de una reserva.
-- RF58. El sistema debe permitir cancelar una reserva realizada por el usuario académico cuando el estado de la reserva lo permita.
-- RF59. El sistema debe asociar cada reserva al usuario académico autenticado que la realizó.
-- RF60. El sistema debe impedir que un usuario visitante realice reservas.
+- RF55. El sistema debe permitir que un usuario académico autenticado seleccione un libro para reserva.
+- RF56. El sistema debe verificar la disponibilidad del libro antes de registrar una reserva.
+- RF57. El sistema debe permitir registrar la reserva de un libro.
+- RF58. El sistema debe permitir consultar el estado de una reserva.
+- RF59. El sistema debe permitir cancelar una reserva realizada por el usuario académico cuando el estado de la reserva lo permita.
+- RF60. El sistema debe asociar cada reserva al usuario académico autenticado que la realizó.
+- RF61. El sistema debe impedir que un usuario visitante realice reservas.
 
 ### Administración de reservas
 
-- RF61. El sistema debe permitir consultar reservas registradas.
-- RF62. El sistema debe permitir consultar reservas por biblioteca.
-- RF63. El sistema debe permitir confirmar una reserva.
-- RF64. El sistema debe permitir rechazar una reserva.
-- RF65. El sistema debe permitir cancelar una reserva de forma administrativa.
-- RF66. El sistema debe permitir actualizar el estado de una reserva.
-- RF67. El sistema debe permitir consultar el historial de reservas.
-- RF68. El sistema debe permitir que el bibliotecario o administrador de biblioteca gestione reservas según su ámbito de responsabilidad.
+- RF62. El sistema debe permitir consultar reservas registradas.
+- RF63. El sistema debe permitir consultar reservas por biblioteca.
+- RF64. El sistema debe permitir confirmar una reserva.
+- RF65. El sistema debe permitir rechazar una reserva.
+- RF66. El sistema debe permitir cancelar una reserva de forma administrativa.
+- RF67. El sistema debe permitir actualizar el estado de una reserva.
+- RF68. El sistema debe permitir consultar el historial de reservas.
+- RF69. El sistema debe permitir que el bibliotecario o administrador de biblioteca gestione reservas según su ámbito de responsabilidad.
+- RF70. El sistema debe permitir atender una reserva confirmada cuando el usuario se presenta en la biblioteca, derivando al registro del préstamo en sala o a domicilio con los datos de la reserva.
 
 ### Préstamo en sala
 
-- RF69. El sistema debe permitir registrar préstamos en sala.
-- RF70. El sistema debe permitir verificar los datos institucionales del usuario antes de registrar un préstamo en sala.
-- RF71. El sistema debe permitir consultar la disponibilidad del ejemplar antes de registrar el préstamo en sala.
-- RF72. El sistema debe permitir seleccionar el ejemplar que será utilizado en sala.
-- RF73. El sistema debe actualizar la disponibilidad del ejemplar después de registrar el préstamo en sala.
-- RF74. El sistema debe permitir consultar préstamos en sala vigentes.
-- RF75. El sistema debe registrar que el préstamo en sala corresponde únicamente al uso del material dentro de los ambientes de la biblioteca.
+- RF71. El sistema debe permitir registrar préstamos en sala.
+- RF72. El sistema debe permitir verificar los datos institucionales del usuario antes de registrar un préstamo en sala.
+- RF73. El sistema debe permitir consultar la disponibilidad del ejemplar antes de registrar el préstamo en sala.
+- RF74. El sistema debe permitir seleccionar el ejemplar que será utilizado en sala.
+- RF75. El sistema debe actualizar la disponibilidad del ejemplar después de registrar el préstamo en sala.
+- RF76. El sistema debe permitir consultar préstamos en sala vigentes.
+- RF77. El sistema debe registrar que el préstamo en sala corresponde únicamente al uso del material dentro de los ambientes de la biblioteca.
+- RF78. El sistema debe permitir cancelar el registro de un préstamo en sala antes de confirmarlo, sin registrar el préstamo ni modificar la disponibilidad del ejemplar.
 
 ### Préstamo a domicilio
 
-- RF76. El sistema debe permitir registrar préstamos a domicilio.
-- RF77. El sistema debe permitir verificar los datos institucionales del usuario antes de registrar un préstamo a domicilio.
-- RF78. El sistema debe permitir consultar la disponibilidad del ejemplar antes de registrar el préstamo a domicilio.
-- RF79. El sistema debe validar si el ejemplar puede salir a domicilio.
-- RF80. El sistema debe permitir seleccionar el ejemplar que será prestado a domicilio.
-- RF81. El sistema debe permitir asignar la fecha de devolución del préstamo a domicilio.
-- RF82. El sistema debe actualizar la disponibilidad del ejemplar después de registrar el préstamo a domicilio.
-- RF83. El sistema debe permitir consultar préstamos a domicilio vigentes.
-- RF84. El sistema debe impedir el préstamo a domicilio de ejemplares configurados únicamente para consulta en sala.
+- RF79. El sistema debe permitir registrar préstamos a domicilio.
+- RF80. El sistema debe permitir verificar los datos institucionales del usuario antes de registrar un préstamo a domicilio.
+- RF81. El sistema debe permitir consultar la disponibilidad del ejemplar antes de registrar el préstamo a domicilio.
+- RF82. El sistema debe validar si el ejemplar puede salir a domicilio.
+- RF83. El sistema debe permitir seleccionar el ejemplar que será prestado a domicilio.
+- RF84. El sistema debe permitir asignar la fecha de devolución del préstamo a domicilio.
+- RF85. El sistema debe actualizar la disponibilidad del ejemplar después de registrar el préstamo a domicilio.
+- RF86. El sistema debe permitir consultar préstamos a domicilio vigentes.
+- RF87. El sistema debe permitir ampliar el plazo de un préstamo a domicilio, registrando la nueva fecha límite de devolución junto con la fecha anterior.
+- RF88. El sistema debe impedir el préstamo a domicilio de ejemplares configurados únicamente para consulta en sala.
+- RF89. El sistema debe permitir cancelar el registro de un préstamo a domicilio antes de confirmarlo, sin registrar el préstamo ni modificar la disponibilidad del ejemplar.
 
 ### Devolución de libros
 
-- RF85. El sistema debe permitir registrar la devolución de un libro.
-- RF86. El sistema debe permitir buscar el préstamo vigente asociado al ejemplar devuelto.
-- RF87. El sistema debe permitir registrar el estado del ejemplar devuelto, evaluado manualmente por el Bibliotecario.
-- RF88. El sistema debe actualizar la disponibilidad del ejemplar después de registrar la devolución.
-- RF89. El sistema debe permitir controlar retrasos en la devolución.
-- RF90. El sistema debe permitir consultar el historial de devoluciones.
-- RF91. El sistema no debe gestionar cobros, pagos o multas económicas, aunque pueda registrar o mostrar información de retraso para control bibliotecario.
+- RF90. El sistema debe permitir registrar la devolución de un libro.
+- RF91. El sistema debe permitir buscar el préstamo vigente asociado al ejemplar devuelto.
+- RF92. El sistema debe permitir registrar el estado del ejemplar devuelto, evaluado manualmente por el Bibliotecario.
+- RF93. El sistema debe actualizar la disponibilidad del ejemplar después de registrar la devolución.
+- RF94. El sistema debe permitir controlar retrasos en la devolución.
+- RF95. El sistema debe permitir consultar el historial de devoluciones.
+- RF96. El sistema no debe gestionar cobros, pagos o multas económicas, aunque pueda registrar o mostrar información de retraso para control bibliotecario.
 
 ### Administración de tesis digitales
 
-- RF92. El sistema debe permitir registrar tesis académicas.
-- RF93. El sistema debe permitir consultar tesis registradas.
-- RF94. El sistema debe permitir buscar tesis registradas.
-- RF95. El sistema debe permitir aplicar filtros de tesis registradas.
-- RF96. El sistema debe permitir actualizar datos de tesis.
-- RF97. El sistema debe permitir desactivar tesis registradas.
-- RF98. El sistema debe permitir cargar el archivo digital de la tesis.
-- RF99. El sistema debe permitir actualizar el archivo digital de la tesis.
-- RF100. El sistema debe permitir registrar como parte de la tesis datos como facultad, carrera, título, autor, tutor, gestión, número de inventario, palabras clave y archivo digital.
+- RF97. El sistema debe permitir registrar tesis académicas.
+- RF98. El sistema debe permitir consultar tesis registradas.
+- RF99. El sistema debe permitir buscar tesis registradas.
+- RF100. El sistema debe permitir aplicar filtros de tesis registradas.
+- RF101. El sistema debe permitir actualizar datos de tesis.
+- RF102. El sistema debe permitir desactivar tesis registradas.
+- RF103. El sistema debe permitir activar nuevamente una tesis desactivada.
+- RF104. El sistema debe permitir cargar el archivo digital de la tesis.
+- RF105. El sistema debe permitir actualizar el archivo digital de la tesis.
+- RF106. El sistema debe permitir registrar como parte de la tesis datos como facultad, carrera, título, autor, tutor, gestión, número de inventario, palabras clave y archivo digital.
 
 ### Consulta de tesis digitales
 
-- RF101. El sistema debe permitir consultar tesis digitales.
-- RF102. El sistema debe permitir buscar tesis digitales mediante criterios como título, autor, carrera, facultad, año o tema.
-- RF103. El sistema debe permitir aplicar filtros de búsqueda de tesis.
-- RF104. El sistema debe permitir visualizar el detalle de una tesis.
-- RF105. El sistema debe permitir visualizar el archivo digital de una tesis cuando este se encuentre registrado.
-- RF106. El sistema no debe modelar la descarga de tesis como funcionalidad independiente, debido a que la visualización del archivo puede permitir su descarga desde el visor o navegador.
+- RF107. El sistema debe permitir consultar tesis digitales.
+- RF108. El sistema debe permitir buscar tesis digitales mediante criterios como título, autor, carrera, facultad, año o tema.
+- RF109. El sistema debe permitir aplicar filtros de búsqueda de tesis.
+- RF110. El sistema debe permitir visualizar el detalle de una tesis.
+- RF111. El sistema debe permitir visualizar el archivo digital de una tesis cuando este se encuentre registrado.
+- RF112. El sistema no debe modelar la descarga de tesis como funcionalidad independiente, debido a que la visualización del archivo puede permitir su descarga desde el visor o navegador.
 
 ### Comunicación usuario-bibliotecario
 
-- RF107. El sistema debe permitir que el usuario académico envíe consultas al bibliotecario.
-- RF108. El sistema debe permitir consultar mensajes enviados.
-- RF109. El sistema debe permitir consultar mensajes recibidos.
-- RF110. El sistema debe permitir que el bibliotecario responda consultas de usuarios académicos.
-- RF111. El sistema debe registrar la comunicación usuario-bibliotecario dentro del sistema.
-- RF112. El sistema no debe depender de un servicio externo de notificaciones, ya que la comunicación se gestionará internamente.
+- RF113. El sistema debe permitir que el usuario académico envíe consultas al bibliotecario.
+- RF114. El sistema debe permitir consultar mensajes enviados.
+- RF115. El sistema debe permitir consultar mensajes recibidos.
+- RF116. El sistema debe permitir que el bibliotecario responda consultas de usuarios académicos.
+- RF117. El sistema debe registrar la comunicación usuario-bibliotecario dentro del sistema.
+- RF118. El sistema no debe depender de un servicio externo de notificaciones, ya que la comunicación se gestionará internamente.
 
 ### Reportes y dashboards
 
-- RF113. El sistema debe permitir visualizar un dashboard general.
-- RF114. El sistema debe permitir visualizar un dashboard de uso del catálogo.
-- RF115. El sistema debe permitir visualizar un dashboard de reservas.
-- RF116. El sistema debe permitir visualizar un dashboard de préstamos.
-- RF117. El sistema debe permitir visualizar un dashboard de tesis.
-- RF118. El sistema debe permitir filtrar información estadística.
-- RF119. El sistema debe permitir generar reportes de libros más consultados.
-- RF120. El sistema debe permitir generar reportes de tesis más consultadas.
-- RF121. El sistema debe permitir generar reportes de reservas.
-- RF122. El sistema debe permitir generar reportes de préstamos.
-- RF123. El sistema debe permitir generar reportes por facultad.
-- RF124. El sistema debe permitir generar reportes por carrera.
-- RF125. El sistema debe registrar información de uso necesaria para la generación de estadísticas y dashboards.
+- RF119. El sistema debe permitir visualizar un dashboard general.
+- RF120. El sistema debe permitir visualizar un dashboard de uso del catálogo.
+- RF121. El sistema debe permitir visualizar un dashboard de reservas.
+- RF122. El sistema debe permitir visualizar un dashboard de préstamos.
+- RF123. El sistema debe permitir visualizar un dashboard de tesis.
+- RF124. El sistema debe permitir filtrar información estadística.
+- RF125. El sistema debe permitir generar reportes de libros más consultados.
+- RF126. El sistema debe permitir generar reportes de tesis más consultadas.
+- RF127. El sistema debe permitir generar reportes de reservas.
+- RF128. El sistema debe permitir generar reportes de préstamos.
+- RF129. El sistema debe permitir generar reportes por facultad.
+- RF130. El sistema debe permitir generar reportes por carrera.
+- RF131. El sistema debe registrar información de uso necesaria para la generación de estadísticas y dashboards.
 
 ### Novedades bibliográficas
 
-- RF126. El sistema debe registrar automáticamente la fecha de incorporación de cada libro al catálogo.
-- RF127. El sistema debe mostrar en el catálogo bibliográfico los últimos N libros incorporados (novedades bibliográficas), ordenados por fecha de registro, de forma automática.
+- RF132. El sistema debe registrar automáticamente la fecha de incorporación de cada libro al catálogo.
+- RF133. El sistema debe mostrar en el catálogo bibliográfico los últimos N libros incorporados (novedades bibliográficas), ordenados por fecha de registro, de forma automática.
 
 ### Datos
 
@@ -294,7 +300,7 @@ Fuente: documento del proyecto. Incluye los requerimientos funcionales y no func
 - RF17: La interfaz debe mostrar el estado de disponibilidad mediante un indicador visual (por ejemplo, una etiqueta de color) junto al ejemplar consultado.
 - RF18: La interfaz debe mostrar la cantidad de ejemplares resultantes tras aplicar los filtros, mediante el contador «N ejemplares encontrados».
 - RF19: La interfaz debe presentar la información del libro organizada en secciones: datos bibliográficos, disponibilidad y ubicación física.
-- RF20: La interfaz debe mostrar la disponibilidad mediante un indicador visual (por ejemplo, una etiqueta de color) dentro de la vista de detalle del libro.
+- RF20: La interfaz debe mostrar la disponibilidad mediante un indicador visual (por ejemplo, una etiqueta de color) dentro de la interfaz P6.2 de detalle del libro.
 - RF21: La interfaz debe mostrar la portada del libro en un tamaño legible dentro de la vista de detalle.
 - RF22: La interfaz debe presentar una imagen genérica de reemplazo cuando el libro no tenga portada registrada.
 - RF23: La interfaz debe incluir una sección visible en el catálogo bibliográfico dedicada a mostrar las novedades.
@@ -410,7 +416,7 @@ Fuente: documento del proyecto. Incluye los requerimientos funcionales y no func
 - RF07: La interfaz debe ocultar los caracteres de la contraseña ingresada, con la opción de mostrarla temporalmente.
 - RF08: Este caso de uso permite finalizar de forma segura la sesión activa del usuario dentro del sistema bibliotecario.
 - RF09: El sistema debe garantizar que la sesión del usuario queda finalizada y el sistema impide el acceso a funcionalidades protegidas hasta que el usuario vuelva a autenticarse.
-- RF10: La interfaz debe redirigir automáticamente a la pantalla de inicio (P.1 Home) al finalizar la sesión.
+- RF10: La interfaz debe redirigir automáticamente a la pantalla de inicio (P.1 Home sin sesión) al finalizar la sesión.
 - RF11: El sistema debe garantizar que el usuario queda asociado al rol seleccionado y el sistema ajusta sus permisos de acceso según dicho rol.
 - RF12: La interfaz debe mostrar una breve descripción de los permisos asociados al rol antes de confirmar la asignación.
 - RF13: Este caso de uso permite revisar los permisos asociados a cada rol definido dentro del sistema bibliotecario.

@@ -189,10 +189,11 @@ Escritura:
 ## 6. Catálogo de libros: gestión (RF4)
 
 - `GET /libros?q&idBiblioteca&idFacultad&materia&autor&estado&clasificacionDewey` → `Pagina<LibroResponse>` [LIBRO_CONSULTAR]
+- `GET /libros/opciones-filtro` → `OpcionesFiltroLibroResponse` [LIBRO_CONSULTAR] (valores de los desplegables de materia, autor y clasificación de P4.3, RF4.3.1.1.3; los de biblioteca y facultad salen de `GET /bibliotecas` y `GET /facultades`)
 - `GET /libros/{id}` → `LibroResponse` [LIBRO_CONSULTAR]
 - `POST /libros` (multipart: parte `datos` = `LibroRequest`, parte opcional `portada` = imagen) [LIBRO_REGISTRAR]
 - `PUT /libros/{id}` (mismo multipart) [LIBRO_ACTUALIZAR]
-- `PATCH /libros/{id}/estado` `{ "estado": false }` [LIBRO_DESACTIVAR]
+- `PATCH /libros/{id}/estado` `{ "estado": false }` para desactivar (RF4.5) o `{ "estado": true }` para activar (RF4.7) [LIBRO_CAMBIAR_ESTADO]
 - `POST /libros/importar` (multipart: `archivo`) → `ImportacionResponse` [LIBRO_IMPORTAR]
 - `GET /libros/{id}/historial` → `HistorialCambioLibroResponse[]` [LIBRO_HISTORIAL_CONSULTAR]
 
@@ -203,6 +204,12 @@ Escritura:
 { "idLibro": 1, "titulo": "Introducción a la Programación", "autor": "Ana Torres", "editorial": "Editorial Universitaria",
   "materia": "Informática", "clasificacionDewey": "005.1", "isbn": "978-99954-1-234-5",
   "portadaUrl": "/api/v1/catalogo/libros/1/portada", "fechaIncorporacion": "2026-07-20", "estado": true }
+```
+
+```json
+// OpcionesFiltroLibroResponse: valores distintos de la tabla libro, ordenados alfabéticamente
+{ "materias": ["Derecho", "Informática", "Matemáticas"], "autores": ["Ana Torres", "María Paz", "Roberto Vidal"],
+  "clasificacionesDewey": ["005.1", "346", "515"] }
 ```
 
 ```json
@@ -365,7 +372,7 @@ Préstamo desde una reserva confirmada (RF8.8): el botón «Prestar» de P8.1 ab
 
 - `GET /tesis?q&idCarrera&gestion` → `Pagina<TesisResponse>` [TESIS_CONSULTAR]
 - `POST /tesis` `TesisRequest` [TESIS_REGISTRAR] · `PUT /tesis/{id}` `TesisRequest` [TESIS_ACTUALIZAR]
-- `PATCH /tesis/{id}/estado` `{ "estado": false }` [TESIS_DESACTIVAR]
+- `PATCH /tesis/{id}/estado` `{ "estado": false }` para desactivar (RF10.6) o `{ "estado": true }` para activar (RF10.7) [TESIS_CAMBIAR_ESTADO]
 - `GET /tesis/{id}/documentos` → `DocumentoTesisResponse[]` [TESIS_CONSULTAR]
 - `POST /tesis/{id}/documentos` (multipart: `tipoSeccion` + `archivo`) → `DocumentoTesisResponse` [TESIS_DOCUMENTO_CARGAR]
 - `PUT /tesis/{id}/documentos/{idDocumento}` (multipart: `archivo`) → `DocumentoTesisResponse` [TESIS_DOCUMENTO_ACTUALIZAR]

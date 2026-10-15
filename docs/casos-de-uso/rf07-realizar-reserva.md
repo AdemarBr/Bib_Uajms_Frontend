@@ -23,8 +23,8 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El actor selecciona, desde el menú lateral del sistema, la opción «Mis reservas», que lo lleva a la interfaz P7.1, P7.2 según el caso de uso hijo que corresponda.
-- 2.- El sistema despliega la interfaz correspondiente (P7.1, P7.2) con las opciones específicas de «Mis reservas».
+- 1.- El actor selecciona, desde el menú lateral del sistema, la opción «Mis reservas», que lo lleva a la interfaz P7.2; la interfaz P7.1 se abre al seleccionar un libro en el catálogo bibliográfico.
+- 2.- El sistema despliega la interfaz P7.2 con las opciones específicas de «Mis reservas».
 
 **Curso alternativo de eventos:**
 
@@ -92,7 +92,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El usuario académico ubica el libro en los resultados del catálogo o en su vista de detalle.
+- 1.- El usuario académico ubica el libro en los resultados de la interfaz P6.1 o en su detalle en la interfaz P6.2.
 - 2.- El sistema muestra el botón «Reservar» junto al libro.
 - 3.- El usuario académico acciona el botón «Reservar».
 - 4.- El sistema toma el libro seleccionado para continuar con el proceso de reserva.

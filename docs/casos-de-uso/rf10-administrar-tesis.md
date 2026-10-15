@@ -8,11 +8,11 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Tipo:** Primario
 
-**Referencias:** RF10.1; RF10.2; RF10.3; RF10.4; RF10.5; RF10.6
+**Referencias:** RF10.1; RF10.2; RF10.3; RF10.4; RF10.5; RF10.6; RF10.7
 
 **Propósito:** Administrar de forma integral la funcionalidad "Administrar Tesis Digitales" del sistema de la Biblioteca Central UAJMS.
 
-**Resumen:** Permite registrar tesis; cargar documentos digitales de tesis; consultar tesis registradas; actualizar datos de tesis; actualizar documento digital de tesis; desactivar tesis.
+**Resumen:** Permite registrar tesis; cargar documentos digitales de tesis; consultar tesis registradas; actualizar datos de tesis; actualizar documento digital de tesis; desactivar tesis; activar tesis.
 
 **Precondiciones:**
 
@@ -23,8 +23,8 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El actor selecciona, desde el menú lateral del sistema, la opción «Gestión de tesis», que lo lleva a la interfaz P10.1 a P10.5 según el caso de uso hijo que corresponda.
-- 2.- El sistema despliega la interfaz correspondiente (P10.1 a P10.5) con las opciones específicas de «Gestión de tesis».
+- 1.- El actor selecciona, desde el menú lateral del sistema, la opción «Gestión de tesis», que lo lleva a la interfaz P10.1 o P10.3 según el caso de uso hijo que corresponda; las interfaces P10.2, P10.4 y P10.5 se abren desde la tesis seleccionada en el listado de la interfaz P10.3.
+- 2.- El sistema despliega la interfaz correspondiente (P10.1 o P10.3) con las opciones específicas de «Gestión de tesis».
 
 **Curso alternativo de eventos:**
 
@@ -350,3 +350,45 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 - [Interfaz] RF10.6.3: La interfaz debe mostrar, junto a la tesis seleccionada, un control para cambiar su estado a desactivada.
 - [Interfaz] RF10.6.4: La interfaz debe solicitar confirmación antes de aplicar la desactivación.
 - [Interfaz] RF10.6.5: El control para desactivar la tesis es el botón «Desactivar tesis» de la interfaz P10.4; la confirmación se solicita en una ventana con los botones «Cancelar» y «Confirmar».
+
+## RF10.7 Activar tesis
+
+**Actores:** Responsable de tesis y solvencias
+
+**Tipo:** Primario
+
+**Referencias:** RF10.7.1; RF10.7.2; RF10.7.3; RF10.7.4; RF10.7.5
+
+**Propósito:** Permitir cambiar el estado de una tesis desactivada para que vuelva a encontrarse activa dentro del repositorio operativo del sistema.
+
+**Resumen:** Este caso de uso permite cambiar el estado de una tesis desactivada para que vuelva a encontrarse activa dentro del repositorio operativo del sistema. El sistema debe garantizar que la tesis queda activa y vuelve a mostrarse en las consultas públicas, conservando su información histórica.
+
+**Precondiciones:**
+
+- El usuario ha iniciado sesión en el sistema.
+- El usuario cuenta con el rol de Responsable de tesis y solvencias.
+- La tesis se encuentra desactivada.
+
+**Postcondiciones:** El sistema debe garantizar que la tesis queda activa y vuelve a mostrarse en las consultas públicas, conservando su información histórica.
+
+**Curso normal de eventos:**
+
+- 1.- El actor ubica el control de estado de la tesis desactivada dentro de la interfaz P10.4.
+- 2.- El sistema muestra el control que permite cambiar el estado de la tesis a activa.
+- 3.- El actor hace clic en el botón «Activar tesis».
+- 4.- El sistema advierte que la tesis volverá a mostrarse en las consultas y muestra una ventana de confirmación con los botones «Cancelar» y «Confirmar».
+- 5.- El actor hace clic en el botón «Confirmar» de la ventana de confirmación.
+- 6.- El sistema deja la tesis activa, conservando su información histórica. El cambio de estado se guarda en la tabla tesis. La acción queda registrada en la tabla bitacora.
+- 7.- El sistema vuelve a mostrar la tesis en las consultas públicas.
+
+**Curso alternativo de eventos:**
+
+- ¿El actor hace clic en el botón «Confirmar» de la ventana y no en «Cancelar»? En caso negativo, el sistema cancela la operación y conserva la tesis desactivada.
+
+**Requerimientos (RF10.7):**
+
+- RF10.7.1: Este caso de uso permite cambiar el estado de una tesis desactivada para que vuelva a encontrarse activa dentro del repositorio operativo del sistema.
+- RF10.7.2: El sistema debe garantizar que la tesis queda activa y vuelve a mostrarse en las consultas públicas, conservando su información histórica.
+- [Interfaz] RF10.7.3: La interfaz debe mostrar, junto a la tesis seleccionada que se encuentra desactivada, un control para cambiar su estado a activa.
+- [Interfaz] RF10.7.4: La interfaz debe solicitar confirmación antes de aplicar la activación.
+- [Interfaz] RF10.7.5: El control para activar la tesis es el botón «Activar tesis» de la interfaz P10.4, que reemplaza al botón «Desactivar tesis» mientras la tesis está desactivada; la confirmación se solicita en una ventana titulada «¿Activar esta tesis?» con los botones «Cancelar» y «Confirmar».

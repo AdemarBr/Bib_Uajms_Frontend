@@ -23,8 +23,8 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El actor selecciona, desde la barra superior del sistema, la opción «Iniciar sesión» (o «Cerrar sesión» al terminar su sesión), que lo lleva a la interfaz P1.1, P1.2 según el caso de uso hijo que corresponda.
-- 2.- El sistema despliega la interfaz correspondiente (P1.1, P1.2) con las opciones específicas de «Iniciar sesión».
+- 1.- El actor selecciona, desde la barra superior del sistema, la opción «Iniciar sesión», que lo lleva a la interfaz P1.1, o su nombre de usuario, que lo lleva a la interfaz P1.2, según el caso de uso hijo que corresponda.
+- 2.- El sistema despliega la interfaz correspondiente (P1.1 o P1.2) con las opciones específicas de autenticación.
 
 **Curso alternativo de eventos:**
 
@@ -94,7 +94,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 - 2.- El sistema toma las credenciales ingresadas e identifica si la cuenta pertenece a un usuario interno.
 - 3.- Si la cuenta es de un usuario académico, el Servicio de validación institucional verifica la identidad y la vigencia de la cuenta.
 - 4.- Si la cuenta es de un usuario interno, el sistema valida el usuario y la contraseña contra su propio registro de credenciales locales; si es de un usuario académico, recibe la respuesta del servicio institucional indicando si las credenciales corresponden a un usuario vigente.
-- 5.- El sistema permite continuar con el acceso del usuario validado. Las credenciales del usuario interno se verifican contra la tabla usuario, y su inicio de sesión exitoso queda registrado en la tabla bitacora.
+- 5.- El sistema permite continuar con el acceso del usuario validado y lo dirige a la pantalla que había solicitado o a la interfaz P.1 Home con sesión iniciada. Las credenciales del usuario interno se verifican contra la tabla usuario, y su inicio de sesión exitoso queda registrado en la tabla bitacora.
 
 **Curso alternativo de eventos:**
 
@@ -111,7 +111,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 - [Interfaz] RF1.2.7: Si el usuario está vigente, el servicio responde con el nombre, el RU, la carrera y, cuando lo informa, si es estudiante o docente, y el sistema permite continuar con el registro del préstamo.
 - [Interfaz] RF1.2.8: Si el usuario no está vigente o no existe, el servicio responde con un código HTTP distinto, y el sistema informa que el usuario no está vigente e impide continuar.
 - [Interfaz] RF1.2.9: La interfaz de registro de préstamo (P9.1 en sala, P9.3 a domicilio) debe incluir un campo para ingresar el RU del usuario y mostrar los datos institucionales verificados antes de continuar con el registro.
-- [Interfaz] RF1.2.10: Tras una validación correcta para iniciar sesión, la interfaz debe dirigir al usuario a la pantalla que había solicitado o, si no solicitó ninguna, a la pantalla de inicio (P.1 Home) y, mientras la sesión esté activa, mostrar en todas las pantallas el menú lateral con las opciones permitidas para su rol; sin sesión, las pantallas públicas (P.1 Home, P6.1, P6.2, P11.1 y P11.2) se muestran sin menú lateral.
+- [Interfaz] RF1.2.10: Tras una validación correcta para iniciar sesión, la interfaz debe dirigir al usuario a la pantalla que había solicitado o, si no solicitó ninguna, a la pantalla de inicio (P.1 Home con sesión iniciada) y, mientras la sesión esté activa, mostrar en todas las pantallas el menú lateral con las opciones permitidas para su rol; sin sesión, las pantallas públicas (P.1 Home sin sesión, P6.1, P6.2, P11.1 y P11.2) se muestran sin menú lateral.
 
 ## RF1.3 Registrar datos mínimos del usuario validado
 
@@ -214,7 +214,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 - 1.- El actor selecciona la opción «Cerrar sesión» del header global, disponible desde cualquier pantalla autenticada.
 - 2.- El sistema muestra el cuadro de diálogo «¿Cerrar sesión?» para confirmar el cierre de la sesión activa.
 - 3.- El actor hace clic en el botón «Confirmar» del cuadro de diálogo de cierre de sesión.
-- 4.- El sistema finaliza la sesión activa, descarta las credenciales en uso y redirige al actor a la pantalla P.1 Home, donde impide el acceso a las funcionalidades protegidas hasta una nueva autenticación.
+- 4.- El sistema finaliza la sesión activa, descarta las credenciales en uso y redirige al actor a la pantalla P.1 Home sin sesión, donde impide el acceso a las funcionalidades protegidas hasta una nueva autenticación.
 
 **Curso alternativo de eventos:**
 
@@ -225,4 +225,4 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 - RF1.5.1: Este caso de uso permite finalizar de forma segura la sesión activa del usuario dentro del sistema bibliotecario.
 - RF1.5.2: El sistema debe garantizar que la sesión del usuario queda finalizada y el sistema impide el acceso a funcionalidades protegidas hasta que el usuario vuelva a autenticarse.
 - [Interfaz] RF1.5.3: La interfaz debe incluir una opción visible de cierre de sesión, accesible desde cualquier pantalla del sistema una vez autenticado el usuario.
-- [Interfaz] RF1.5.4: La interfaz debe redirigir automáticamente a la pantalla de inicio (P.1 Home) al finalizar la sesión.
+- [Interfaz] RF1.5.4: La interfaz debe redirigir automáticamente a la pantalla de inicio (P.1 Home sin sesión) al finalizar la sesión.

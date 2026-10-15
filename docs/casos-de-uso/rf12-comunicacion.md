@@ -23,8 +23,8 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El actor selecciona, desde el menú lateral del sistema, la opción «Comunicación», que lo lleva a la interfaz P12.1, P12.2 según el caso de uso hijo que corresponda.
-- 2.- El sistema despliega la interfaz correspondiente (P12.1, P12.2) con las opciones específicas de «Comunicación».
+- 1.- El actor selecciona, desde el menú lateral del sistema, la opción «Comunicación», que lo lleva a la interfaz P12.1; la interfaz P12.2 se abre al seleccionar una conversación en la interfaz P12.1.
+- 2.- El sistema despliega la interfaz P12.1 con las opciones específicas de «Comunicación».
 
 **Curso alternativo de eventos:**
 
