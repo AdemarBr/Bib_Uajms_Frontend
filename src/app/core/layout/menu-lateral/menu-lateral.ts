@@ -8,7 +8,6 @@ import { Sesion } from '../../auth/sesion';
 import { MODULOS_MENU, ModuloMenu, OpcionMenu } from './opciones-menu';
 
 interface OpcionVisible extends OpcionMenu {
-  enlace: string;
   activa: boolean;
   /** Encabezado a mostrar antes de esta opción, si empieza un grupo. */
   encabezado: string | null;
@@ -24,8 +23,12 @@ function patron(ruta: string): RegExp {
   return new RegExp('^' + ruta.replace(/:[^/]+/g, '[^/]+') + '$');
 }
 
-const PATRONES = new Map<string, RegExp>(
-  MODULOS_MENU.flatMap((m) => m.opciones).map((o) => [o.ruta, patron(o.ruta)]),
+/** Por opción: su propia ruta y las de sus pantallas de detalle, que también la marcan activa. */
+const PATRONES = new Map<string, RegExp[]>(
+  MODULOS_MENU.flatMap((m) => m.opciones).map((o) => [
+    o.ruta,
+    [o.ruta, ...(o.detalles ?? [])].map(patron),
+  ]),
 );
 
 @Component({
@@ -60,8 +63,7 @@ export class MenuLateral {
           grupoAnterior = o.grupo;
           return {
             ...o,
-            enlace: o.destino ?? o.ruta,
-            activa: PATRONES.get(o.ruta)!.test(ruta),
+            activa: PATRONES.get(o.ruta)!.some((p) => p.test(ruta)),
             encabezado,
           };
         });

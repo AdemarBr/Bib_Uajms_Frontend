@@ -51,12 +51,18 @@
 
     <app-tabla [columnas]="columnas" [filas]="r.contenido" [mensajeVacio]="mensajeVacio()">
       <ng-template appCelda="nombre" let-fila>
-        @if (fila.tipoUsuario === 'interno' && puedeEditar()) {
-          <a class="block hover:underline" [routerLink]="['/usuarios', fila.idUsuario, 'editar']">{{
-            fila.nombre
-          }}</a>
-        } @else {
+        <ng-template #soloTexto>
           <span class="block">{{ fila.nombre }}</span>
+        </ng-template>
+        @if (fila.tipoUsuario === 'interno') {
+          <a
+            *appTienePermiso="permisoEditar; else soloTexto"
+            class="block hover:underline"
+            [routerLink]="['/usuarios', fila.idUsuario, 'editar']"
+            >{{ fila.nombre }}</a
+          >
+        } @else {
+          <ng-container [ngTemplateOutlet]="soloTexto" />
         }
         <span class="block">{{ fila.nombreUsuario }}</span>
       </ng-template>
