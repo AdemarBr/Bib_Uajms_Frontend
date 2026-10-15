@@ -202,6 +202,7 @@ Actualiza esta lista al terminar cada etapa (marca con [x]):
 - [x] fix/bibliotecas-home: descripciones de las bibliotecas de Figma 9:7 en los datos falsos y en los docs
 - [x] fix/endpoints-estructura: los GET públicos `/bibliotecas`, `/facultades` y `/carreras` devuelven solo los activos (Home y selectores); se agregan `GET /estructura/bibliotecas`, `/estructura/facultades` y `/estructura/carreras` con [ESTRUCTURA_CONSULTAR], que devuelven todos (P3.1, P3.3 y P3.5). No se usa un parámetro opcional en el endpoint público porque seguiría exponiendo los inactivos.
 - [ ] RF4 Gestión del catálogo
+  - RF4 en pausa (rama feature/rf04-catalogo). Se reanuda con las decisiones nuevas: casos de uso Activar libro (RF4.7) y Activar tesis (RF10.7), permisos LIBRO_CAMBIAR_ESTADO y TESIS_CAMBIAR_ESTADO, materia como texto libre, historial solo con fecha, filtros desde GET /libros/opciones-filtro
 - [ ] RF5 Ejemplares
 - [ ] RF6 Consulta del catálogo
   - Nota: la ruta de Home (`/`) debe tener `title` «Inicio · Biblioteca UAJMS» (hoy la pestaña conserva «Iniciar sesión · Biblioteca UAJMS» al volver del login).
