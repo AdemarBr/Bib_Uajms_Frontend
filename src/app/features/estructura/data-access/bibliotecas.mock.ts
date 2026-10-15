@@ -14,7 +14,8 @@ export const ID_BIBLIOTECA_CENTRAL = 1;
 
 /**
  * Bibliotecas de P3.1 en Figma (pestañas Bibliotecas y Facultades) y la de Postgrado, que como la Central
- * no pertenece a ninguna facultad ni carrera. Las ubicaciones de Economía, Salud y Postgrado son ficticias.
+ * no pertenece a ninguna facultad ni carrera. Las ubicaciones de Economía, Salud y Postgrado son ficticias;
+ * las descripciones son las de las tarjetas «Bibliotecas disponibles» de la Home (Figma 9:7).
  */
 export const BIBLIOTECAS_MOCK: BibliotecaMock[] = [
   {
@@ -30,7 +31,7 @@ export const BIBLIOTECAS_MOCK: BibliotecaMock[] = [
     idBiblioteca: 2,
     nombre: 'Biblioteca FCyT',
     ubicacion: 'Edificio FCyT, planta baja',
-    descripcion: null,
+    descripcion: 'Colección de ciencias y tecnología',
     estado: true,
     idFacultad: 1,
     idCarrera: null,
@@ -39,7 +40,7 @@ export const BIBLIOTECAS_MOCK: BibliotecaMock[] = [
     idBiblioteca: 3,
     nombre: 'Biblioteca Facultad de Derecho',
     ubicacion: 'Edificio central, planta baja',
-    descripcion: null,
+    descripcion: 'Colección de ciencias jurídicas',
     estado: true,
     idFacultad: 4,
     idCarrera: null,
@@ -48,7 +49,7 @@ export const BIBLIOTECAS_MOCK: BibliotecaMock[] = [
     idBiblioteca: 4,
     nombre: 'Biblioteca de Economía',
     ubicacion: 'Edificio de Ciencias Económicas, 1er piso',
-    descripcion: null,
+    descripcion: 'Colección de ciencias económicas y financieras',
     estado: true,
     idFacultad: 2,
     idCarrera: null,
@@ -57,7 +58,7 @@ export const BIBLIOTECAS_MOCK: BibliotecaMock[] = [
     idBiblioteca: 5,
     nombre: 'Biblioteca de Salud',
     ubicacion: 'Edificio de Ciencias de la Salud, planta baja',
-    descripcion: null,
+    descripcion: 'Colección de ciencias de la salud',
     estado: true,
     idFacultad: 3,
     idCarrera: null,
@@ -66,7 +67,7 @@ export const BIBLIOTECAS_MOCK: BibliotecaMock[] = [
     idBiblioteca: 6,
     nombre: 'Biblioteca de Postgrado',
     ubicacion: 'Edificio de Postgrado, 2do piso',
-    descripcion: null,
+    descripcion: 'Colección de programas de postgrado',
     estado: true,
     idFacultad: null,
     idCarrera: null,

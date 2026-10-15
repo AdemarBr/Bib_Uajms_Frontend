@@ -163,7 +163,7 @@ Reglas de la sesión (detalle en `docs/reglas-negocio.md`, sección «Sesión»)
 
 ```json
 // BibliotecaRequest. «Toda la facultad»: idFacultad con valor e idCarrera nulo. Estado solo al actualizar.
-{ "nombre": "Biblioteca FCyT", "ubicacion": "Edificio FCyT, planta baja", "descripcion": null,
+{ "nombre": "Biblioteca FCyT", "ubicacion": "Edificio FCyT, planta baja", "descripcion": "Colección de ciencias y tecnología",
   "idFacultad": 1, "idCarrera": null, "estado": true }
 ```
 

@@ -192,6 +192,8 @@ Actualiza esta lista al terminar cada etapa (marca con [x]):
 - [x] RF2 Usuarios
 - [x] RF3 Estructura
 - [x] fix/layout-y-mensajes: layout de RF1.2.10 y mensajes de error desde el servicio
+- [x] fix/bibliotecas-home: descripciones de las bibliotecas de Figma 9:7 en los datos falsos y en los docs
+- [ ] fix/endpoints-estructura (pendiente, en su propia rama; cambia `docs/contrato-api.md` y los servicios de RF3): los GET públicos `/bibliotecas`, `/facultades` y `/carreras` devuelven solo los activos (Home y selectores); se agregan `GET /estructura/bibliotecas`, `/estructura/facultades` y `/estructura/carreras` con [ESTRUCTURA_CONSULTAR], que devuelven todos (P3.1, P3.3 y P3.5). No se usa un parámetro opcional en el endpoint público porque seguiría exponiendo los inactivos.
 - [ ] RF4 Gestión del catálogo
 - [ ] RF5 Ejemplares
 - [ ] RF6 Consulta del catálogo
