@@ -1,0 +1,78 @@
+<div class="flex flex-col gap-xl" [class.p-3xl]="!sesion.haySesion()">
+  @if (libro(); as l) {
+    <h1 class="text-[24px] font-bold text-gray-900">{{ l.titulo }}</h1>
+
+    <div class="flex items-start gap-2xl">
+      <!-- RF6.1.2.3: portada legible o, si no fue cargada, la imagen genérica (recuadro gris de Figma). -->
+      @if (l.portadaUrl) {
+        <img
+          [src]="l.portadaUrl"
+          [alt]="'Portada de ' + l.titulo"
+          class="h-[300px] w-[220px] shrink-0 rounded-md object-cover"
+        />
+      } @else {
+        <div
+          class="h-[300px] w-[220px] shrink-0 rounded-md bg-gray-100"
+          role="img"
+          aria-label="Portada no cargada"
+        ></div>
+      }
+
+      <div class="flex min-w-0 flex-1 flex-col items-start gap-5">
+        <section class="flex flex-col gap-xs">
+          <h2 class="text-label text-gray-600">Datos bibliográficos</h2>
+          <p
+            class="text-dato whitespace-pre-wrap text-gray-900"
+            [textContent]="datosBibliograficos()"
+          ></p>
+        </section>
+
+        @if (l.ejemplaresTotales > 0) {
+          <section class="flex flex-col items-start gap-xs">
+            <h2 class="text-label text-gray-600">Disponibilidad</h2>
+            <app-badge-estado
+              [texto]="disponibilidad()"
+              [tono]="l.ejemplaresDisponibles > 0 ? 'disponible' : 'neutral'"
+            />
+          </section>
+
+          <section class="flex flex-col gap-xs">
+            <h2 class="text-label text-gray-600">Ubicación física</h2>
+            @if (l.clasificacionDewey && l.ubicaciones.length > 0) {
+              @for (u of l.ubicaciones; track u.idBiblioteca) {
+                <p
+                  class="text-dato whitespace-pre-wrap text-gray-900"
+                  [textContent]="
+                    u.bibliotecaNombre + '  ·  Clasificación Dewey ' + l.clasificacionDewey
+                  "
+                ></p>
+              }
+            } @else {
+              <!-- RF6.1.2.2, curso alternativo -->
+              <p class="text-body text-gray-600">
+                Aún no se ha asignado una ubicación física a este material.
+              </p>
+            }
+          </section>
+
+          @if (puedeReservar()) {
+            <!-- RF6.1.2.1, curso alternativo: sin ejemplares disponibles, «Reservar» queda deshabilitado. -->
+            <button
+              type="button"
+              class="btn-primario"
+              [disabled]="l.ejemplaresDisponibles === 0"
+              (click)="reservar()"
+            >
+              Reservar
+            </button>
+          }
+        } @else {
+          <!-- RF6.1.2, curso alternativo -->
+          <p class="text-body text-gray-600">El libro no cuenta con ejemplares registrados.</p>
+        }
+      </div>
+    </div>
+  } @else if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+</div>

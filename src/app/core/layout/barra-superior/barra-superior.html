@@ -2,12 +2,23 @@
   <a routerLink="/" class="text-subtitulo font-bold whitespace-nowrap text-gray-900"
     >Biblioteca UAJMS</a
   >
+  <!-- NavItem activo de Figma (P6.1 y P6.2): borde gray/900, radio 6 px y padding 4 × 10. -->
   <nav
-    class="flex gap-lg text-body-strong whitespace-nowrap text-gray-900"
+    class="flex items-center gap-lg text-body-strong whitespace-nowrap text-gray-900"
     aria-label="Consulta pública"
   >
-    <a routerLink="/catalogo">Catálogo</a>
-    <a routerLink="/tesis">Tesis</a>
+    <a
+      routerLink="/catalogo"
+      routerLinkActive="rounded-[6px] border border-gray-900 px-[10px] py-xs"
+      ariaCurrentWhenActive="page"
+      >Catálogo</a
+    >
+    <a
+      routerLink="/tesis"
+      routerLinkActive="rounded-[6px] border border-gray-900 px-[10px] py-xs"
+      ariaCurrentWhenActive="page"
+      >Tesis</a
+    >
   </nav>
   <div class="flex-1"></div>
 

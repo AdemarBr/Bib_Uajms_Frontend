@@ -18,7 +18,7 @@ import { ErrorImportacion, ImportacionResponse } from '../models/importacion-res
 import { LibroRequest } from '../models/libro-request';
 import { LibroResponse } from '../models/libro-response';
 import { OpcionesFiltroLibroResponse } from '../models/opciones-filtro-libro-response';
-import { DatosCatalogo } from './datos-catalogo';
+import { DatosCatalogo, hoy } from './datos-catalogo';
 import { HistorialMock } from './historial-libros.mock';
 import { LibroMock } from './libros.mock';
 
@@ -405,11 +405,4 @@ function leerCsv(texto: string): string[][] {
 
 function sinGuiones(isbn: string): string {
   return isbn.replace(/[\s-]/g, '').toLowerCase();
-}
-
-/** Fecha de hoy en ISO 8601 («2026-10-15»), en la hora local. */
-function hoy(): string {
-  const d = new Date();
-  const dos = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${dos(d.getMonth() + 1)}-${dos(d.getDate())}`;
 }

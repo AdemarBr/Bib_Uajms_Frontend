@@ -1,0 +1,79 @@
+<div class="flex flex-col gap-10" [class.p-3xl]="!sesion.haySesion()">
+  <section class="flex flex-col items-center gap-lg">
+    <h1 class="text-h1 text-gray-900">Biblioteca Central UAJMS</h1>
+    <form class="flex gap-md" (submit)="$event.preventDefault(); buscar()">
+      <input
+        type="search"
+        class="campo-texto w-[480px]"
+        placeholder="Título, autor, materia o clasificación Dewey…"
+        aria-label="Buscar en el catálogo"
+        [formControl]="criterio"
+      />
+      <button type="submit" class="btn-primario">Buscar</button>
+    </form>
+  </section>
+
+  <!-- RF6.2 -->
+  <section class="flex flex-col gap-lg" aria-labelledby="titulo-novedades">
+    <h2 id="titulo-novedades" class="text-h3 text-gray-900">Novedades bibliográficas</h2>
+    @if (novedades(); as lista) {
+      @if (lista.length > 0) {
+        <ul class="flex flex-wrap gap-5">
+          @for (n of lista; track n.idLibro) {
+            <li>
+              <a class="block h-full" [routerLink]="['/catalogo', n.idLibro]">
+                <app-tarjeta
+                  class="h-full"
+                  [titulo]="n.titulo"
+                  [imagenUrl]="n.portadaUrl"
+                  [ancho]="anchoTarjeta()"
+                >
+                  <p>{{ n.autor }} · {{ n.materia }}</p>
+                  <p>Incorporado el {{ n.fechaIncorporacion | fecha }}</p>
+                </app-tarjeta>
+              </a>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-body text-gray-600">No existen incorporaciones recientes al catálogo.</p>
+      }
+    } @else if (errorNovedades(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
+  </section>
+
+  <!-- RF6.3 -->
+  <section class="flex flex-col gap-lg" aria-labelledby="titulo-bibliotecas">
+    <h2 id="titulo-bibliotecas" class="text-h3 text-gray-900">Bibliotecas disponibles</h2>
+    @if (bibliotecas(); as lista) {
+      @if (lista.length > 0) {
+        <!-- Tres por fila: 880 px sin sesión y 808 px con sesión, como en Figma. -->
+        <ul class="flex flex-wrap gap-5" [style.max-width.px]="anchoTarjeta() * 3 + 40">
+          @for (b of lista; track b.idBiblioteca) {
+            <li>
+              <!-- RF6.3.5: el catálogo filtrado por esta biblioteca -->
+              <a
+                class="block h-full"
+                routerLink="/catalogo"
+                [queryParams]="{ idBiblioteca: b.idBiblioteca }"
+              >
+                <app-tarjeta class="h-full" [titulo]="b.nombre" [ancho]="anchoTarjeta()">
+                  @if (b.descripcion) {
+                    <p>{{ b.descripcion }}</p>
+                  }
+                </app-tarjeta>
+              </a>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-body text-gray-600">
+          Aún no existen bibliotecas físicas registradas en el sistema.
+        </p>
+      }
+    } @else if (errorBibliotecas(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
+  </section>
+</div>

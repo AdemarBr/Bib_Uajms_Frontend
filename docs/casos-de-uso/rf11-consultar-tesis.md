@@ -45,7 +45,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El usuario accede a la interfaz P11.1 desde el buscador del Home o desde el menú Tesis.
+- 1.- El usuario accede a la interfaz P11.1 desde el menú Tesis.
 - 2.- El sistema presenta el campo de búsqueda único del repositorio de tesis digitales.
 - 3.- El usuario ingresa el título, autor, carrera o palabras clave del tema.
 - 4.- El sistema toma el criterio ingresado para la búsqueda.

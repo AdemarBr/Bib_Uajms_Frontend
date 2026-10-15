@@ -1,0 +1,12 @@
+<div
+  class="flex h-full flex-col gap-sm rounded-md border border-gray-300 bg-gray-0 p-lg"
+  [style.width.px]="ancho()"
+>
+  @if (imagenUrl(); as url) {
+    <img [src]="url" alt="" class="h-[120px] w-full rounded-sm object-cover" />
+  } @else {
+    <div class="h-[120px] w-full rounded-sm bg-gray-100" aria-hidden="true"></div>
+  }
+  <p class="text-body-strong text-gray-900">{{ titulo() }}</p>
+  <div class="text-caption text-gray-600"><ng-content /></div>
+</div>

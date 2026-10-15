@@ -49,3 +49,27 @@ export const RUTAS_GESTION_CATALOGO: Routes = [
       import('./pages/historial-libro/historial-libro').then((m) => m.HistorialLibro),
   },
 ];
+
+/** P.1 Home (`/`): pública; con sesión usa el layout privado (RF1.2.10). */
+export const RUTAS_INICIO: Routes = [
+  {
+    path: '',
+    title: 'Inicio · Biblioteca UAJMS',
+    loadComponent: () => import('./pages/inicio/inicio').then((m) => m.Inicio),
+  },
+];
+
+/** RF6 Consulta del catálogo (P6.1 y P6.2) (`/catalogo`): públicas, sin guard. */
+export const RUTAS_CATALOGO_PUBLICO: Routes = [
+  {
+    path: '',
+    title: 'Buscar material bibliográfico · Biblioteca UAJMS',
+    loadComponent: () =>
+      import('./pages/buscar-catalogo/buscar-catalogo').then((m) => m.BuscarCatalogo),
+  },
+  {
+    path: ':id',
+    title: 'Detalle del libro · Biblioteca UAJMS',
+    loadComponent: () => import('./pages/detalle-libro/detalle-libro').then((m) => m.DetalleLibro),
+  },
+];
