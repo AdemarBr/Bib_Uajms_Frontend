@@ -123,9 +123,20 @@ Reglas de la sesión (detalle en `docs/reglas-negocio.md`, sección «Sesión»)
 
 ## 5. Bibliotecas, facultades y carreras (RF3)
 
-- `GET /facultades` → `FacultadResponse[]` — público (selectores)
-- `GET /carreras?idFacultad` → `CarreraResponse[]` — público (selectores)
-- `GET /bibliotecas` → `BibliotecaResponse[]` — público (selectores y tarjetas de la página de inicio, RF6.3)
+Públicos (selectores y página de inicio): devuelven **solo los registros activos**.
+
+- `GET /facultades` → `FacultadResponse[]` — público (selectores). Solo facultades activas; sus `carreras` y `bibliotecas` traen solo los nombres activos.
+- `GET /carreras?idFacultad` → `CarreraResponse[]` — público (selectores). Solo carreras activas.
+- `GET /bibliotecas` → `BibliotecaResponse[]` — público (selectores y tarjetas de la página de inicio, RF6.3). Solo bibliotecas activas.
+
+De gestión (P3.1, P3.3 y P3.5): devuelven **todos**, también los inactivos, con la misma forma de respuesta. Basta uno de los permisos indicados. Los inactivos no se exponen con un parámetro opcional del endpoint público, porque así seguirían siendo visibles sin permiso.
+
+- `GET /estructura/facultades` → `FacultadResponse[]` [ESTRUCTURA_CONSULTAR, FACULTAD_ACTUALIZAR o CARRERA_ACTUALIZAR]. Sus `carreras` y `bibliotecas` traen todos los nombres.
+- `GET /estructura/carreras?idFacultad` → `CarreraResponse[]` [ESTRUCTURA_CONSULTAR o CARRERA_ACTUALIZAR]
+- `GET /estructura/bibliotecas` → `BibliotecaResponse[]` [ESTRUCTURA_CONSULTAR o BIBLIOTECA_ACTUALIZAR]
+
+Escritura:
+
 - `POST /facultades` [FACULTAD_REGISTRAR] · `PUT /facultades/{id}` [FACULTAD_ACTUALIZAR]
 - `POST /carreras` [CARRERA_REGISTRAR] · `PUT /carreras/{id}` [CARRERA_ACTUALIZAR]
 - `POST /bibliotecas` [BIBLIOTECA_REGISTRAR] · `PUT /bibliotecas/{id}` [BIBLIOTECA_ACTUALIZAR]

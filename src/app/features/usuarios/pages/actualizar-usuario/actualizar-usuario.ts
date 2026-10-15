@@ -7,7 +7,7 @@ import { forkJoin, map } from 'rxjs';
 import { Sesion } from '../../../../core/auth/sesion';
 import { PERMISOS } from '../../../../core/config/permisos';
 import { Alerta } from '../../../../shared/components/alerta/alerta';
-import { Select } from '../../../../shared/components/select/select';
+import { OpcionSelect, Select } from '../../../../shared/components/select/select';
 import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
 import { Bibliotecas } from '../../../estructura/data-access/bibliotecas';
 import { Roles } from '../../data-access/roles';
@@ -44,12 +44,23 @@ export class ActualizarUsuario implements OnInit {
   protected readonly opcionesRol = computed(() =>
     this.roles().map((r) => ({ valor: r.idRol, etiqueta: r.nombre })),
   );
-  protected readonly opcionesBiblioteca = toSignal(
+  /** Solo se asignan bibliotecas activas (endpoint público). */
+  private readonly bibliotecasActivas = toSignal(
     inject(Bibliotecas)
       .listarBibliotecas()
       .pipe(map((lista) => lista.map((b) => ({ valor: b.idBiblioteca, etiqueta: b.nombre })))),
-    { initialValue: [] },
   );
+  /** Biblioteca que el usuario tiene asignada, tomada de sus propios datos. */
+  private readonly bibliotecaActual = signal<OpcionSelect | null>(null);
+  /** Si la biblioteca actual ya no está activa, se agrega como «Nombre (inactiva)» para no perder el valor. */
+  protected readonly opcionesBiblioteca = computed(() => {
+    const activas = this.bibliotecasActivas();
+    if (!activas) return [];
+    const actual = this.bibliotecaActual();
+    return actual && !activas.some((o) => o.valor === actual.valor)
+      ? [...activas, actual]
+      : activas;
+  });
 
   protected readonly formulario = crearFormularioUsuario();
   protected readonly cargado = signal(false);
@@ -82,6 +93,12 @@ export class ActualizarUsuario implements OnInit {
           return;
         }
         this.roles.set(roles.filter((r) => r.tipoUsuario === 'interno'));
+        if (usuario.idBiblioteca !== null) {
+          this.bibliotecaActual.set({
+            valor: usuario.idBiblioteca,
+            etiqueta: `${usuario.bibliotecaNombre} (inactiva)`,
+          });
+        }
         this.formulario.setValue({
           nombre: usuario.nombre,
           correo: usuario.correo ?? '',

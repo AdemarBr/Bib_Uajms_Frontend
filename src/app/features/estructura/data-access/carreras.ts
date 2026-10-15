@@ -17,16 +17,35 @@ import {
 
 const DUPLICADA = 'Esa carrera ya está registrada en la facultad seleccionada.';
 
-/** Carreras (RF3.1, RF3.4 y RF3.5). En la Iteración 5: GET/POST /carreras y PUT /carreras/{id}. */
+/**
+ * Carreras (RF3.1, RF3.4 y RF3.5). En la Iteración 5: GET/POST /carreras, PUT /carreras/{id} y
+ * GET /estructura/carreras.
+ */
 @Service()
 export class Carreras {
   private readonly datos = inject(DatosEstructura);
 
-  /** GET /carreras?idFacultad (público, para los selectores en cascada). */
+  /** GET /carreras?idFacultad (público, para los selectores en cascada): solo las activas. */
   listarCarreras(idFacultad?: number | null): Observable<CarreraResponse[]> {
+    return this.listar(idFacultad, true);
+  }
+
+  /**
+   * GET /estructura/carreras?idFacultad [ESTRUCTURA_CONSULTAR o CARRERA_ACTUALIZAR]: todas, también las
+   * inactivas (P3.1, P3.3 y P3.5).
+   */
+  listarCarrerasEstructura(idFacultad?: number | null): Observable<CarreraResponse[]> {
+    return this.listar(idFacultad, false);
+  }
+
+  private listar(
+    idFacultad: number | null | undefined,
+    soloActivas: boolean,
+  ): Observable<CarreraResponse[]> {
     const carreras = this.datos
       .carreras()
-      .filter((c) => idFacultad == null || c.idFacultad === idFacultad);
+      .filter((c) => idFacultad == null || c.idFacultad === idFacultad)
+      .filter((c) => !soloActivas || c.estado);
     return of(carreras.map((c) => this.aRespuesta(c))).pipe(delay(DEMORA_MS));
   }
 

@@ -36,11 +36,11 @@ export class ActualizarBiblioteca {
   private readonly carrerasServicio = inject(Carreras);
   private readonly router = inject(Router);
 
-  private readonly bibliotecas = toSignal(this.bibliotecasServicio.listarBibliotecas(), {
+  private readonly bibliotecas = toSignal(this.bibliotecasServicio.listarBibliotecasEstructura(), {
     initialValue: [],
   });
   /** Todas las carreras, para conocer la facultad de una biblioteca de carrera. */
-  private readonly todasLasCarreras = toSignal(this.carrerasServicio.listarCarreras(), {
+  private readonly todasLasCarreras = toSignal(this.carrerasServicio.listarCarrerasEstructura(), {
     initialValue: [],
   });
 
@@ -49,7 +49,7 @@ export class ActualizarBiblioteca {
   );
   protected readonly opcionesFacultad = toSignal(
     inject(Facultades)
-      .listarFacultades()
+      .listarFacultadesEstructura()
       .pipe(map((lista) => lista.map((f) => ({ valor: f.idFacultad, etiqueta: f.nombre })))),
     { initialValue: [] },
   );
@@ -194,7 +194,7 @@ export class ActualizarBiblioteca {
   private cargarCarreras(idFacultad: ValorSelect): Observable<CarreraResponse[] | null> {
     return idFacultad === null
       ? of(null)
-      : this.carrerasServicio.listarCarreras(idFacultad as number);
+      : this.carrerasServicio.listarCarrerasEstructura(idFacultad as number);
   }
 
   private mostrarCarreras(carreras: CarreraResponse[] | null): void {

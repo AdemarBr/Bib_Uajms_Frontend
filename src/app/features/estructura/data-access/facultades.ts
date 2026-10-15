@@ -16,14 +16,26 @@ import { FacultadMock } from './facultades.mock';
 
 const DUPLICADA = 'Ya existe una facultad con ese nombre.';
 
-/** Facultades (RF3.1, RF3.2 y RF3.3). En la Iteración 5: GET/POST /facultades y PUT /facultades/{id}. */
+/**
+ * Facultades (RF3.1, RF3.2 y RF3.3). En la Iteración 5: GET/POST /facultades, PUT /facultades/{id} y
+ * GET /estructura/facultades.
+ */
 @Service()
 export class Facultades {
   private readonly datos = inject(DatosEstructura);
 
-  /** GET /facultades (público, para los selectores). */
+  /** GET /facultades (público, para los selectores): solo las activas, con sus carreras y bibliotecas activas. */
   listarFacultades(): Observable<FacultadResponse[]> {
-    return of(this.datos.facultades().map((f) => this.aRespuesta(f))).pipe(delay(DEMORA_MS));
+    const activas = this.datos.facultades().filter((f) => f.estado);
+    return of(activas.map((f) => this.aRespuesta(f, true))).pipe(delay(DEMORA_MS));
+  }
+
+  /**
+   * GET /estructura/facultades [ESTRUCTURA_CONSULTAR, FACULTAD_ACTUALIZAR o CARRERA_ACTUALIZAR]:
+   * todas, también las inactivas (P3.1, P3.3 y P3.5).
+   */
+  listarFacultadesEstructura(): Observable<FacultadResponse[]> {
+    return of(this.datos.facultades().map((f) => this.aRespuesta(f, false))).pipe(delay(DEMORA_MS));
   }
 
   /** POST /facultades: el nombre no puede repetirse (RF3.2). */
@@ -39,7 +51,7 @@ export class Facultades {
       estado: true,
     };
     this.datos.facultades.set([...facultades, nueva]);
-    return of(this.aRespuesta(nueva)).pipe(delay(DEMORA_MS));
+    return of(this.aRespuesta(nueva, false)).pipe(delay(DEMORA_MS));
   }
 
   /** PUT /facultades/{id}: nombre y estado; conserva sus carreras (RF3.3). */
@@ -58,7 +70,7 @@ export class Facultades {
     this.datos.facultades.update((lista) =>
       lista.map((f) => (f.idFacultad === idFacultad ? actualizada : f)),
     );
-    return of(this.aRespuesta(actualizada)).pipe(delay(DEMORA_MS));
+    return of(this.aRespuesta(actualizada, false)).pipe(delay(DEMORA_MS));
   }
 
   private existe(nombre: string, excepto?: number): boolean {
@@ -67,10 +79,18 @@ export class Facultades {
       .some((f) => f.idFacultad !== excepto && normalizar(f.nombre) === normalizar(nombre));
   }
 
-  /** Arma las carreras y las bibliotecas de la facultad (las de toda la facultad y las de sus carreras). */
-  private aRespuesta(f: FacultadMock): FacultadResponse {
-    const carreras = this.datos.carreras().filter((c) => c.idFacultad === f.idFacultad);
-    const idsCarreras = carreras.map((c) => c.idCarrera);
+  /**
+   * Arma las carreras y las bibliotecas de la facultad (las de toda la facultad y las de sus carreras);
+   * en el endpoint público, solo las activas.
+   */
+  private aRespuesta(f: FacultadMock, soloActivas: boolean): FacultadResponse {
+    const carreras = this.datos
+      .carreras()
+      .filter((c) => c.idFacultad === f.idFacultad && (!soloActivas || c.estado));
+    const idsCarreras = this.datos
+      .carreras()
+      .filter((c) => c.idFacultad === f.idFacultad)
+      .map((c) => c.idCarrera);
     return {
       idFacultad: f.idFacultad,
       nombre: f.nombre,
@@ -80,8 +100,9 @@ export class Facultades {
         .bibliotecas()
         .filter(
           (b) =>
-            b.idFacultad === f.idFacultad ||
-            (b.idCarrera !== null && idsCarreras.includes(b.idCarrera)),
+            (!soloActivas || b.estado) &&
+            (b.idFacultad === f.idFacultad ||
+              (b.idCarrera !== null && idsCarreras.includes(b.idCarrera))),
         )
         .map((b) => b.nombre),
     };
