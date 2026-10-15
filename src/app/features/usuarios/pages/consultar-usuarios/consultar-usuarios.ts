@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -41,6 +42,7 @@ const OPCIONES_TIPO: OpcionSelect[] = [
     ReactiveFormsModule,
     Alerta,
     RouterLink,
+    NgTemplateOutlet,
     Celda,
     Interruptor,
     ModalConfirmacion,
@@ -149,13 +151,12 @@ export class ConsultarUsuarios {
       : 'No hay usuarios internos registrados.',
   );
 
-  protected readonly puedeEditar = computed(() =>
-    this.sesion.tienePermiso(PERMISOS.USUARIO_ACTUALIZAR),
-  );
   protected readonly puedeCambiarEstado = computed(() =>
     this.sesion.tienePermiso(PERMISOS.USUARIO_CAMBIAR_ESTADO),
   );
   protected readonly permisoRegistrar = PERMISOS.USUARIO_REGISTRAR;
+  /** El nombre enlaza a P2.3 solo con el permiso de esa ruta; si no, se ve como texto plano. */
+  protected readonly permisoEditar = PERMISOS.USUARIO_ACTUALIZAR;
 
   /** Usuario cuyo cambio de estado espera confirmación. */
   protected readonly pendiente = signal<UsuarioResponse | null>(null);

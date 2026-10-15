@@ -17,13 +17,14 @@ import { CodigoPermiso, PERMISOS as P } from '../../config/permisos';
 /**
  * Menú lateral de Figma (componente Sidebar). Textos de Figma; rutas y permisos de docs/rutas.md.
  *
- * `ruta` es el patrón de docs/rutas.md y sirve para marcar la opción activa. Cuando la pantalla
- * necesita un id (`:id`), la opción lleva a `destino`, la pantalla desde donde se elige el registro.
+ * Solo hay opciones para pantallas que se abren sin un registro elegido. Las pantallas de detalle
+ * (con `:id`) se abren desde su lista y marcan como activa la opción de esa lista (`detalles`).
  */
 export interface OpcionMenu {
   texto: string;
   ruta: string;
-  destino?: string;
+  /** Patrones de docs/rutas.md de las pantallas de detalle que se abren desde esta lista. */
+  detalles?: readonly string[];
   permisos: readonly CodigoPermiso[];
   /** Grupo de la opción; su encabezado se muestra antes de la primera opción visible del grupo («DASHBOARDS», «REPORTES»). */
   grupo?: string;
@@ -48,13 +49,8 @@ export const MODULOS_MENU: readonly ModuloMenu[] = [
       {
         texto: 'Consultar usuarios del sistema',
         ruta: '/usuarios',
+        detalles: ['/usuarios/:id/editar'],
         permisos: [P.USUARIO_CONSULTAR],
-      },
-      {
-        texto: 'Actualizar datos de usuario',
-        ruta: '/usuarios/:id/editar',
-        destino: '/usuarios',
-        permisos: [P.USUARIO_ACTUALIZAR],
       },
       {
         texto: 'Restablecer contraseña de usuario interno',
@@ -112,19 +108,8 @@ export const MODULOS_MENU: readonly ModuloMenu[] = [
       {
         texto: 'Consultar libros registrados',
         ruta: '/gestion-catalogo/libros',
+        detalles: ['/gestion-catalogo/libros/:id/editar', '/gestion-catalogo/libros/:id/historial'],
         permisos: [P.LIBRO_CONSULTAR],
-      },
-      {
-        texto: 'Actualizar datos del libro',
-        ruta: '/gestion-catalogo/libros/:id/editar',
-        destino: '/gestion-catalogo/libros',
-        permisos: [P.LIBRO_ACTUALIZAR],
-      },
-      {
-        texto: 'Historial de cambios de libro',
-        ruta: '/gestion-catalogo/libros/:id/historial',
-        destino: '/gestion-catalogo/libros',
-        permisos: [P.LIBRO_HISTORIAL_CONSULTAR],
       },
     ],
   },
@@ -140,13 +125,8 @@ export const MODULOS_MENU: readonly ModuloMenu[] = [
       {
         texto: 'Consultar ejemplares registrados',
         ruta: '/ejemplares',
+        detalles: ['/ejemplares/:id/editar'],
         permisos: [P.EJEMPLAR_CONSULTAR],
-      },
-      {
-        texto: 'Actualizar datos del ejemplar',
-        ruta: '/ejemplares/:id/editar',
-        destino: '/ejemplares',
-        permisos: [P.EJEMPLAR_ACTUALIZAR],
       },
     ],
   },
@@ -155,14 +135,9 @@ export const MODULOS_MENU: readonly ModuloMenu[] = [
     icono: LucideBookmark,
     opciones: [
       {
-        texto: 'Registrar reserva de libro',
-        ruta: '/mis-reservas/nueva/:idLibro',
-        destino: '/catalogo',
-        permisos: [P.RESERVA_REALIZAR],
-      },
-      {
         texto: 'Consultar estado de reserva',
         ruta: '/mis-reservas',
+        detalles: ['/mis-reservas/nueva/:idLibro'],
         permisos: [P.RESERVA_PROPIA_CONSULTAR],
       },
     ],
@@ -225,25 +200,14 @@ export const MODULOS_MENU: readonly ModuloMenu[] = [
     opciones: [
       { texto: 'Registrar tesis', ruta: '/gestion-tesis/registrar', permisos: [P.TESIS_REGISTRAR] },
       {
-        texto: 'Cargar documentos digitales de tesis',
-        ruta: '/gestion-tesis/documentos/cargar',
-        permisos: [P.TESIS_DOCUMENTO_CARGAR],
-      },
-      {
         texto: 'Consultar tesis registradas',
         ruta: '/gestion-tesis',
+        detalles: [
+          '/gestion-tesis/:id/editar',
+          '/gestion-tesis/:id/documentos/cargar',
+          '/gestion-tesis/:id/documentos/actualizar',
+        ],
         permisos: [P.TESIS_CONSULTAR],
-      },
-      {
-        texto: 'Actualizar datos de tesis',
-        ruta: '/gestion-tesis/:id/editar',
-        destino: '/gestion-tesis',
-        permisos: [P.TESIS_ACTUALIZAR],
-      },
-      {
-        texto: 'Actualizar documento digital de tesis',
-        ruta: '/gestion-tesis/documentos/actualizar',
-        permisos: [P.TESIS_DOCUMENTO_ACTUALIZAR],
       },
     ],
   },
@@ -251,11 +215,10 @@ export const MODULOS_MENU: readonly ModuloMenu[] = [
     texto: 'Comunicación',
     icono: LucideMessageSquare,
     opciones: [
-      { texto: 'Bandeja de mensajes', ruta: '/comunicacion', permisos: [P.MENSAJE_CONSULTAR] },
       {
-        texto: 'Ver conversación',
-        ruta: '/comunicacion/:id',
-        destino: '/comunicacion',
+        texto: 'Bandeja de mensajes',
+        ruta: '/comunicacion',
+        detalles: ['/comunicacion/:id'],
         permisos: [P.MENSAJE_CONSULTAR],
       },
     ],
