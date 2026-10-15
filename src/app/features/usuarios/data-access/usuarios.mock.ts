@@ -1,9 +1,15 @@
 import { UsuarioResponse } from '../models/usuario-response';
 
-const CENTRAL = { idBiblioteca: 1, bibliotecaNombre: 'Biblioteca Central' };
-const FCYT = { idBiblioteca: 2, bibliotecaNombre: 'Biblioteca FCyT' };
-const DERECHO = { idBiblioteca: 3, bibliotecaNombre: 'Biblioteca Facultad de Derecho' };
-const SIN_BIBLIOTECA = { idBiblioteca: null, bibliotecaNombre: null };
+/**
+ * Fila de la tabla `usuario` del prototipo: guarda `idBiblioteca`, no su nombre, que `Usuarios` lee de
+ * la tabla biblioteca (`DatosEstructura`) al armar cada `UsuarioResponse`, como el backend.
+ */
+export type UsuarioMock = Omit<UsuarioResponse, 'bibliotecaNombre'>;
+
+const CENTRAL = { idBiblioteca: 1 };
+const FCYT = { idBiblioteca: 2 };
+const DERECHO = { idBiblioteca: 3 };
+const SIN_BIBLIOTECA = { idBiblioteca: null };
 const SISTEMAS = { idCarrera: 1, carreraNombre: 'Ingeniería de Sistemas' };
 const SIN_CARRERA = { idCarrera: null, carreraNombre: null };
 
@@ -13,9 +19,9 @@ function interno(
   nombreUsuario: string,
   idRol: number,
   rolNombre: string,
-  biblioteca: Pick<UsuarioResponse, 'idBiblioteca' | 'bibliotecaNombre'>,
+  biblioteca: Pick<UsuarioMock, 'idBiblioteca'>,
   estado = true,
-): UsuarioResponse {
+): UsuarioMock {
   return {
     idUsuario,
     nombre,
@@ -37,8 +43,8 @@ function academico(
   ru: string,
   idRol: number,
   rolNombre: string,
-  carrera: Pick<UsuarioResponse, 'idCarrera' | 'carreraNombre'>,
-): UsuarioResponse {
+  carrera: Pick<UsuarioMock, 'idCarrera' | 'carreraNombre'>,
+): UsuarioMock {
   return {
     idUsuario,
     nombre,
@@ -58,7 +64,7 @@ function academico(
  * Usuarios de P2.2 (docs/usuarios-falsos.md): los usuarios de prueba del login, «Bibliotecario FCyT»
  * de Figma y cuatro internos ficticios, 14 en total como el contador de Figma. Primero las filas de Figma.
  */
-export const USUARIOS_MOCK: UsuarioResponse[] = [
+export const USUARIOS_MOCK: UsuarioMock[] = [
   interno(
     1,
     'Ademar Mendez',

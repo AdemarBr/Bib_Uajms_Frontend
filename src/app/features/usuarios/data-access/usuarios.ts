@@ -12,7 +12,7 @@ import { RestablecerContrasenaResponse } from '../models/restablecer-contrasena-
 import { UsuarioInternoRequest } from '../models/usuario-interno-request';
 import { UsuarioResponse } from '../models/usuario-response';
 import { ROLES_MOCK } from './roles.mock';
-import { USUARIOS_MOCK } from './usuarios.mock';
+import { USUARIOS_MOCK, UsuarioMock } from './usuarios.mock';
 
 const DEMORA_MS = 300;
 const TAMANIO_PAGINA = 20;
@@ -25,24 +25,26 @@ const LARGO_CONTRASENA = 10;
  */
 @Service()
 export class Usuarios {
-  private readonly usuarios = signal<UsuarioResponse[]>(USUARIOS_MOCK);
+  private readonly usuarios = signal<UsuarioMock[]>(USUARIOS_MOCK);
   /** Tabla biblioteca del prototipo, la misma de RF3 (lo registrado en P3.4 o editado en P3.5 se ve aquí). */
   private readonly estructura = inject(DatosEstructura);
 
   /** GET /usuarios?q&idRol&estado&tipoUsuario&idBiblioteca (RF2.2, RF2.2.1 y RF2.2.1.1). */
   listarUsuarios(filtro: FiltroUsuarios = {}): Observable<Pagina<UsuarioResponse>> {
     const q = normalizar(filtro.q ?? '');
-    const coincidencias = this.usuarios().filter(
-      (u) =>
-        (!q ||
-          [u.nombre, u.nombreUsuario, u.ru, u.rolNombre, u.bibliotecaNombre].some(
-            (campo) => campo && normalizar(campo).includes(q),
-          )) &&
-        (filtro.idRol == null || u.idRol === filtro.idRol) &&
-        (filtro.estado == null || u.estado === filtro.estado) &&
-        (filtro.tipoUsuario == null || u.tipoUsuario === filtro.tipoUsuario) &&
-        (filtro.idBiblioteca == null || u.idBiblioteca === filtro.idBiblioteca),
-    );
+    const coincidencias = this.usuarios()
+      .map((u) => this.aRespuesta(u))
+      .filter(
+        (u) =>
+          (!q ||
+            [u.nombre, u.nombreUsuario, u.ru, u.rolNombre, u.bibliotecaNombre].some(
+              (campo) => campo && normalizar(campo).includes(q),
+            )) &&
+          (filtro.idRol == null || u.idRol === filtro.idRol) &&
+          (filtro.estado == null || u.estado === filtro.estado) &&
+          (filtro.tipoUsuario == null || u.tipoUsuario === filtro.tipoUsuario) &&
+          (filtro.idBiblioteca == null || u.idBiblioteca === filtro.idBiblioteca),
+      );
     const pagina = filtro.pagina ?? 0;
     const tamanio = filtro.tamanio ?? TAMANIO_PAGINA;
     return of({
@@ -56,7 +58,7 @@ export class Usuarios {
   /** GET /usuarios/{id} */
   obtenerUsuario(idUsuario: number): Observable<UsuarioResponse> {
     const usuario = this.usuarios().find((u) => u.idUsuario === idUsuario);
-    return usuario ? of(usuario).pipe(delay(DEMORA_MS)) : noEncontrado();
+    return usuario ? of(this.aRespuesta(usuario)).pipe(delay(DEMORA_MS)) : noEncontrado();
   }
 
   /** POST /usuarios: genera el nombre de usuario y la contraseña, que se muestran una sola vez (RF2.1). */
@@ -99,9 +101,9 @@ export class Usuarios {
     const datos = validar(solicitud, this.estructura.bibliotecas(), actual.idBiblioteca);
     if ('status' in datos) return throwError(() => datos).pipe(delay(DEMORA_MS));
 
-    const actualizado: UsuarioResponse = { ...actual, ...datos };
+    const actualizado: UsuarioMock = { ...actual, ...datos };
     this.reemplazar(actualizado);
-    return of(actualizado).pipe(delay(DEMORA_MS));
+    return of(this.aRespuesta(actualizado)).pipe(delay(DEMORA_MS));
   }
 
   /** PATCH /usuarios/{id}/estado (RF2.6 y RF2.7). */
@@ -128,7 +130,13 @@ export class Usuarios {
     return of({ contrasenaGenerada: generarContrasena() }).pipe(delay(DEMORA_MS));
   }
 
-  private reemplazar(usuario: UsuarioResponse): void {
+  /** Arma el `UsuarioResponse` con el nombre actual de su biblioteca (join con la tabla biblioteca). */
+  private aRespuesta(u: UsuarioMock): UsuarioResponse {
+    const biblioteca = this.estructura.bibliotecas().find((b) => b.idBiblioteca === u.idBiblioteca);
+    return { ...u, bibliotecaNombre: biblioteca?.nombre ?? null };
+  }
+
+  private reemplazar(usuario: UsuarioMock): void {
     this.usuarios.update((lista) =>
       lista.map((u) => (u.idUsuario === usuario.idUsuario ? usuario : u)),
     );
@@ -136,8 +144,8 @@ export class Usuarios {
 }
 
 type DatosValidados = Pick<
-  UsuarioResponse,
-  'nombre' | 'correo' | 'idRol' | 'rolNombre' | 'idBiblioteca' | 'bibliotecaNombre'
+  UsuarioMock,
+  'nombre' | 'correo' | 'idRol' | 'rolNombre' | 'idBiblioteca'
 >;
 
 /**
@@ -180,7 +188,6 @@ function validar(
     idRol: rol.idRol,
     rolNombre: rol.nombre,
     idBiblioteca: biblioteca?.idBiblioteca ?? null,
-    bibliotecaNombre: biblioteca?.nombre ?? null,
   };
 }
 

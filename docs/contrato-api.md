@@ -87,6 +87,14 @@ Reglas de la sesión (detalle en `docs/reglas-negocio.md`, sección «Sesión»)
 - `GET /usuarios/{id}` → `UsuarioResponse` [USUARIO_CONSULTAR]
 - `POST /usuarios` `UsuarioInternoRequest` → `RegistroUsuarioResponse` [USUARIO_REGISTRAR]
 - `PUT /usuarios/{id}` `UsuarioInternoRequest` → `UsuarioResponse` [USUARIO_ACTUALIZAR]. Es la única llamada del botón «Guardar cambios» de P2.3: si cambia `idRol` exige además USUARIO_ASIGNAR_ROL, y si cambia `idBiblioteca` exige USUARIO_ASIGNAR_BIBLIOTECA.
+- Biblioteca responsable en `POST /usuarios` y `PUT /usuarios/{id}`: solo se acepta una biblioteca activa, salvo en el `PUT` cuando el usuario conserva su biblioteca actual aunque esté inactiva. Si no, responde 400 con el error en el campo `idBiblioteca`:
+
+  ```json
+  { "status": 400, "titulo": "Datos inválidos", "detalle": "Revise los campos marcados.",
+    "errores": [ { "campo": "idBiblioteca", "mensaje": "La biblioteca seleccionada no está activa." } ] }
+  ```
+
+- `bibliotecaNombre` de `UsuarioResponse` se lee de la tabla biblioteca en cada respuesta (no se guarda en el usuario), así refleja el nombre actual.
 - `PATCH /usuarios/{id}/estado` `{ "estado": false }` [USUARIO_CAMBIAR_ESTADO] (interruptor de P2.2)
 - `POST /usuarios/{id}/restablecer-contrasena` → `{ "contrasenaGenerada": "..." }` [USUARIO_RESTABLECER_PASSWORD]
 - `GET /roles` → `RolResponse[]` [PERMISO_CONSULTAR]
