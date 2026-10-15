@@ -29,7 +29,7 @@ Roles: EST = Estudiante, DOC = Docente, UAC = Usuario académico, BIB = Bibliote
 | Catálogo de libros | `LIBRO_REGISTRAR` | Registrar libro |  |  |  |  | ✔ | ✔ |  | ✔ |
 | Catálogo de libros | `LIBRO_CONSULTAR` | Consultar, buscar y filtrar libros registrados |  |  |  |  | ✔ | ✔ |  | ✔ |
 | Catálogo de libros | `LIBRO_ACTUALIZAR` | Actualizar datos del libro |  |  |  |  | ✔ | ✔ |  | ✔ |
-| Catálogo de libros | `LIBRO_DESACTIVAR` | Desactivar libro |  |  |  |  | ✔ | ✔ |  | ✔ |
+| Catálogo de libros | `LIBRO_CAMBIAR_ESTADO` | Activar y desactivar libro |  |  |  |  | ✔ | ✔ |  | ✔ |
 | Catálogo de libros | `LIBRO_IMPORTAR` | Importar libros mediante archivo |  |  |  |  | ✔ | ✔ |  | ✔ |
 | Catálogo de libros | `LIBRO_HISTORIAL_CONSULTAR` | Consultar historial de cambios del libro |  |  |  |  | ✔ | ✔ |  | ✔ |
 | Ejemplares | `EJEMPLAR_REGISTRAR` | Registrar ejemplar y asignar su código |  |  |  |  | ✔ | ✔ |  | ✔ |
@@ -53,7 +53,7 @@ Roles: EST = Estudiante, DOC = Docente, UAC = Usuario académico, BIB = Bibliote
 | Tesis | `TESIS_REGISTRAR` | Registrar tesis |  |  |  |  |  |  | ✔ | ✔ |
 | Tesis | `TESIS_CONSULTAR` | Consultar, buscar y filtrar tesis registradas |  |  |  |  |  |  | ✔ | ✔ |
 | Tesis | `TESIS_ACTUALIZAR` | Actualizar datos de tesis |  |  |  |  |  |  | ✔ | ✔ |
-| Tesis | `TESIS_DESACTIVAR` | Desactivar tesis |  |  |  |  |  |  | ✔ | ✔ |
+| Tesis | `TESIS_CAMBIAR_ESTADO` | Activar y desactivar tesis |  |  |  |  |  |  | ✔ | ✔ |
 | Tesis | `TESIS_DOCUMENTO_CARGAR` | Cargar documentos digitales de tesis |  |  |  |  |  |  | ✔ | ✔ |
 | Tesis | `TESIS_DOCUMENTO_ACTUALIZAR` | Actualizar documento digital de tesis |  |  |  |  |  |  | ✔ | ✔ |
 | Comunicación: enviar consulta | `MENSAJE_ENVIAR_CONSULTA` | Enviar consulta al bibliotecario | ✔ | ✔ | ✔ |  |  |  |  | ✔ |

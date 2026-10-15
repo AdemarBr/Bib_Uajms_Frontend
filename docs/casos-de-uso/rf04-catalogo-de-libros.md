@@ -8,11 +8,11 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Tipo:** Primario
 
-**Referencias:** RF4.1; RF4.2; RF4.3; RF4.4; RF4.5; RF4.6
+**Referencias:** RF4.1; RF4.2; RF4.3; RF4.4; RF4.5; RF4.6; RF4.7
 
 **Propósito:** Administrar de forma integral la funcionalidad "Administrar Catálogo de Libros" del sistema de la Biblioteca Central UAJMS.
 
-**Resumen:** Permite registrar libro; importar libros mediante archivo; consultar libros registrados; actualizar datos del libro; desactivar libro; consultar historial de cambios del libro.
+**Resumen:** Permite registrar libro; importar libros mediante archivo; consultar libros registrados; actualizar datos del libro; desactivar libro; activar libro; consultar historial de cambios del libro.
 
 **Precondiciones:**
 
@@ -23,8 +23,8 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El actor selecciona, desde el menú lateral del sistema, la opción «Gestión de catálogo», que lo lleva a la interfaz P4.1 a P4.5 según el caso de uso hijo que corresponda.
-- 2.- El sistema despliega la interfaz correspondiente (P4.1 a P4.5) con las opciones específicas de «Gestión de catálogo».
+- 1.- El actor selecciona, desde el menú lateral del sistema, la opción «Gestión de catálogo», que lo lleva a la interfaz P4.1, P4.2 o P4.3 según el caso de uso hijo que corresponda; las interfaces P4.4 y P4.5 se abren desde el libro seleccionado en el listado de la interfaz P4.3.
+- 2.- El sistema despliega la interfaz correspondiente (P4.1, P4.2 o P4.3) con las opciones específicas de «Gestión de catálogo».
 
 **Curso alternativo de eventos:**
 
@@ -315,7 +315,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 - RF4.5.1: Este caso de uso permite cambiar el estado de un libro registrado para que no se encuentre activo dentro del catálogo operativo del sistema.
 - RF4.5.2: El sistema debe garantizar que el libro queda desactivado en el sistema, conservando su información histórica para control y consulta interna si corresponde.
-- [Interfaz] RF4.5.3: La interfaz debe mostrar, junto al libro seleccionado, un interruptor de estado para cambiarlo a desactivado.
+- [Interfaz] RF4.5.3: La interfaz debe mostrar, junto al libro seleccionado, un control para cambiar su estado a desactivado.
 - [Interfaz] RF4.5.4: La interfaz debe solicitar confirmación antes de aplicar la desactivación.
 - [Interfaz] RF4.5.5: El control para desactivar el libro es el botón «Desactivar libro» de la interfaz P4.4.
 - [Interfaz] RF4.5.6: La confirmación se solicita en una ventana titulada «¿Desactivar este libro?» con los botones «Cancelar» y «Confirmar».
@@ -356,3 +356,46 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 - RF4.6.2: El sistema muestra el historial de cambios del libro.
 - RF4.6.3: El sistema debe garantizar que no se modifica información del sistema.
 - [Interfaz] RF4.6.4: La interfaz debe mostrar el historial en una lista cronológica, indicando la fecha, el campo modificado, el valor anterior y el valor nuevo.
+
+## RF4.7 Activar libro
+
+**Actores:** Administrador de biblioteca, Catalogador
+
+**Tipo:** Primario
+
+**Referencias:** RF4.7.1; RF4.7.2; RF4.7.3; RF4.7.4; RF4.7.5; RF4.7.6
+
+**Propósito:** Permitir cambiar el estado de un libro desactivado para que vuelva a encontrarse activo dentro del catálogo operativo del sistema.
+
+**Resumen:** Este caso de uso permite cambiar el estado de un libro desactivado para que vuelva a encontrarse activo dentro del catálogo operativo del sistema. El sistema debe garantizar que el libro queda activo y vuelve a mostrarse en el catálogo bibliográfico, conservando su información histórica.
+
+**Precondiciones:**
+
+- El usuario ha iniciado sesión en el sistema.
+- El usuario cuenta con el rol de Administrador de biblioteca o Catalogador.
+- El libro se encuentra desactivado.
+
+**Postcondiciones:** El sistema debe garantizar que el libro queda activo y vuelve a mostrarse en el catálogo bibliográfico, conservando su información histórica.
+
+**Curso normal de eventos:**
+
+- 1.- El actor ubica el control de estado del libro desactivado dentro de la interfaz P4.4.
+- 2.- El sistema muestra el control que permite cambiar el estado del libro a activo.
+- 3.- El actor hace clic en el botón «Activar libro».
+- 4.- El sistema advierte que el libro volverá a mostrarse en el catálogo y muestra una ventana de confirmación con los botones «Cancelar» y «Confirmar».
+- 5.- El actor hace clic en el botón «Confirmar» de la ventana de confirmación.
+- 6.- El sistema deja el libro activo, conservando su información histórica. El cambio de estado se guarda en la tabla libro. La acción queda registrada en la tabla bitacora.
+- 7.- El sistema vuelve a mostrar el libro en el catálogo público.
+
+**Curso alternativo de eventos:**
+
+- ¿El actor hace clic en el botón «Confirmar» de la ventana y no en «Cancelar»? En caso negativo, el sistema cancela la operación y conserva el libro desactivado.
+
+**Requerimientos (RF4.7):**
+
+- RF4.7.1: Este caso de uso permite cambiar el estado de un libro desactivado para que vuelva a encontrarse activo dentro del catálogo operativo del sistema.
+- RF4.7.2: El sistema debe garantizar que el libro queda activo y vuelve a mostrarse en el catálogo bibliográfico, conservando su información histórica.
+- [Interfaz] RF4.7.3: La interfaz debe mostrar, junto al libro seleccionado que se encuentra desactivado, un control para cambiar su estado a activo.
+- [Interfaz] RF4.7.4: La interfaz debe solicitar confirmación antes de aplicar la activación.
+- [Interfaz] RF4.7.5: El control para activar el libro es el botón «Activar libro» de la interfaz P4.4, que reemplaza al botón «Desactivar libro» mientras el libro está desactivado.
+- [Interfaz] RF4.7.6: La confirmación se solicita en una ventana titulada «¿Activar este libro?» con los botones «Cancelar» y «Confirmar».

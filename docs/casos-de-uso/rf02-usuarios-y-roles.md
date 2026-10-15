@@ -23,8 +23,8 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El actor selecciona, desde el menú lateral del sistema, la opción «Usuarios y roles», que lo lleva a la interfaz P2.1 a P2.5 según el caso de uso hijo que corresponda.
-- 2.- El sistema despliega la interfaz correspondiente (P2.1 a P2.5) con las opciones específicas de «Usuarios y roles».
+- 1.- El actor selecciona, desde el menú lateral del sistema, la opción «Usuarios y roles», que lo lleva a la interfaz P2.1, P2.2, P2.4 o P2.5 según el caso de uso hijo que corresponda; la interfaz P2.3 se abre desde el listado de la interfaz P2.2.
+- 2.- El sistema despliega la interfaz correspondiente (P2.1, P2.2, P2.4 o P2.5) con las opciones específicas de «Usuarios y roles».
 
 **Curso alternativo de eventos:**
 
