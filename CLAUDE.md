@@ -204,6 +204,7 @@ Actualiza esta lista al terminar cada etapa (marca con [x]):
 - [ ] RF4 Gestión del catálogo
 - [ ] RF5 Ejemplares
 - [ ] RF6 Consulta del catálogo
+  - Nota: la ruta de Home (`/`) debe tener `title` «Inicio · Biblioteca UAJMS» (hoy la pestaña conserva «Iniciar sesión · Biblioteca UAJMS» al volver del login).
 - [ ] RF7 Reservas propias
 - [ ] RF8 Administrar reservas
 - [ ] RF9 Préstamos
