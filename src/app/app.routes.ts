@@ -51,6 +51,12 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/catalogo/catalogo.routes').then((m) => m.RUTAS_GESTION_CATALOGO),
       },
+      {
+        path: 'ejemplares',
+        canActivate: [sesionGuard],
+        loadChildren: () =>
+          import('./features/ejemplares/ejemplares.routes').then((m) => m.RUTAS_EJEMPLARES),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

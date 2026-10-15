@@ -273,7 +273,9 @@ Archivo de `POST /libros/importar` (RF4.2):
 
 ## 8. Ejemplares (RF5)
 
-- `GET /ejemplares?q&idBiblioteca&idFacultad&estado&disponible&ubicacion` → `Pagina<EjemplarResponse>` [EJEMPLAR_CONSULTAR]
+- `GET /ejemplares?q&idBiblioteca&idFacultad&estado&disponible&ubicacion&sinUbicacion` → `Pagina<EjemplarResponse>` [EJEMPLAR_CONSULTAR]. `q`: código de ejemplar o título del libro (RF5.3.1). `idFacultad`: ejemplares de las bibliotecas de esa facultad o de sus carreras. `ubicacion`: uno de los valores de `ubicaciones` (igualdad exacta). `sinUbicacion=true`: solo los ejemplares sin ubicación física registrada (opción «Sin ubicación asignada» del filtro, RF5.7); no se combina con `ubicacion`.
+- `GET /ejemplares/opciones-filtro` → `OpcionesFiltroEjemplarResponse` [EJEMPLAR_CONSULTAR] (valores del desplegable «Ubicación» de P5.2, RF5.3.1.1.3; los de biblioteca y facultad salen de `GET /bibliotecas` y `GET /facultades`, y los de estado y disponibilidad son fijos)
+- `GET /ejemplares/{id}` → `EjemplarResponse` [EJEMPLAR_CONSULTAR] (P5.3)
 - `POST /ejemplares` `EjemplarRequest` [EJEMPLAR_REGISTRAR]
 - `PUT /ejemplares/{id}` `EjemplarActualizarRequest` [EJEMPLAR_ACTUALIZAR]. Es la única llamada del botón «Guardar cambios» de P5.3 (RF5.4 y RF5.5): si cambia `estado` exige además EJEMPLAR_CAMBIAR_ESTADO.
 
@@ -285,6 +287,13 @@ Archivo de `POST /libros/importar` (RF4.2):
 ```
 
 `disponible` *(calculado)*: `estado == "disponible"`.
+
+```json
+// OpcionesFiltroEjemplarResponse: ubicaciones físicas distintas registradas en la tabla ejemplar, ordenadas alfabéticamente (sin las vacías)
+{ "ubicaciones": ["Estante 2A, Dewey 515", "Estante 4B, Dewey 005.1"] }
+```
+
+Validación de `EjemplarRequest` y `EjemplarActualizarRequest` (400 con `errores[]` por campo): `codigoEjemplar` obligatorio (máximo 30); `ubicacionFisica` opcional (máximo 100); `idLibro` obligatorio, de un libro activo (solo al registrar); `idBiblioteca` obligatoria y activa, salvo en `PUT` cuando el ejemplar conserva su biblioteca actual aunque esté inactiva («La biblioteca seleccionada no está activa.»); `estado` uno de los seis de `docs/modelo-datos.md`. El código es único: si ya lo tiene otro ejemplar, 409 con el detalle «El código de ejemplar ya se encuentra en uso.». Si `estado` cambia sin EJEMPLAR_CAMBIAR_ESTADO, 403 con `titulo` «Acceso denegado» y `detalle` «No tiene permiso para cambiar el estado del ejemplar.». Un ejemplar nuevo queda `disponible`.
 
 ```json
 // EjemplarRequest (P5.1)

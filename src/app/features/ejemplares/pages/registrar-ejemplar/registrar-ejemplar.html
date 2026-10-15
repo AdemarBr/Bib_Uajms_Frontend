@@ -1,0 +1,101 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Registrar ejemplar de libro</h1>
+
+  <form
+    class="flex w-[482px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    novalidate
+    [formGroup]="formulario"
+    (ngSubmit)="guardar()"
+  >
+    <div class="flex flex-col gap-xs">
+      <label for="libro" class="text-label text-gray-600">Libro asociado</label>
+      <input
+        id="libro"
+        type="search"
+        class="campo-texto"
+        placeholder="Buscar libro por título…"
+        autocomplete="off"
+        [formControl]="busquedaLibro"
+        [attr.aria-invalid]="!!mensaje('idLibro')"
+        (input)="alEscribirLibro()"
+      />
+      @if (coincidencias(); as lista) {
+        @if (lista.length > 0) {
+          <ul
+            class="flex max-h-60 flex-col overflow-y-auto rounded-sm border border-gray-300"
+            aria-label="Libros encontrados"
+          >
+            @for (libro of lista; track libro.idLibro) {
+              <li class="border-b border-gray-300 last:border-b-0">
+                <button
+                  type="button"
+                  class="w-full cursor-pointer px-md py-sm text-left text-body text-gray-900 hover:bg-gray-100"
+                  (click)="elegirLibro(libro)"
+                >
+                  {{ libro.titulo }} — {{ libro.autor }}
+                </button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="text-caption text-gray-600" aria-live="polite">
+            No se encontraron libros con ese criterio.
+          </p>
+        }
+      }
+      @if (mensaje('idLibro'); as e) {
+        <p class="text-label text-gray-900">{{ e }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <label for="codigoEjemplar" class="text-label text-gray-600">Código de ejemplar</label>
+      <input
+        id="codigoEjemplar"
+        type="text"
+        class="campo-texto"
+        placeholder="Ej. EJ-00123 (no debe repetirse)"
+        formControlName="codigoEjemplar"
+        [attr.aria-invalid]="!!mensaje('codigoEjemplar')"
+      />
+      @if (mensaje('codigoEjemplar'); as e) {
+        <p class="text-label text-gray-900">{{ e }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <label for="ubicacionFisica" class="text-label text-gray-600">Ubicación física</label>
+      <input
+        id="ubicacionFisica"
+        type="text"
+        class="campo-texto"
+        placeholder="Estante / clasificación Dewey"
+        formControlName="ubicacionFisica"
+        [attr.aria-invalid]="!!mensaje('ubicacionFisica')"
+      />
+      @if (mensaje('ubicacionFisica'); as e) {
+        <p class="text-label text-gray-900">{{ e }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <span class="text-label text-gray-600">Biblioteca</span>
+      <app-select
+        class="w-60"
+        etiqueta="Seleccionar biblioteca…"
+        nombreAccesible="Biblioteca"
+        formControlName="idBiblioteca"
+        [opciones]="opcionesBiblioteca()"
+      />
+      @if (mensaje('idBiblioteca'); as e) {
+        <p class="text-label text-gray-900">{{ e }}</p>
+      }
+    </div>
+
+    <button type="submit" class="btn-primario w-full" [disabled]="enviando()">Guardar</button>
+
+    @if (error(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
+  </form>
+</div>
