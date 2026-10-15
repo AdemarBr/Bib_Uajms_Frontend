@@ -1,0 +1,81 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Actualizar datos del ejemplar</h1>
+
+  @if (cargado()) {
+    <form
+      class="flex w-[482px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+      novalidate
+      [formGroup]="formulario"
+      (ngSubmit)="guardar()"
+    >
+      <div class="flex flex-col gap-xs">
+        <label for="codigoEjemplar" class="text-label text-gray-600">Código</label>
+        <input
+          id="codigoEjemplar"
+          type="text"
+          class="campo-texto border-gray-500"
+          formControlName="codigoEjemplar"
+          [attr.aria-invalid]="!!mensaje('codigoEjemplar')"
+        />
+        @if (mensaje('codigoEjemplar'); as e) {
+          <p class="text-label text-gray-900">{{ e }}</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <span class="text-label text-gray-600">Biblioteca</span>
+        <app-select
+          nombreAccesible="Biblioteca"
+          formControlName="idBiblioteca"
+          [opciones]="opcionesBiblioteca()"
+        />
+        @if (mensaje('idBiblioteca'); as e) {
+          <p class="text-label text-gray-900">{{ e }}</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label for="ubicacionFisica" class="text-label text-gray-600">Ubicación</label>
+        <input
+          id="ubicacionFisica"
+          type="text"
+          class="campo-texto border-gray-500"
+          placeholder="Estante / clasificación Dewey"
+          formControlName="ubicacionFisica"
+          [attr.aria-invalid]="!!mensaje('ubicacionFisica')"
+        />
+        @if (mensaje('ubicacionFisica'); as e) {
+          <p class="text-label text-gray-900">{{ e }}</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <span class="text-label text-gray-600">Estado</span>
+        <app-select
+          class="w-60"
+          nombreAccesible="Estado"
+          formControlName="estado"
+          [opciones]="opcionesEstado"
+        />
+        @if (mensaje('estado'); as e) {
+          <p class="text-label text-gray-900">{{ e }}</p>
+        }
+      </div>
+
+      <p class="text-mini text-gray-600">
+        Estados posibles: disponible, reservado, prestado, no disponible, en mantenimiento,
+        desactivado.
+      </p>
+
+      <button type="submit" class="btn-primario w-full" [disabled]="enviando()">
+        Guardar cambios
+      </button>
+
+      @if (error(); as e) {
+        <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+      }
+    </form>
+  } @else if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+</div>

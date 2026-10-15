@@ -1,0 +1,124 @@
+<div class="flex flex-col gap-5">
+  <h1 class="text-h2 text-gray-900">Consultar ejemplares registrados</h1>
+
+  <form
+    class="flex flex-wrap items-end gap-md"
+    [formGroup]="filtros"
+    (submit)="$event.preventDefault()"
+  >
+    <input
+      type="search"
+      class="campo-texto w-80 shrink-0"
+      placeholder="Buscar por código de ejemplar o título…"
+      aria-label="Buscar ejemplar por código o título del libro"
+      [formControl]="busqueda"
+    />
+    <div class="flex w-[150px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Biblioteca</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Biblioteca"
+        formControlName="idBiblioteca"
+        [opciones]="opcionesBiblioteca()"
+      />
+    </div>
+    <div class="flex w-[150px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Facultad</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Facultad"
+        formControlName="idFacultad"
+        [opciones]="opcionesFacultad()"
+      />
+    </div>
+    <div class="flex w-[150px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Estado</span>
+      <app-select
+        etiqueta="Todos"
+        nombreAccesible="Estado"
+        formControlName="estado"
+        [opciones]="opcionesEstado"
+      />
+    </div>
+    <div class="flex w-[150px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Disponibilidad</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Disponibilidad"
+        formControlName="disponible"
+        [opciones]="opcionesDisponibilidad"
+      />
+    </div>
+    <div class="flex w-[150px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Ubicación</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Ubicación"
+        formControlName="ubicacion"
+        [opciones]="opcionesUbicacion()"
+      />
+    </div>
+  </form>
+
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
+  @if (resultado(); as r) {
+    <!-- RF5.3.1.1.4 -->
+    <p class="text-caption text-gray-600" aria-live="polite">
+      {{ r.totalElementos }}
+      {{ r.totalElementos === 1 ? 'ejemplar encontrado' : 'ejemplares encontrados' }}
+    </p>
+
+    <app-tabla [columnas]="columnas" [filas]="r.contenido" [mensajeVacio]="mensajeVacio()">
+      <ng-template appCelda="codigoEjemplar" let-fila>
+        <ng-template #soloTexto>{{ fila.codigoEjemplar }}</ng-template>
+        <a
+          *appTienePermiso="permisoEditar; else soloTexto"
+          class="hover:underline"
+          [routerLink]="['/ejemplares', fila.idEjemplar, 'editar']"
+          >{{ fila.codigoEjemplar }}</a
+        >
+      </ng-template>
+
+      <!-- RF5.7, curso alternativo -->
+      <ng-template appCelda="ubicacionFisica" let-fila>
+        @if (fila.ubicacionFisica) {
+          {{ fila.ubicacionFisica }}
+        } @else {
+          <span class="text-gray-600">Sin ubicación asignada</span>
+        }
+      </ng-template>
+
+      <ng-template appCelda="estado" let-fila>{{ fila.estado | estadoEjemplar }}</ng-template>
+
+      <!-- RF5.6.4: etiqueta de color; si no está disponible, el estado que lo restringe. -->
+      <ng-template appCelda="disponible" let-fila>
+        <app-badge-estado
+          [texto]="fila.disponible ? 'Disponible' : (fila.estado | estadoEjemplar)"
+          [tono]="fila.disponible ? 'disponible' : 'neutral'"
+        />
+      </ng-template>
+    </app-tabla>
+
+    @if (r.totalElementos > 0) {
+      <app-paginador
+        [pagina]="r.pagina"
+        [tamanio]="r.tamanio"
+        [totalElementos]="r.totalElementos"
+        (cambio)="pagina.set($event)"
+      />
+    } @else if (hayFiltros()) {
+      <div>
+        <button type="button" class="btn-secundario" (click)="limpiarFiltros()">
+          Limpiar filtros
+        </button>
+      </div>
+    } @else if (sinEjemplares()) {
+      <div *appTienePermiso="permisoRegistrar">
+        <a class="btn-primario" routerLink="/ejemplares/registrar">Registrar ejemplar de libro</a>
+      </div>
+    }
+  }
+</div>

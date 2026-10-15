@@ -18,6 +18,19 @@ export class DatosEstructura {
   readonly facultades = signal<FacultadMock[]>(FACULTADES_MOCK);
   readonly carreras = signal<CarreraMock[]>(CARRERAS_MOCK);
   readonly bibliotecas = signal<BibliotecaMock[]>(BIBLIOTECAS_MOCK);
+
+  /** Bibliotecas de una facultad: las de toda la facultad y las de sus carreras (filtros de P4.3 y P5.2). */
+  idsBibliotecasDeFacultad(idFacultad: number): number[] {
+    const carreras = this.carreras()
+      .filter((c) => c.idFacultad === idFacultad)
+      .map((c) => c.idCarrera);
+    return this.bibliotecas()
+      .filter(
+        (b) =>
+          b.idFacultad === idFacultad || (b.idCarrera !== null && carreras.includes(b.idCarrera)),
+      )
+      .map((b) => b.idBiblioteca);
+  }
 }
 
 /** Minúsculas y sin tildes, para detectar nombres duplicados. */

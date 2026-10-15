@@ -288,24 +288,16 @@ export class Libros {
     idFacultad: number | null | undefined,
   ): Set<number> | null {
     if (idBiblioteca == null && idFacultad == null) return null;
-    const carrerasDeFacultad = this.estructura
-      .carreras()
-      .filter((c) => c.idFacultad === idFacultad)
-      .map((c) => c.idCarrera);
-    const bibliotecas = this.estructura
-      .bibliotecas()
-      .filter(
-        (b) =>
-          (idBiblioteca == null || b.idBiblioteca === idBiblioteca) &&
-          (idFacultad == null ||
-            b.idFacultad === idFacultad ||
-            (b.idCarrera !== null && carrerasDeFacultad.includes(b.idCarrera))),
-      )
-      .map((b) => b.idBiblioteca);
+    const deFacultad =
+      idFacultad == null ? null : this.estructura.idsBibliotecasDeFacultad(idFacultad);
     return new Set(
       this.datos
         .ejemplares()
-        .filter((e) => bibliotecas.includes(e.idBiblioteca))
+        .filter(
+          (e) =>
+            (idBiblioteca == null || e.idBiblioteca === idBiblioteca) &&
+            (deFacultad === null || deFacultad.includes(e.idBiblioteca)),
+        )
         .map((e) => e.idLibro),
     );
   }
