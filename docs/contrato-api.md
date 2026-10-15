@@ -87,6 +87,14 @@ Reglas de la sesión (detalle en `docs/reglas-negocio.md`, sección «Sesión»)
 - `GET /usuarios/{id}` → `UsuarioResponse` [USUARIO_CONSULTAR]
 - `POST /usuarios` `UsuarioInternoRequest` → `RegistroUsuarioResponse` [USUARIO_REGISTRAR]
 - `PUT /usuarios/{id}` `UsuarioInternoRequest` → `UsuarioResponse` [USUARIO_ACTUALIZAR]. Es la única llamada del botón «Guardar cambios» de P2.3: si cambia `idRol` exige además USUARIO_ASIGNAR_ROL, y si cambia `idBiblioteca` exige USUARIO_ASIGNAR_BIBLIOTECA.
+- Biblioteca responsable en `POST /usuarios` y `PUT /usuarios/{id}`: solo se acepta una biblioteca activa, salvo en el `PUT` cuando el usuario conserva su biblioteca actual aunque esté inactiva. Si no, responde 400 con el error en el campo `idBiblioteca`:
+
+  ```json
+  { "status": 400, "titulo": "Datos inválidos", "detalle": "Revise los campos marcados.",
+    "errores": [ { "campo": "idBiblioteca", "mensaje": "La biblioteca seleccionada no está activa." } ] }
+  ```
+
+- `bibliotecaNombre` de `UsuarioResponse` se lee de la tabla biblioteca en cada respuesta (no se guarda en el usuario), así refleja el nombre actual.
 - `PATCH /usuarios/{id}/estado` `{ "estado": false }` [USUARIO_CAMBIAR_ESTADO] (interruptor de P2.2)
 - `POST /usuarios/{id}/restablecer-contrasena` → `{ "contrasenaGenerada": "..." }` [USUARIO_RESTABLECER_PASSWORD]
 - `GET /roles` → `RolResponse[]` [PERMISO_CONSULTAR]
@@ -123,9 +131,20 @@ Reglas de la sesión (detalle en `docs/reglas-negocio.md`, sección «Sesión»)
 
 ## 5. Bibliotecas, facultades y carreras (RF3)
 
-- `GET /facultades` → `FacultadResponse[]` — público (selectores)
-- `GET /carreras?idFacultad` → `CarreraResponse[]` — público (selectores)
-- `GET /bibliotecas` → `BibliotecaResponse[]` — público (selectores y tarjetas de la página de inicio, RF6.3)
+Públicos (selectores y página de inicio): devuelven **solo los registros activos**.
+
+- `GET /facultades` → `FacultadResponse[]` — público (selectores). Solo facultades activas; sus `carreras` y `bibliotecas` traen solo los nombres activos.
+- `GET /carreras?idFacultad` → `CarreraResponse[]` — público (selectores). Solo carreras activas.
+- `GET /bibliotecas` → `BibliotecaResponse[]` — público (selectores y tarjetas de la página de inicio, RF6.3). Solo bibliotecas activas.
+
+De gestión (P3.1, P3.3 y P3.5): devuelven **todos**, también los inactivos, con la misma forma de respuesta. Basta uno de los permisos indicados. Los inactivos no se exponen con un parámetro opcional del endpoint público, porque así seguirían siendo visibles sin permiso.
+
+- `GET /estructura/facultades` → `FacultadResponse[]` [ESTRUCTURA_CONSULTAR, FACULTAD_ACTUALIZAR, CARRERA_ACTUALIZAR o BIBLIOTECA_ACTUALIZAR]. Sus `carreras` y `bibliotecas` traen todos los nombres.
+- `GET /estructura/carreras?idFacultad` → `CarreraResponse[]` [ESTRUCTURA_CONSULTAR, CARRERA_ACTUALIZAR o BIBLIOTECA_ACTUALIZAR]
+- `GET /estructura/bibliotecas` → `BibliotecaResponse[]` [ESTRUCTURA_CONSULTAR o BIBLIOTECA_ACTUALIZAR]
+
+Escritura:
+
 - `POST /facultades` [FACULTAD_REGISTRAR] · `PUT /facultades/{id}` [FACULTAD_ACTUALIZAR]
 - `POST /carreras` [CARRERA_REGISTRAR] · `PUT /carreras/{id}` [CARRERA_ACTUALIZAR]
 - `POST /bibliotecas` [BIBLIOTECA_REGISTRAR] · `PUT /bibliotecas/{id}` [BIBLIOTECA_ACTUALIZAR]

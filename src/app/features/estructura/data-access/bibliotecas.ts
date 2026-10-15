@@ -18,15 +18,25 @@ import {
 const DUPLICADA = 'Ya existe una biblioteca con ese nombre.';
 
 /**
- * Bibliotecas físicas (RF3.1, RF3.6 y RF3.7). En la Iteración 5: GET/POST /bibliotecas y
- * PUT /bibliotecas/{id}. Una biblioteca es de una facultad o de una carrera, nunca de las dos.
+ * Bibliotecas físicas (RF3.1, RF3.6 y RF3.7). En la Iteración 5: GET/POST /bibliotecas,
+ * PUT /bibliotecas/{id} y GET /estructura/bibliotecas. Una biblioteca es de una facultad o de una
+ * carrera, nunca de las dos.
  */
 @Service()
 export class Bibliotecas {
   private readonly datos = inject(DatosEstructura);
 
-  /** GET /bibliotecas (público: selectores y página de inicio). */
+  /** GET /bibliotecas (público: selectores y página de inicio): solo las activas. */
   listarBibliotecas(): Observable<BibliotecaResponse[]> {
+    const activas = this.datos.bibliotecas().filter((b) => b.estado);
+    return of(activas.map((b) => this.aRespuesta(b))).pipe(delay(DEMORA_MS));
+  }
+
+  /**
+   * GET /estructura/bibliotecas [ESTRUCTURA_CONSULTAR o BIBLIOTECA_ACTUALIZAR]: todas, también las
+   * inactivas (P3.1 y P3.5).
+   */
+  listarBibliotecasEstructura(): Observable<BibliotecaResponse[]> {
     return of(this.datos.bibliotecas().map((b) => this.aRespuesta(b))).pipe(delay(DEMORA_MS));
   }
 

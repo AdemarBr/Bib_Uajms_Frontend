@@ -71,14 +71,14 @@ export class ConsultarEstructura {
   protected readonly error = signal<ErrorRespuesta | null>(null);
 
   private readonly facultades = toSignal(
-    inject(Facultades).listarFacultades().pipe(this.capturarError()),
+    inject(Facultades).listarFacultadesEstructura().pipe(this.capturarError()),
   );
   private readonly carreras = toSignal(
-    inject(Carreras).listarCarreras().pipe(this.capturarError()),
+    inject(Carreras).listarCarrerasEstructura().pipe(this.capturarError()),
   );
   private readonly bibliotecas = toSignal(
     inject(Bibliotecas)
-      .listarBibliotecas()
+      .listarBibliotecasEstructura()
       .pipe(
         map((lista) =>
           lista.map((b) => ({

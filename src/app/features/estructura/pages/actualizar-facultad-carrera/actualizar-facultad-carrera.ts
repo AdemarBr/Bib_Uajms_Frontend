@@ -35,10 +35,10 @@ export class ActualizarFacultadCarrera {
   protected readonly puedeFacultad = this.sesion.tienePermiso(PERMISOS.FACULTAD_ACTUALIZAR);
   protected readonly puedeCarrera = this.sesion.tienePermiso(PERMISOS.CARRERA_ACTUALIZAR);
 
-  private readonly facultades = toSignal(this.facultadesServicio.listarFacultades(), {
+  private readonly facultades = toSignal(this.facultadesServicio.listarFacultadesEstructura(), {
     initialValue: [],
   });
-  private readonly carreras = toSignal(this.carrerasServicio.listarCarreras(), {
+  private readonly carreras = toSignal(this.carrerasServicio.listarCarrerasEstructura(), {
     initialValue: [],
   });
 
