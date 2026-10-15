@@ -1,0 +1,22 @@
+<div
+  class="flex flex-col items-center gap-md rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+  role="group"
+  aria-labelledby="titulo-portada"
+>
+  <p id="titulo-portada" class="text-body-strong text-gray-900">Portada</p>
+
+  @if (url(); as u) {
+    <img [src]="u" alt="Portada del libro" class="h-[240px] w-[180px] rounded-sm object-cover" />
+  } @else {
+    <div class="h-[240px] w-[180px] rounded-sm bg-gray-100" aria-label="Sin portada"></div>
+  }
+
+  <input #campo type="file" accept="image/*" class="hidden" (change)="alElegir(campo)" />
+  <button type="button" class="btn-primario" [disabled]="deshabilitado()" (click)="campo.click()">
+    Subir imagen
+  </button>
+
+  @if (mensaje(); as m) {
+    <p class="text-label text-gray-900">{{ m }}</p>
+  }
+</div>

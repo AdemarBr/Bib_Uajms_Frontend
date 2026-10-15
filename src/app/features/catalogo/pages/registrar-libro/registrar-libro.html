@@ -1,0 +1,50 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Registrar libro</h1>
+
+  <div class="flex items-start gap-xl">
+    <form
+      class="flex min-w-0 flex-1 flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+      novalidate
+      [formGroup]="formulario"
+      (ngSubmit)="guardar()"
+    >
+      @for (c of campos; track c.campo) {
+        <div class="flex flex-col gap-xs">
+          <label class="text-label text-gray-600" [for]="c.campo">{{ c.etiqueta }}</label>
+          <input
+            type="text"
+            class="campo-texto"
+            [id]="c.campo"
+            [placeholder]="c.placeholder"
+            [formControlName]="c.campo"
+            [attr.aria-invalid]="!!mensajeCampo(c.campo)"
+          />
+          @if (mensajeCampo(c.campo); as e) {
+            <p class="text-label text-gray-900">{{ e }}</p>
+          }
+        </div>
+      }
+
+      <button type="submit" class="btn-primario w-full" [disabled]="enviando()">Guardar</button>
+
+      @if (error(); as e) {
+        <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+      } @else if (registrado()) {
+        <!-- RF4.1.5 -->
+        <app-alerta
+          tono="exito"
+          titulo="Libro registrado"
+          mensaje="El libro se registró correctamente en el catálogo."
+        />
+      }
+    </form>
+
+    <app-portada-libro
+      class="w-[282px] shrink-0"
+      [url]="vistaPrevia()"
+      [mensaje]="mensajePortada()"
+      [deshabilitado]="enviando()"
+      (seleccion)="elegirPortada($event)"
+    />
+  </div>
+</div>

@@ -300,7 +300,7 @@ Fuente: documento del proyecto. Incluye los requerimientos funcionales y no func
 - RF17: La interfaz debe mostrar el estado de disponibilidad mediante un indicador visual (por ejemplo, una etiqueta de color) junto al ejemplar consultado.
 - RF18: La interfaz debe mostrar la cantidad de ejemplares resultantes tras aplicar los filtros, mediante el contador «N ejemplares encontrados».
 - RF19: La interfaz debe presentar la información del libro organizada en secciones: datos bibliográficos, disponibilidad y ubicación física.
-- RF20: La interfaz debe mostrar la disponibilidad mediante un indicador visual (por ejemplo, una etiqueta de color) dentro de la vista de detalle del libro.
+- RF20: La interfaz debe mostrar la disponibilidad mediante un indicador visual (por ejemplo, una etiqueta de color) dentro de la interfaz P6.2 de detalle del libro.
 - RF21: La interfaz debe mostrar la portada del libro en un tamaño legible dentro de la vista de detalle.
 - RF22: La interfaz debe presentar una imagen genérica de reemplazo cuando el libro no tenga portada registrada.
 - RF23: La interfaz debe incluir una sección visible en el catálogo bibliográfico dedicada a mostrar las novedades.
@@ -416,7 +416,7 @@ Fuente: documento del proyecto. Incluye los requerimientos funcionales y no func
 - RF07: La interfaz debe ocultar los caracteres de la contraseña ingresada, con la opción de mostrarla temporalmente.
 - RF08: Este caso de uso permite finalizar de forma segura la sesión activa del usuario dentro del sistema bibliotecario.
 - RF09: El sistema debe garantizar que la sesión del usuario queda finalizada y el sistema impide el acceso a funcionalidades protegidas hasta que el usuario vuelva a autenticarse.
-- RF10: La interfaz debe redirigir automáticamente a la pantalla de inicio (P.1 Home) al finalizar la sesión.
+- RF10: La interfaz debe redirigir automáticamente a la pantalla de inicio (P.1 Home sin sesión) al finalizar la sesión.
 - RF11: El sistema debe garantizar que el usuario queda asociado al rol seleccionado y el sistema ajusta sus permisos de acceso según dicho rol.
 - RF12: La interfaz debe mostrar una breve descripción de los permisos asociados al rol antes de confirmar la asignación.
 - RF13: Este caso de uso permite revisar los permisos asociados a cada rol definido dentro del sistema bibliotecario.

@@ -442,7 +442,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El Bibliotecario revisa la fecha de devolución calculada automáticamente por el sistema.
+- 1.- El Bibliotecario revisa la fecha de devolución calculada automáticamente por el sistema en la interfaz P9.3.
 - 2.- El sistema muestra la fecha correspondiente al plazo definido por la Biblioteca Central.
 - 3.- El Bibliotecario acepta la fecha resultante.
 - 4.- El sistema permite modificar la fecha únicamente dentro de los límites permitidos.

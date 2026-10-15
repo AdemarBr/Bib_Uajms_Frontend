@@ -247,7 +247,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El actor ubica los filtros junto al dashboard o reporte que se encuentra consultando.
+- 1.- El actor ubica los filtros junto al dashboard o reporte que se encuentra consultando en las interfaces P13.1 a P13.11.
 - 2.- El sistema muestra únicamente los filtros definidos para la pantalla activa (periodo, facultad, carrera, biblioteca o estado, según el dashboard o reporte).
 - 3.- El actor selecciona los criterios estadísticos que desea aplicar.
 - 4.- El sistema combina los criterios seleccionados para delimitar la información.

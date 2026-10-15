@@ -156,7 +156,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El usuario ubica el indicador de disponibilidad dentro de la vista de detalle del libro.
+- 1.- El usuario ubica el indicador de disponibilidad dentro de la interfaz P6.2 de detalle del libro.
 - 2.- El sistema muestra una etiqueta de color con el estado de disponibilidad del libro.
 - 3.- El usuario revisa el estado de disponibilidad informado.
 - 4.- El sistema refleja el estado consolidado de los ejemplares registrados del libro. El estado se obtiene de la tabla ejemplar.
@@ -169,7 +169,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 - RF6.1.2.1.1: Este caso de uso permite conocer si un libro o sus ejemplares se encuentran disponibles, reservados, prestados o no disponibles dentro del sistema.
 - RF6.1.2.1.2: El sistema muestra el estado de disponibilidad del libro o de sus ejemplares registrados.
-- [Interfaz] RF6.1.2.1.3: La interfaz debe mostrar la disponibilidad mediante un indicador visual (por ejemplo, una etiqueta de color) dentro de la vista de detalle del libro.
+- [Interfaz] RF6.1.2.1.3: La interfaz debe mostrar la disponibilidad mediante un indicador visual (por ejemplo, una etiqueta de color) dentro de la interfaz P6.2 de detalle del libro.
 
 ## RF6.1.2.2 Consultar ubicación física del libro
 
@@ -189,7 +189,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El usuario ubica la sección de ubicación física dentro de la vista de detalle del libro.
+- 1.- El usuario ubica la sección de ubicación física dentro de la interfaz P6.2 de detalle del libro.
 - 2.- El sistema muestra la sección destinada a la localización del material.
 - 3.- El usuario revisa la biblioteca física y la clasificación Dewey del libro.
 - 4.- El sistema muestra ambos datos para que el usuario pueda ubicar el material en estantería. Los datos se obtienen de las tablas ejemplar y biblioteca.
@@ -222,7 +222,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El usuario ubica la sección de portada dentro de la vista de detalle del libro.
+- 1.- El usuario ubica la sección de portada dentro de la interfaz P6.2 de detalle del libro.
 - 2.- El sistema muestra la sección destinada a la imagen de portada.
 - 3.- El usuario visualiza la portada del libro.
 - 4.- El sistema muestra la imagen en un tamaño legible dentro de la vista de detalle. La portada se obtiene de la tabla libro.
@@ -257,7 +257,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El usuario ingresa a la pantalla P.1 Home y se dirige a la sección de novedades bibliográficas.
+- 1.- El usuario ingresa a la pantalla P.1 Home, con o sin sesión iniciada, y se dirige a la sección de novedades bibliográficas.
 - 2.- El sistema carga la sección «Novedades bibliográficas» de la página de inicio. Los datos se obtienen de la tabla libro.
 - 3.- El usuario recorre la lista o carrusel de novedades.
 - 4.- El sistema muestra la portada, el título y la fecha de incorporación de los libros más recientes.
@@ -294,7 +294,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El usuario ingresa a la pantalla P.1 Home y se dirige a la sección de bibliotecas disponibles.
+- 1.- El usuario ingresa a la pantalla P.1 Home, con o sin sesión iniciada, y se dirige a la sección de bibliotecas disponibles.
 - 2.- El sistema carga la sección «Bibliotecas disponibles» de la página de inicio. Los datos se obtienen de la tabla biblioteca.
 - 3.- El usuario revisa las tarjetas de las bibliotecas listadas.
 - 4.- El sistema muestra el nombre y la descripción de cada biblioteca física registrada.

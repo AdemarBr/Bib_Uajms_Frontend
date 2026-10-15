@@ -1,0 +1,58 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Importar libros mediante archivo</h1>
+
+  <div
+    class="flex w-[562px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+  >
+    <div
+      class="flex h-[140px] flex-col items-center justify-center gap-sm rounded-md bg-gray-100"
+      [class.outline-2]="arrastrando()"
+      [class.outline-dashed]="arrastrando()"
+      [class.outline-gray-500]="arrastrando()"
+      (dragover)="alArrastrar($event)"
+      (dragleave)="arrastrando.set(false)"
+      (drop)="alSoltar($event)"
+    >
+      <p class="text-body text-gray-600">Arrastra el archivo aquí o</p>
+      <input #campo type="file" accept=".csv,text/csv" class="hidden" (change)="alElegir(campo)" />
+      <button type="button" class="btn-secundario" (click)="campo.click()">
+        Seleccionar archivo
+      </button>
+    </div>
+
+    @if (archivo(); as a) {
+      <p class="text-tabla text-gray-900">{{ a.name }}</p>
+    } @else if (formatoInvalido()) {
+      <p class="text-label text-gray-900">Seleccione un archivo CSV (.csv).</p>
+    }
+
+    <button
+      type="button"
+      class="btn-primario w-full"
+      [disabled]="!archivo() || importando()"
+      (click)="importar()"
+    >
+      Importar
+    </button>
+
+    @if (error(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
+
+    @if (resumen(); as r) {
+      <section class="flex flex-col gap-lg" aria-live="polite">
+        <h2 class="text-body-strong text-gray-900">Resumen de la importación</h2>
+        @if (r.incorporados > 0) {
+          <app-alerta
+            tono="exito"
+            [titulo]="tituloIncorporados()"
+            mensaje="Se agregaron al catálogo sin errores."
+          />
+        }
+        @if (r.errores.length > 0) {
+          <app-alerta [titulo]="tituloErrores()" [mensaje]="detalleErrores()" />
+        }
+      </section>
+    }
+  </div>
+</div>

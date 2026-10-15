@@ -1,0 +1,128 @@
+<div class="flex flex-col gap-5">
+  <h1 class="text-h2 text-gray-900">Consultar libros registrados</h1>
+
+  <form
+    class="flex flex-wrap items-end gap-md"
+    [formGroup]="filtros"
+    (submit)="$event.preventDefault()"
+  >
+    <input
+      type="search"
+      class="campo-texto w-80 shrink-0"
+      placeholder="Buscar por título, autor o ISBN…"
+      aria-label="Buscar libro por título, autor o ISBN"
+      [formControl]="busqueda"
+    />
+    <div class="flex w-[140px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Biblioteca</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Biblioteca"
+        formControlName="idBiblioteca"
+        [opciones]="opcionesBiblioteca()"
+      />
+    </div>
+    <div class="flex w-[140px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Facultad</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Facultad"
+        formControlName="idFacultad"
+        [opciones]="opcionesFacultad()"
+      />
+    </div>
+    <div class="flex w-[140px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Materia</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Materia"
+        formControlName="materia"
+        [opciones]="opcionesMateria()"
+      />
+    </div>
+    <div class="flex w-[140px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Autor</span>
+      <app-select
+        etiqueta="Todos"
+        nombreAccesible="Autor"
+        formControlName="autor"
+        [opciones]="opcionesAutor()"
+      />
+    </div>
+    <div class="flex w-[140px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Estado</span>
+      <app-select
+        etiqueta="Todos"
+        nombreAccesible="Estado"
+        formControlName="estado"
+        [opciones]="opcionesEstado"
+      />
+    </div>
+    <div class="flex w-[140px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Clasificación Dewey</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Clasificación Dewey"
+        formControlName="clasificacionDewey"
+        [opciones]="opcionesDewey()"
+      />
+    </div>
+  </form>
+
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
+  @if (resultado(); as r) {
+    <p class="text-caption text-gray-600" aria-live="polite">
+      {{ r.totalElementos }}
+      {{ r.totalElementos === 1 ? 'libro encontrado' : 'libros encontrados' }}
+    </p>
+
+    <app-tabla [columnas]="columnas" [filas]="r.contenido" [mensajeVacio]="mensajeVacio()">
+      <ng-template appCelda="titulo" let-fila>
+        <ng-template #soloTexto>{{ fila.titulo }}</ng-template>
+        <a
+          *appTienePermiso="permisoEditar; else soloTexto"
+          class="hover:underline"
+          [routerLink]="['/gestion-catalogo/libros', fila.idLibro, 'editar']"
+          >{{ fila.titulo }}</a
+        >
+      </ng-template>
+
+      <ng-template appCelda="estado" let-fila>
+        {{ fila.estado ? 'Activo' : 'Inactivo' }}
+      </ng-template>
+    </app-tabla>
+
+    @if (r.totalElementos > 0) {
+      <app-paginador
+        [pagina]="r.pagina"
+        [tamanio]="r.tamanio"
+        [totalElementos]="r.totalElementos"
+        (cambio)="pagina.set($event)"
+      />
+    } @else if (hayFiltros()) {
+      <div>
+        <button type="button" class="btn-secundario" (click)="limpiarFiltros()">
+          Limpiar filtros
+        </button>
+      </div>
+    } @else if (catalogoVacio()) {
+      <div class="flex gap-md">
+        <a
+          *appTienePermiso="permisoRegistrar"
+          class="btn-primario"
+          routerLink="/gestion-catalogo/libros/registrar"
+          >Registrar libro</a
+        >
+        <a
+          *appTienePermiso="permisoImportar"
+          class="btn-secundario"
+          routerLink="/gestion-catalogo/libros/importar"
+          >Importar libros</a
+        >
+      </div>
+    }
+  }
+</div>

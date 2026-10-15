@@ -92,7 +92,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 **Curso normal de eventos:**
 
-- 1.- El usuario académico ubica el libro en los resultados del catálogo o en su vista de detalle.
+- 1.- El usuario académico ubica el libro en los resultados de la interfaz P6.1 o en su detalle en la interfaz P6.2.
 - 2.- El sistema muestra el botón «Reservar» junto al libro.
 - 3.- El usuario académico acciona el botón «Reservar».
 - 4.- El sistema toma el libro seleccionado para continuar con el proceso de reserva.
