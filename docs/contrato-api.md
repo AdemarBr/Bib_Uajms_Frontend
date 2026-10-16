@@ -442,12 +442,18 @@ Reglas de las devoluciones (RF9.3): solo préstamos activos (si no, 409 «Prést
 
 ## 11. Tesis: gestión (RF10)
 
-- `GET /tesis?q&idCarrera&gestion` → `Pagina<TesisResponse>` [TESIS_CONSULTAR]
-- `POST /tesis` `TesisRequest` [TESIS_REGISTRAR] · `PUT /tesis/{id}` `TesisRequest` [TESIS_ACTUALIZAR]
+- `GET /tesis?q&idCarrera&gestion&pagina&tamanio` → `Pagina<TesisResponse>` [TESIS_CONSULTAR] (`q`: título, autor o número de inventario, RF10.3.1; activas e inactivas; de la gestión más reciente a la más antigua)
+- `GET /tesis/opciones-filtro` → `OpcionesFiltroTesisResponse` [TESIS_CONSULTAR] (valores del desplegable «Gestión» de P10.3, RF10.3.1.1.3; los de «Carrera» salen de `GET /carreras`)
+- `GET /tesis/{id}` → `TesisResponse` [TESIS_CONSULTAR, TESIS_ACTUALIZAR, TESIS_DOCUMENTO_CARGAR o TESIS_DOCUMENTO_ACTUALIZAR] (P10.2, P10.4 y P10.5)
+- `POST /tesis` `TesisRequest` → `TesisResponse` [TESIS_REGISTRAR] · `PUT /tesis/{id}` `TesisRequest` → `TesisResponse` [TESIS_ACTUALIZAR]
 - `PATCH /tesis/{id}/estado` `{ "estado": false }` para desactivar (RF10.6) o `{ "estado": true }` para activar (RF10.7) [TESIS_CAMBIAR_ESTADO]
-- `GET /tesis/{id}/documentos` → `DocumentoTesisResponse[]` [TESIS_CONSULTAR]
+- `GET /tesis/{id}/documentos` → `DocumentoTesisResponse[]` [TESIS_CONSULTAR, TESIS_DOCUMENTO_CARGAR o TESIS_DOCUMENTO_ACTUALIZAR]
 - `POST /tesis/{id}/documentos` (multipart: `tipoSeccion` + `archivo`) → `DocumentoTesisResponse` [TESIS_DOCUMENTO_CARGAR]
 - `PUT /tesis/{id}/documentos/{idDocumento}` (multipart: `archivo`) → `DocumentoTesisResponse` [TESIS_DOCUMENTO_ACTUALIZAR]
+
+Validación de `TesisRequest` (400 con `errores[]` por campo): `titulo` (máximo 250), `autor` (máximo 150), `tutor` (máximo 150), `numeroInventario` (máximo 30) e `idCarrera` obligatorios; `palabrasClave` opcional (máximo 250); `gestion` obligatoria, de 4 dígitos y no posterior al año actual («La gestión debe tener 4 dígitos y no ser posterior al año actual.»); `idCarrera` de una carrera activa, salvo en `PUT` cuando la tesis conserva su carrera actual aunque esté inactiva («La carrera seleccionada no está activa.»). Al registrar, el número de inventario es único: si ya existe, 409 con el detalle «Ya existe una tesis con ese número de inventario.». En `PUT` el número de inventario no se cambia (se conserva el actual, RF10.4) ni el estado (solo con `PATCH /tesis/{id}/estado`, como el libro). Una tesis nueva queda activa.
+
+Documentos (RF10.2 y RF10.5): solo PDF de 20 MB como máximo; si no, 400 con `titulo` «Archivo no válido», `detalle` «Solo se admiten archivos PDF.» o «El archivo supera el tamaño máximo de 20 MB.» y el mismo mensaje en `errores[]` del campo `archivo`. Un documento por tipo de sección (`docs/reglas-negocio.md`): `POST` con una sección ya cargada responde 409 «Sección ya cargada» / «La sección ya tiene un documento cargado. Reemplácelo desde «Actualizar documento».». `PUT` reemplaza solo ese documento (mismo `tipoSeccion`, nuevo `nombreArchivo`) sin afectar los demás.
 
 ```json
 // TesisResponse (tabla de P10.3: título, autor, carrera, facultad, gestión y estado, RF10.3.4)
@@ -459,14 +465,19 @@ Reglas de las devoluciones (RF9.3): solo préstamos activos (si no, 409 «Prést
 La facultad no se guarda en la tesis: se obtiene de su carrera. El desplegable «Facultad» de P10.1 y P10.4 solo filtra las carreras.
 
 ```json
-// TesisRequest (estado solo al actualizar)
+// TesisRequest (sin estado: se cambia con PATCH /tesis/{id}/estado; numeroInventario se ignora en PUT)
 { "titulo": "Modelo predictivo de deserción estudiantil", "autor": "Estudiante Rojas", "tutor": "Docente Gómez",
-  "gestion": 2026, "numeroInventario": "EJ-TES-0142", "palabrasClave": "deserción, modelo predictivo", "idCarrera": 1, "estado": true }
+  "gestion": 2026, "numeroInventario": "EJ-TES-0142", "palabrasClave": "deserción, modelo predictivo", "idCarrera": 1 }
+```
+
+```json
+// OpcionesFiltroTesisResponse (gestiones distintas de las tesis registradas, de la más reciente a la más antigua)
+{ "gestiones": [2026, 2025, 2024] }
 ```
 
 ```json
 // DocumentoTesisResponse (tipoSeccion: Preliminares, Resumen, Marco Teórico, Bibliografía o Anexos, RF10.2.3)
-{ "idDocumento": 3, "tipoSeccion": "Resumen", "nombreArchivo": "resumen.pdf", "idTesis": 1 }
+{ "idDocumento": 3, "tipoSeccion": "Marco Teórico", "nombreArchivo": "marco_teorico_v1.pdf", "idTesis": 1 }
 ```
 
 La ruta interna del archivo no se envía al frontend; el archivo se abre por su endpoint (sección 12).

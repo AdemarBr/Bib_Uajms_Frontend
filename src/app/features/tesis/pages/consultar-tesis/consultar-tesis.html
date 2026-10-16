@@ -1,0 +1,91 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Consultar tesis registradas</h1>
+
+  <!-- RF10.3.1.3 y RF10.3.1.1.3 -->
+  <form class="flex gap-md" [formGroup]="filtros" (submit)="$event.preventDefault()">
+    <input
+      type="search"
+      class="campo-texto min-w-0 flex-1"
+      placeholder="Buscar por título, autor o número de inventario…"
+      aria-label="Buscar tesis por título, autor o número de inventario"
+      [formControl]="busqueda"
+    />
+    <app-select
+      class="w-60 shrink-0"
+      etiqueta="Carrera"
+      nombreAccesible="Carrera"
+      formControlName="idCarrera"
+      [opciones]="opcionesCarrera()"
+    />
+    <app-select
+      class="w-60 shrink-0"
+      etiqueta="Gestión"
+      nombreAccesible="Gestión"
+      formControlName="gestion"
+      [opciones]="opcionesGestion()"
+    />
+  </form>
+
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
+  @if (resultado(); as r) {
+    <app-tabla [columnas]="columnas" [filas]="r.contenido" [mensajeVacio]="mensajeVacio()">
+      <ng-template appCelda="titulo" let-fila>
+        <ng-template #soloTexto>{{ fila.titulo }}</ng-template>
+        <a
+          *appTienePermiso="permisoEditar; else soloTexto"
+          class="hover:underline"
+          [routerLink]="['/gestion-tesis', fila.idTesis, 'editar']"
+          >{{ fila.titulo }}</a
+        >
+      </ng-template>
+
+      <ng-template appCelda="estado" let-fila>
+        {{ fila.estado ? 'Activa' : 'Inactiva' }}
+      </ng-template>
+
+      <ng-template appCelda="acciones" let-fila>
+        <span class="flex flex-col gap-xs">
+          <a
+            *appTienePermiso="permisoCargar"
+            class="hover:underline"
+            [routerLink]="['/gestion-tesis', fila.idTesis, 'documentos', 'cargar']"
+            >Cargar documentos</a
+          >
+          <a
+            *appTienePermiso="permisoReemplazar"
+            class="hover:underline"
+            [routerLink]="['/gestion-tesis', fila.idTesis, 'documentos', 'actualizar']"
+            >Actualizar documento</a
+          >
+        </span>
+      </ng-template>
+    </app-tabla>
+
+    @if (r.totalElementos > 0) {
+      <app-paginador
+        [pagina]="r.pagina"
+        [tamanio]="r.tamanio"
+        [totalElementos]="r.totalElementos"
+        (cambio)="pagina.set($event)"
+      />
+    } @else if (hayFiltros()) {
+      <div>
+        <button type="button" class="btn-secundario" (click)="limpiarFiltros()">
+          Limpiar filtros
+        </button>
+      </div>
+    } @else if (repositorioVacio()) {
+      <div>
+        <a
+          *appTienePermiso="permisoRegistrar"
+          class="btn-primario"
+          routerLink="/gestion-tesis/registrar"
+          >Registrar tesis</a
+        >
+      </div>
+    }
+  }
+</div>

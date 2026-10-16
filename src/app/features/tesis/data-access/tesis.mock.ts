@@ -1,0 +1,288 @@
+import { DocumentoTesisResponse } from '../models/documento-tesis-response';
+import { TesisResponse } from '../models/tesis-response';
+
+/** Fila de la tabla `tesis`: la carrera y la facultad se leen de `DatosEstructura` al responder. */
+export type TesisMock = Omit<TesisResponse, 'carreraNombre' | 'idFacultad' | 'facultadNombre'>;
+
+/** Fila de la tabla `documento_tesis` (la ruta del archivo no se simula). */
+export type DocumentoTesisMock = DocumentoTesisResponse;
+
+function tesis(
+  idTesis: number,
+  titulo: string,
+  autor: string,
+  tutor: string,
+  gestion: number,
+  idCarrera: number,
+  palabrasClave: string | null,
+  estado = true,
+): TesisMock {
+  const numeroInventario = `EJ-TES-${String(141 + idTesis).padStart(4, '0')}`;
+  return {
+    idTesis,
+    titulo,
+    autor,
+    tutor,
+    gestion,
+    numeroInventario,
+    palabrasClave,
+    estado,
+    idCarrera,
+  };
+}
+
+/**
+ * Tesis del prototipo. Las tres primeras son las filas de Figma P10.3 (24:2371): la de «Ing. Agronómica» pasa a
+ * Ingeniería Química (5), una carrera que existe en RF3, y su autor a Estudiante Mamani, un estudiante de los datos
+ * falsos (en Figma, «Estudiante Gómez»). El resto completa dos páginas de la tabla; la 24 es de Contaduría Pública,
+ * carrera inactiva, para la opción «(inactiva)» de P10.4. Carreras: 1 Sistemas, 2 Civil, 4 Informática,
+ * 5 Química, 6 Alimentos, 8 Industrial, 10 Economía, 11 Administración, 12 Comercial y 16 Derecho.
+ */
+export const TESIS_MOCK: TesisMock[] = [
+  tesis(
+    1,
+    'Modelo predictivo de deserción estudiantil',
+    'Estudiante Rojas',
+    'Docente Gómez',
+    2026,
+    1,
+    'deserción, modelo predictivo, minería de datos',
+  ),
+  tesis(
+    2,
+    'Análisis estructural de puentes en zonas sísmicas',
+    'Estudiante Pérez',
+    'Ing. Fernando Ortiz',
+    2025,
+    2,
+    'puentes, análisis sísmico, estructuras',
+  ),
+  tesis(
+    3,
+    'Impacto del riego tecnificado en la vid tarijeña',
+    'Estudiante Mamani',
+    'Ing. Elena Vargas',
+    2024,
+    5,
+    'riego, vid, Tarija',
+    false,
+  ),
+  tesis(
+    4,
+    'Sistema web de gestión de turnos médicos',
+    'Lucía Fernández',
+    'Docente Gómez',
+    2024,
+    1,
+    'sistema web, turnos, salud',
+  ),
+  tesis(
+    5,
+    'Aplicación móvil para el control de asistencia',
+    'Carlos Rojas',
+    'Docente Gómez',
+    2024,
+    4,
+    'aplicación móvil, asistencia',
+  ),
+  tesis(
+    6,
+    'Diseño de pavimentos rígidos para vías urbanas',
+    'Mario Vaca',
+    'Ing. Fernando Ortiz',
+    2024,
+    2,
+    'pavimentos, vías urbanas',
+  ),
+  tesis(
+    7,
+    'Tratamiento de aguas residuales de la industria vitivinícola',
+    'Ana Quiroga',
+    'Ing. Elena Vargas',
+    2023,
+    5,
+    'aguas residuales, vino',
+  ),
+  tesis(
+    8,
+    'Elaboración de harina a partir de residuos de durazno',
+    'Pedro Cruz',
+    'Ing. Rosa Cardozo',
+    2023,
+    6,
+    'harina, durazno, residuos',
+  ),
+  tesis(
+    9,
+    'Optimización de la línea de envasado de una embotelladora',
+    'Julia Altamirano',
+    'Ing. Ricardo Aguilar',
+    2023,
+    8,
+    'optimización, envasado',
+  ),
+  tesis(
+    10,
+    'Crecimiento económico y empleo en el departamento de Tarija',
+    'Sofía Arce',
+    'Lic. Patricia Flores',
+    2023,
+    10,
+    'crecimiento, empleo, Tarija',
+  ),
+  tesis(
+    11,
+    'Plan de negocios para una cooperativa de quesos',
+    'Gabriela Soto',
+    'Lic. Patricia Flores',
+    2022,
+    11,
+    'plan de negocios, cooperativa',
+  ),
+  tesis(
+    12,
+    'Estrategias de comercialización del singani en el mercado nacional',
+    'Hugo Torrez',
+    'Lic. Gabriela Soto',
+    2022,
+    12,
+    'comercialización, singani',
+  ),
+  tesis(
+    13,
+    'La conciliación como medio alternativo de resolución de conflictos',
+    'Carla Ríos',
+    'Dr. Andrés Quispe',
+    2022,
+    16,
+    'conciliación, conflictos',
+  ),
+  tesis(
+    14,
+    'Detección de fraudes en transacciones con aprendizaje automático',
+    'Miguel Herrera',
+    'Docente Gómez',
+    2022,
+    1,
+    'fraude, aprendizaje automático',
+  ),
+  tesis(
+    15,
+    'Red de sensores para el monitoreo de cultivos',
+    'Rosa Benítez',
+    'Ing. Lucía Méndez',
+    2021,
+    4,
+    'sensores, cultivos, IoT',
+  ),
+  tesis(
+    16,
+    'Estabilización de suelos con cal en caminos vecinales',
+    'Jorge Castro',
+    'Ing. Fernando Ortiz',
+    2021,
+    2,
+    'suelos, cal, caminos',
+  ),
+  tesis(
+    17,
+    'Obtención de biodiésel a partir de aceite usado',
+    'Elena Vargas',
+    'Ing. Rosa Cardozo',
+    2021,
+    5,
+    'biodiésel, aceite usado',
+  ),
+  tesis(
+    18,
+    'Conservación de frutas mediante deshidratación solar',
+    'Ricardo Aguilar',
+    'Ing. Rosa Cardozo',
+    2020,
+    6,
+    'deshidratación, frutas',
+  ),
+  tesis(
+    19,
+    'Gestión de inventarios en una distribuidora farmacéutica',
+    'Patricia Flores',
+    'Ing. Ricardo Aguilar',
+    2020,
+    8,
+    'inventarios, logística',
+  ),
+  tesis(
+    20,
+    'Impacto de las remesas en el consumo de los hogares',
+    'Fernando Ortiz',
+    'Lic. Patricia Flores',
+    2020,
+    10,
+    'remesas, consumo',
+  ),
+  tesis(
+    21,
+    'El derecho a la consulta previa de los pueblos indígenas',
+    'Andrés Quispe',
+    'Dra. María Paz',
+    2019,
+    16,
+    'consulta previa, pueblos indígenas',
+  ),
+  tesis(
+    22,
+    'Chatbot de atención a estudiantes de la universidad',
+    'Lucía Méndez',
+    'Docente Gómez',
+    2019,
+    1,
+    'chatbot, atención, estudiantes',
+  ),
+  tesis(
+    23,
+    'Marketing digital para pequeñas empresas de Tarija',
+    'María Paz',
+    'Lic. Gabriela Soto',
+    2019,
+    12,
+    null,
+  ),
+  tesis(
+    24,
+    'Control interno en las cooperativas de ahorro y crédito',
+    'Rosa Cardozo',
+    'Lic. Patricia Flores',
+    2018,
+    3,
+    'control interno, cooperativas',
+  ),
+  tesis(
+    25,
+    'Sistema de información geográfica para el catastro urbano',
+    'Jorge Castro',
+    'Ing. Lucía Méndez',
+    2018,
+    4,
+    'SIG, catastro',
+  ),
+];
+
+/**
+ * Documentos: la tesis 1 tiene cargados «Marco Teórico» y «Bibliografía», como en Figma P10.2 (24:2290) y P10.5
+ * (24:2543, «marco_teorico_v1.pdf»); la 2 tiene las cinco secciones; la 4, solo el «Resumen».
+ */
+export const DOCUMENTOS_TESIS_MOCK: DocumentoTesisMock[] = [
+  {
+    idDocumento: 1,
+    tipoSeccion: 'Marco Teórico',
+    nombreArchivo: 'marco_teorico_v1.pdf',
+    idTesis: 1,
+  },
+  { idDocumento: 2, tipoSeccion: 'Bibliografía', nombreArchivo: 'bibliografia.pdf', idTesis: 1 },
+  { idDocumento: 3, tipoSeccion: 'Preliminares', nombreArchivo: 'preliminares.pdf', idTesis: 2 },
+  { idDocumento: 4, tipoSeccion: 'Resumen', nombreArchivo: 'resumen.pdf', idTesis: 2 },
+  { idDocumento: 5, tipoSeccion: 'Marco Teórico', nombreArchivo: 'marco_teorico.pdf', idTesis: 2 },
+  { idDocumento: 6, tipoSeccion: 'Bibliografía', nombreArchivo: 'bibliografia.pdf', idTesis: 2 },
+  { idDocumento: 7, tipoSeccion: 'Anexos', nombreArchivo: 'anexos.pdf', idTesis: 2 },
+  { idDocumento: 8, tipoSeccion: 'Resumen', nombreArchivo: 'resumen.pdf', idTesis: 4 },
+];

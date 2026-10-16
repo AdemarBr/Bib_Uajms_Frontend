@@ -1,0 +1,47 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Cargar documentos digitales de tesis</h1>
+
+  @if (tesis(); as t) {
+    <p class="text-body text-gray-600">Tesis: {{ t.titulo }} — {{ t.numeroInventario }}</p>
+
+    <!-- RF10.2.3 y RF10.2.4: una fila por sección, en el orden de RF10.2.3. -->
+    <ul
+      class="flex w-[622px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    >
+      @for (seccion of secciones; track seccion; let ultima = $last) {
+        <li class="flex flex-col gap-sm">
+          <div class="flex items-center gap-md">
+            <span class="flex-1 text-body-strong text-gray-900">{{ seccion }}</span>
+            <app-badge-estado [texto]="cargadas().has(seccion) ? 'Cargado' : 'Pendiente'" />
+            <input
+              #archivo
+              type="file"
+              class="hidden"
+              accept="application/pdf,.pdf"
+              [attr.aria-label]="'Archivo de la sección ' + seccion"
+              (change)="subir(seccion, archivo)"
+            />
+            <button
+              type="button"
+              class="btn-primario"
+              [disabled]="cargadas().has(seccion) || subiendo() !== null"
+              (click)="archivo.click()"
+            >
+              Subir archivo
+            </button>
+          </div>
+          @if (errorSeccion(); as e) {
+            @if (e.seccion === seccion) {
+              <app-alerta [titulo]="e.error.titulo" [mensaje]="e.error.detalle" />
+            }
+          }
+        </li>
+        @if (!ultima) {
+          <li class="h-px bg-gray-300" aria-hidden="true"></li>
+        }
+      }
+    </ul>
+  } @else if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+</div>

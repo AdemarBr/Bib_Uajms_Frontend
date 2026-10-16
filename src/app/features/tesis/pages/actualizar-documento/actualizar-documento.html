@@ -1,0 +1,79 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Actualizar documento digital de tesis</h1>
+
+  @if (tesis(); as t) {
+    <p class="text-body text-gray-600">Tesis: {{ t.titulo }} — {{ t.numeroInventario }}</p>
+
+    @if (documentos(); as docs) {
+      <div
+        class="flex w-[622px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+      >
+        @if (docs.length === 0) {
+          <p class="text-body text-gray-600">La tesis no tiene documentos cargados.</p>
+          <div *appTienePermiso="permisoCargar">
+            <a
+              class="btn-primario"
+              [routerLink]="['/gestion-tesis', t.idTesis, 'documentos', 'cargar']"
+              >Cargar documentos</a
+            >
+          </div>
+        } @else {
+          <!-- RF10.5.3 -->
+          <span class="text-label text-gray-600" aria-hidden="true">Sección a reemplazar</span>
+          <app-select
+            class="w-60"
+            etiqueta="Seleccione la sección…"
+            nombreAccesible="Sección a reemplazar"
+            [formControl]="seccion"
+            [opciones]="opcionesSeccion()"
+          />
+          @if (actual(); as a) {
+            <p class="text-body text-gray-600">Archivo actual: {{ a.nombreArchivo }}</p>
+          }
+
+          <input
+            #entrada
+            type="file"
+            class="hidden"
+            accept="application/pdf,.pdf"
+            aria-label="Nuevo archivo"
+            (change)="elegir(entrada)"
+          />
+          <button
+            type="button"
+            class="flex w-full cursor-pointer items-center justify-center rounded-md border border-dashed bg-gray-0 py-2xl text-body text-gray-600"
+            [class.border-gray-300]="!arrastrando()"
+            [class.border-gray-900]="arrastrando()"
+            (click)="entrada.click()"
+            (dragover)="sobre($event)"
+            (dragleave)="arrastrando.set(false)"
+            (drop)="soltar($event)"
+          >
+            Arrastre el nuevo archivo aquí o haga clic para seleccionar
+          </button>
+          <span>
+            <app-badge-estado
+              [texto]="archivo()?.name ?? 'Aún no se ha seleccionado ningún archivo'"
+            />
+          </span>
+
+          <!-- RF10.5.4 -->
+          <button
+            type="button"
+            class="btn-primario w-full"
+            [disabled]="!actual() || !archivo() || enviando()"
+            (click)="reemplazar()"
+          >
+            Reemplazar documento
+          </button>
+
+          @if (error(); as e) {
+            <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+          }
+        }
+      </div>
+    }
+  } @else if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+</div>
