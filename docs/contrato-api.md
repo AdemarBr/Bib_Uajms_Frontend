@@ -343,6 +343,7 @@ Reglas de la administración de reservas (RF8):
 - `PATCH /reservas/{id}/cancelar-administrativa` `MotivoRequest`: solo desde `Confirmada` con `atendida: false` (RF8.5.5; si no, 409 «Reserva no activa» / «La reserva ya no está activa.»); el ejemplar vuelve a `disponible`.
 - `MotivoRequest`: `{ "motivo": "..." }`; el motivo es opcional (`null` o vacío) y se guarda en `reserva.motivo`, que el usuario ve en P7.2.
 - Cada cambio de estado se anota en el historial con la fecha de hoy.
+- Regla general (RF8.6, curso alternativo): cualquier acción sobre una reserva cuyo estado actual no la permite responde 409, aunque la interfaz no la ofrezca. Los casos de arriba usan el texto de su caso de uso; cualquier otra transición no permitida responde 409 con `titulo` «Transición no permitida» y `detalle` «La transición de estado solicitada no está permitida.».
 
 El desplegable de estado de cada fila de P8.1 (RF8.6) solo ofrece los cambios permitidos desde el estado actual: Confirmada llama a `/confirmar`; Rechazada, a `/rechazar`, y Cancelada, a `/cancelar-administrativa`. Estas dos últimas piden el motivo. No existe un endpoint genérico de cambio de estado.
 
