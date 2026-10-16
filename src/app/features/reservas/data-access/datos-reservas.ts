@@ -29,9 +29,12 @@ export class DatosReservas {
   aRespuesta(r: ReservaMock): ReservaResponse {
     const ejemplar = this.catalogo.ejemplares().find((e) => e.idEjemplar === r.idEjemplar);
     const libro = this.catalogo.libros().find((l) => l.idLibro === ejemplar?.idLibro);
+    const usuario = USUARIOS_MOCK.find((u) => u.idUsuario === r.idUsuario);
     return {
       ...r,
-      usuarioNombre: nombreUsuario(r.idUsuario),
+      usuarioNombre: usuario?.nombre ?? '',
+      usuarioRu: usuario?.ru ?? null,
+      usuarioCarreraNombre: usuario?.carreraNombre ?? null,
       ejemplarCodigo: ejemplar?.codigoEjemplar ?? '',
       idLibro: libro?.idLibro ?? 0,
       libroTitulo: libro?.titulo ?? '',
@@ -77,6 +80,13 @@ export class DatosReservas {
         idReserva,
       },
     ]);
+  }
+
+  /** Marca la reserva como atendida: derivó en un préstamo (RF8.8 y RF9.1.6); su estado no cambia. */
+  marcarAtendida(idReserva: number): void {
+    this.reservas.update((lista) =>
+      lista.map((r) => (r.idReserva === idReserva ? { ...r, atendida: true } : r)),
+    );
   }
 
   /** Cambia el estado de un ejemplar (confirmar lo aparta; cancelar lo libera). */

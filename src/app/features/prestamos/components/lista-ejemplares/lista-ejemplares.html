@@ -1,0 +1,30 @@
+<ul class="flex flex-col gap-lg" aria-label="Ejemplares disponibles del libro seleccionado">
+  @for (ejemplar of ejemplares(); track ejemplar.idEjemplar) {
+    <li>
+      <button
+        type="button"
+        class="flex w-full cursor-pointer flex-col items-start gap-lg text-left disabled:cursor-not-allowed"
+        [disabled]="bloqueado(ejemplar)"
+        [attr.aria-pressed]="ejemplar.idEjemplar === seleccionado()"
+        (click)="elegir.emit(ejemplar.idEjemplar)"
+      >
+        <span class="flex items-center gap-sm">
+          <span class="text-body text-gray-900">
+            {{ ejemplar.codigoEjemplar }} — {{ ejemplar.libroTitulo }}
+          </span>
+          @if (ejemplar.idEjemplar === seleccionado()) {
+            <app-badge-estado texto="Seleccionado" />
+          } @else if (bloqueado(ejemplar)) {
+            <app-badge-estado texto="Uso exclusivo en sala" />
+          } @else {
+            <app-badge-estado [texto]="ejemplar.estado | estadoEjemplar" />
+          }
+        </span>
+        <span class="text-caption text-gray-600">
+          Autor: {{ ejemplar.autor }} · Ubicación:
+          {{ ejemplar.ubicacionFisica ?? 'Sin ubicación asignada' }}
+        </span>
+      </button>
+    </li>
+  }
+</ul>

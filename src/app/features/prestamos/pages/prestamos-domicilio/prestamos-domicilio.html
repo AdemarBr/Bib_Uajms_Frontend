@@ -1,0 +1,80 @@
+<div class="flex flex-col gap-5">
+  <h1 class="text-h2 text-gray-900">Préstamos a domicilio vigentes</h1>
+
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
+  @if (resultado(); as r) {
+    <!-- RF9.2.7, curso alternativo: sin préstamos a domicilio activos. -->
+    <app-tabla
+      [columnas]="columnas"
+      [filas]="r.contenido"
+      mensajeVacio="No hay material fuera de la biblioteca."
+    >
+      <ng-template appCelda="ejemplar" let-fila>
+        {{ fila.ejemplarCodigo }} — {{ fila.libroTitulo }}
+      </ng-template>
+      <ng-template appCelda="fechaPrestamo" let-fila>{{ fila.fechaPrestamo | fecha }}</ng-template>
+      <!-- RF9.2.8.4: indicador de vencido. -->
+      <ng-template appCelda="fechaLimiteDevolucion" let-fila>
+        <span class="block">{{ fila.fechaLimiteDevolucion | fecha }}</span>
+        @if (fila.vencido) {
+          <span class="block text-estado-vencido">Vencido</span>
+        } @else {
+          <span class="block text-estado-vigente">Vigente</span>
+        }
+      </ng-template>
+      <ng-template appCelda="cantidadAmpliaciones" let-fila>
+        {{ ampliaciones(fila.cantidadAmpliaciones) }}
+      </ng-template>
+      <ng-template appCelda="acciones" let-fila>
+        <button
+          *appTienePermiso="permisoAmpliar; else sinAccion"
+          type="button"
+          class="cursor-pointer text-tabla text-gray-900 hover:underline"
+          (click)="abrirAmpliacion(fila)"
+        >
+          Ampliar plazo
+        </button>
+      </ng-template>
+    </app-tabla>
+    <ng-template #sinAccion>—</ng-template>
+
+    @if (r.totalElementos > r.tamanio) {
+      <app-paginador
+        [pagina]="r.pagina"
+        [tamanio]="r.tamanio"
+        [totalElementos]="r.totalElementos"
+        (cambio)="pagina.set($event)"
+      />
+    }
+  }
+</div>
+
+<!-- RF9.2.8.5 (Figma 281:253) -->
+@if (ampliando(); as a) {
+  <app-modal-confirmacion
+    variante="modal"
+    [cerrable]="true"
+    [abierto]="true"
+    titulo="Ampliar plazo de préstamo"
+    [mensaje]="
+      'Fecha límite vigente: ' +
+      (a.prestamo.fechaLimiteDevolucion | fecha) +
+      '. Ampliaciones registradas: ' +
+      a.prestamo.cantidadAmpliaciones +
+      '.'
+    "
+    textoCancelar="Cancelar"
+    textoConfirmar="Confirmar ampliación"
+    [procesando]="procesando()"
+    (confirmar)="confirmarAmpliacion()"
+    (cancelar)="cerrar()"
+  >
+    <p class="text-body text-gray-600">Nueva fecha límite propuesta: {{ a.fechaNueva | fecha }}.</p>
+    @if (errorAmpliacion(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
+  </app-modal-confirmacion>
+}

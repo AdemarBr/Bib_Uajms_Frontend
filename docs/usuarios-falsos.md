@@ -49,3 +49,14 @@ En el prototipo, la validación por RU (préstamos P9.1 y P9.3) consulta una lis
 - RU de los tres académicos anteriores: vigentes y ya registrados.
 - `2021004321`: Estudiante Mamani, Ingeniería de Sistemas; vigente pero **no registrado** en el sistema, para mostrar el alta automática de datos mínimos antes del préstamo (la primera validación responde `registradoAhora: true`).
 - `2010000000` (o cualquier otro RU): no vigente; responde 404 con `titulo: "Usuario no vigente"` y `detalle: "El usuario no está vigente o es inexistente."` (texto de RF1.2).
+
+## Préstamos (RF9)
+
+Datos de `features/prestamos/data-access/prestamos.mock.ts`, con los usuarios, libros y fechas de Figma (P9.2, P9.4 y P9.6), sin repetir un ejemplar en dos préstamos activos:
+
+- En sala (con la fecha de hoy y la hora de Figma): Docente Gómez con EJ-00312 (Cálculo I, Biblioteca Central) y Estudiante Rojas con EJ-00512 (Bases de Datos Avanzadas). La fila de Estudiante Pérez con EJ-00123 de Figma se crea al registrarla en P9.1.
+- A domicilio: Docente Gómez con EJ-00313 (Cálculo I, vencido, 1 ampliación), Estudiante Pérez con EJ-00130 (Redes de Computadoras, vencido), Estudiante Rojas con EJ-00210 (Derecho Civil Boliviano, vigente hasta el 20/11/2026), Estudiante Pérez con EJ-00124 (de la reserva 9, atendida) y Académico Vargas con EJ-00308 (Química General).
+- Devueltos (P9.6): Docente Gómez EJ-00301, Estudiante Pérez EJ-00147 («Con observaciones», «Página 45 con humedad») y Estudiante Rojas EJ-00512.
+- Ejemplares habilitados para domicilio (`soloSala: false`): EJ-00124, EJ-00301, EJ-00302, EJ-00308, EJ-00130, EJ-00311, EJ-00456, EJ-00512, EJ-00210, EJ-00147 y EJ-00313; el resto es solo para sala (por ejemplo EJ-00123 y EJ-00125 de Introducción a la Programación).
+- Para probar el préstamo desde una reserva: «Prestar» en la reserva confirmada de Docente Gómez (Cálculo I, EJ-00302) o de Estudiante Pérez (Cálculo I, EJ-00301) en P8.1.
+- `bibliotecario.central` solo presta ejemplares de la Biblioteca Central y solo ve sus préstamos y devoluciones.

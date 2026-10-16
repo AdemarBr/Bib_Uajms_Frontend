@@ -1,6 +1,12 @@
 <span
   class="inline-flex items-center rounded-full px-sm py-0.5 text-label whitespace-nowrap"
-  [class]="tono() === 'acento' ? 'bg-brand-accent text-gray-0' : 'bg-gray-100 text-gray-900'"
+  [class]="
+    tono() === 'acento'
+      ? 'bg-brand-accent text-gray-0'
+      : tono() === 'alerta'
+        ? 'bg-gray-100 text-estado-vencido'
+        : 'bg-gray-100 text-gray-900'
+  "
 >
   {{ texto() }}
 </span>

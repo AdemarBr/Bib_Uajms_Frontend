@@ -1,0 +1,166 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Registrar préstamo a domicilio</h1>
+
+  <form
+    class="flex w-[656px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    novalidate
+    (submit)="$event.preventDefault()"
+  >
+    <!-- RF9.2.13: R.U y nombre con la marca «verificado». -->
+    <label for="ru" class="text-label text-gray-600">R.U</label>
+    <input
+      id="ru"
+      type="text"
+      class="campo-texto"
+      placeholder="Ingresar"
+      autocomplete="off"
+      inputmode="numeric"
+      [formControl]="ru"
+      (input)="alEscribirRu()"
+      (keydown.enter)="validarRu()"
+      (blur)="validarRu()"
+    />
+    @if (errorRu(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
+    @if (usuario(); as u) {
+      <p class="text-body text-gray-900">{{ u.nombre }} — verificado</p>
+    }
+
+    <!-- RF9.2.9: celular de quien recibe el préstamo. -->
+    <label for="celular" class="text-label text-gray-600">Celular de contacto</label>
+    <input
+      id="celular"
+      type="tel"
+      class="campo-texto"
+      placeholder="Ej. 71234567"
+      autocomplete="off"
+      inputmode="numeric"
+      maxlength="8"
+      [formControl]="celular"
+      [attr.aria-invalid]="!!(mensajeCelular() || (error() | errorCampo: 'celularContacto'))"
+    />
+    @if (mensajeCelular() || (error() | errorCampo: 'celularContacto'); as m) {
+      <p class="text-label text-gray-900">{{ m }}</p>
+    }
+    <p class="text-body text-gray-900">
+      Se registra junto con este préstamo específico, para contactar al usuario en caso de retraso o
+      para gestionar una ampliación.
+    </p>
+
+    <!-- RF9.2.14 y RF9.2.2: libro por título, autor o ISBN y sus ejemplares disponibles. -->
+    <label for="libro" class="text-label text-gray-600">Buscar libro</label>
+    <input
+      id="libro"
+      type="search"
+      class="campo-texto"
+      placeholder="Buscar por título, autor o ISBN…"
+      autocomplete="off"
+      [formControl]="busquedaLibro"
+      (input)="alEscribirLibro()"
+    />
+    @if (coincidencias(); as lista) {
+      @if (lista.length > 0) {
+        <ul
+          class="flex max-h-60 flex-col overflow-y-auto rounded-sm border border-gray-300"
+          aria-label="Libros encontrados"
+        >
+          @for (l of lista; track l.idLibro) {
+            <li class="border-b border-gray-300 last:border-b-0">
+              <button
+                type="button"
+                class="w-full cursor-pointer px-md py-sm text-left text-body text-gray-900 hover:bg-gray-100"
+                (click)="elegirLibro(l)"
+              >
+                {{ l.titulo }} — {{ l.autor }}
+              </button>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-caption text-gray-600" aria-live="polite">
+          No se encontraron resultados. Intente con otro criterio.
+        </p>
+      }
+    }
+
+    @if (ejemplares(); as lista) {
+      <p class="text-label text-gray-600">Ejemplares disponibles del libro seleccionado</p>
+      @if (lista.length > 0) {
+        <app-lista-ejemplares
+          [ejemplares]="lista"
+          [seleccionado]="idEjemplar()"
+          [aDomicilio]="true"
+          (elegir)="elegirEjemplar($event)"
+        />
+      } @else {
+        <p class="text-caption text-gray-600" aria-live="polite">
+          No existen ejemplares disponibles de este libro.
+        </p>
+      }
+    }
+    <!-- RF9.2.3.4: el ejemplar elegido puede salir a domicilio. -->
+    @if (ejemplarElegido(); as e) {
+      @if (!e.soloSala) {
+        <span><app-badge-estado texto="Habilitado para préstamo a domicilio" /></span>
+      }
+    }
+
+    <!-- RF9.2.15 y RF9.2.5 -->
+    <label for="fechaLimite" class="text-label text-gray-600">Fecha de devolución</label>
+    <div class="flex gap-sm">
+      <input
+        id="fechaLimite"
+        type="date"
+        class="campo-texto flex-1"
+        aria-describedby="fechaLimiteAyuda"
+        [min]="rango().minima"
+        [max]="rango().maxima"
+        [formControl]="fechaLimite"
+        [attr.aria-invalid]="!!(errorFecha() || (error() | errorCampo: 'fechaLimiteDevolucion'))"
+      />
+      <button type="button" class="btn-secundario" (click)="confirmarFecha()">
+        Confirmar fecha
+      </button>
+    </div>
+    <span id="fechaLimiteAyuda" class="sr-only">Calculada automáticamente</span>
+    @if (errorFecha() || (error() | errorCampo: 'fechaLimiteDevolucion'); as m) {
+      <p class="text-label text-gray-900">{{ m }}</p>
+    }
+
+    <!-- RF9.2.16 y RF9.2.12.3 -->
+    <div class="flex gap-md">
+      <button type="button" class="btn-secundario" (click)="confirmandoCancelacion.set(true)">
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="btn-primario w-[361px]"
+        [disabled]="!listoParaRegistrar() || enviando()"
+        (click)="registrar()"
+      >
+        Confirmar préstamo a domicilio
+      </button>
+    </div>
+
+    @if (error(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
+    @if (exito(); as x) {
+      <app-alerta tono="exito" [titulo]="x.titulo" [mensaje]="x.mensaje" />
+    }
+  </form>
+</div>
+
+<!-- RF9.2.12.4 (Figma 312:5390) -->
+<app-modal-confirmacion
+  variante="modal"
+  [cerrable]="true"
+  [abierto]="confirmandoCancelacion()"
+  titulo="¿Cancelar el préstamo?"
+  mensaje="Se descartarán los datos ingresados y no se registrará el préstamo a domicilio."
+  textoCancelar="Volver"
+  textoConfirmar="Cancelar préstamo"
+  (confirmar)="confirmarCancelacion()"
+  (cancelar)="confirmandoCancelacion.set(false)"
+/>

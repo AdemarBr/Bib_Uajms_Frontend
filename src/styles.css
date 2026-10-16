@@ -28,6 +28,9 @@
   /* Colores sueltos de componentes de Figma */
   --color-menu-grupo: #9ea8b2;
   --color-interruptor-inactivo: #c7ccd6;
+  /* Fecha límite de P9.4 y retraso de P9.5: «Vencido» y «Vigente» de Figma 22:2118 */
+  --color-estado-vencido: #bf2626;
+  --color-estado-vigente: #1a8c40;
 
   /* Estilos de texto */
   --text-h1: 28px;

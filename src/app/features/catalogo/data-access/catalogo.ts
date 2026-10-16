@@ -43,7 +43,7 @@ export class Catalogo {
         const disponibles = ejemplares.filter((e) => e.estado === 'disponible').length;
         return (
           (!q ||
-            [l.titulo, l.autor, l.materia, l.clasificacionDewey ?? ''].some((c) =>
+            [l.titulo, l.autor, l.materia, l.clasificacionDewey ?? '', l.isbn ?? ''].some((c) =>
               normalizar(c).includes(q),
             )) &&
           (filtro.idBiblioteca == null ||
