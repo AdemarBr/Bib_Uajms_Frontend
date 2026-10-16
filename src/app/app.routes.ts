@@ -17,8 +17,17 @@ export const routes: Routes = [
     path: '',
     component: LayoutAplicacion,
     children: [
-      // P.1 Home (`/`): su pantalla se construye en RF6; mientras tanto, solo el layout.
-      { path: '', pathMatch: 'full', children: [] },
+      {
+        path: '',
+        pathMatch: 'full',
+        loadChildren: () =>
+          import('./features/catalogo/catalogo.routes').then((m) => m.RUTAS_INICIO),
+      },
+      {
+        path: 'catalogo',
+        loadChildren: () =>
+          import('./features/catalogo/catalogo.routes').then((m) => m.RUTAS_CATALOGO_PUBLICO),
+      },
       {
         path: 'iniciar-sesion',
         canActivate: [sinSesionGuard],

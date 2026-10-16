@@ -23,6 +23,8 @@ function libro(
 /**
  * Catálogo de libros del prototipo. Los tres primeros son las filas de Figma (P4.3 21:752 y P4.4 22:3);
  * el resto completa más de una página de la tabla. Sin portada: se ve el recuadro gris de Figma.
+ * Fechas de incorporación de 1, 2, 3 y 5: las de «Novedades bibliográficas» de Figma 9:7 (Home);
+ * el resto es anterior. «Bases de Datos Avanzadas» (5) es la cuarta novedad de Figma.
  */
 export const LIBROS_MOCK: LibroMock[] = [
   libro(
@@ -33,7 +35,7 @@ export const LIBROS_MOCK: LibroMock[] = [
     'Informática',
     '005.1',
     '978-99954-1-234-5',
-    '2026-02-16',
+    '2026-07-15',
   ),
   libro(
     2,
@@ -43,7 +45,7 @@ export const LIBROS_MOCK: LibroMock[] = [
     'Matemáticas',
     '515',
     '978-99954-1-310-6',
-    '2026-02-16',
+    '2026-07-10',
   ),
   libro(
     3,
@@ -53,7 +55,7 @@ export const LIBROS_MOCK: LibroMock[] = [
     'Derecho',
     '346',
     '978-99954-2-118-7',
-    '2026-02-18',
+    '2026-07-02',
     false,
   ),
   libro(
@@ -68,13 +70,13 @@ export const LIBROS_MOCK: LibroMock[] = [
   ),
   libro(
     5,
-    'Bases de Datos Relacionales',
+    'Bases de Datos Avanzadas',
     'Carlos Rojas',
     'Editorial Tecnológica',
     'Informática',
     '005.75',
     '978-99954-3-021-4',
-    '2026-02-20',
+    '2026-06-28',
   ),
   libro(
     6,
@@ -266,5 +268,16 @@ export const LIBROS_MOCK: LibroMock[] = [
     '001.42',
     '978-99954-4-201-1',
     '2026-04-08',
+  ),
+  // Activo y sin ejemplares registrados: curso alternativo de RF6.1.2 en P6.2.
+  libro(
+    25,
+    'Sistemas Distribuidos',
+    'Lucía Méndez',
+    'Editorial Tecnológica',
+    'Informática',
+    '004.36',
+    '978-99954-3-110-5',
+    '2026-04-02',
   ),
 ];

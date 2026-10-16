@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { LucideCircleUser } from '@lucide/angular';
 
 import { Sesion } from '../../auth/sesion';
@@ -9,7 +9,7 @@ import { ErrorRespuesta, comoErrorRespuesta } from '../../../shared/models/error
 
 /** Topbar de Figma: variante «Visitor» sin sesión y «Authenticated» con sesión. */
 @Component({
-  imports: [RouterLink, LucideCircleUser, Alerta, ModalConfirmacion],
+  imports: [RouterLink, RouterLinkActive, LucideCircleUser, Alerta, ModalConfirmacion],
   selector: 'app-barra-superior',
   styleUrl: './barra-superior.css',
   templateUrl: './barra-superior.html',

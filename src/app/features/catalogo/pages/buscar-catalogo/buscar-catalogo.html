@@ -1,0 +1,116 @@
+<div class="flex flex-col gap-5" [class.p-3xl]="!sesion.haySesion()">
+  <h1 class="text-h2 text-gray-900">Buscar material bibliográfico</h1>
+
+  <form class="flex gap-md" (submit)="$event.preventDefault(); buscar()">
+    <input
+      type="search"
+      class="campo-texto w-[400px]"
+      placeholder="Título, autor, materia o clasificación Dewey…"
+      aria-label="Buscar material bibliográfico"
+      [formControl]="criterio"
+    />
+    <button type="submit" class="btn-primario">Buscar</button>
+  </form>
+
+  <form
+    class="flex flex-wrap items-end gap-md"
+    [formGroup]="filtros"
+    (submit)="$event.preventDefault()"
+  >
+    <div class="flex w-[150px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Biblioteca</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Biblioteca"
+        formControlName="idBiblioteca"
+        [opciones]="opcionesBiblioteca()"
+      />
+    </div>
+    <div class="flex w-[150px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Facultad</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Facultad"
+        formControlName="idFacultad"
+        [opciones]="opcionesFacultad()"
+      />
+    </div>
+    <div class="flex w-[150px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Materia</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Materia"
+        formControlName="materia"
+        [opciones]="opcionesMateria()"
+      />
+    </div>
+    <div class="flex w-[150px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Autor</span>
+      <app-select
+        etiqueta="Todos"
+        nombreAccesible="Autor"
+        formControlName="autor"
+        [opciones]="opcionesAutor()"
+      />
+    </div>
+    <div class="flex w-[150px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Disponibilidad</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Disponibilidad"
+        formControlName="disponibilidad"
+        [opciones]="opcionesDisponibilidad"
+      />
+    </div>
+    <div class="flex w-[150px] flex-col gap-xs">
+      <span class="text-label text-gray-600" aria-hidden="true">Clasificación Dewey</span>
+      <app-select
+        etiqueta="Todas"
+        nombreAccesible="Clasificación Dewey"
+        formControlName="clasificacionDewey"
+        [opciones]="opcionesDewey()"
+      />
+    </div>
+  </form>
+
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
+  @if (resultado(); as r) {
+    @if (r.contenido.length > 0) {
+      <ul class="flex flex-wrap gap-x-5 gap-y-lg" aria-label="Resultados de la búsqueda">
+        @for (libro of r.contenido; track libro.idLibro) {
+          <li class="flex flex-col items-start gap-sm">
+            <a class="block" [routerLink]="['/catalogo', libro.idLibro]">
+              <app-tarjeta [titulo]="libro.titulo" [imagenUrl]="libro.portadaUrl">
+                Autor: {{ libro.autor }}
+              </app-tarjeta>
+            </a>
+            <app-badge-estado
+              [texto]="libro.ejemplaresDisponibles > 0 ? 'Disponible' : 'No disponible'"
+              [tono]="libro.ejemplaresDisponibles > 0 ? 'disponible' : 'neutral'"
+            />
+          </li>
+        }
+      </ul>
+      @if (r.totalElementos > r.tamanio) {
+        <app-paginador
+          [pagina]="r.pagina"
+          [tamanio]="r.tamanio"
+          [totalElementos]="r.totalElementos"
+          (cambio)="pagina.set($event)"
+        />
+      }
+    } @else {
+      <p class="text-body text-gray-600" aria-live="polite">{{ mensajeVacio() }}</p>
+      @if (hayFiltros()) {
+        <div>
+          <button type="button" class="btn-secundario" (click)="limpiarFiltros()">
+            Limpiar filtros
+          </button>
+        </div>
+      }
+    }
+  }
+</div>

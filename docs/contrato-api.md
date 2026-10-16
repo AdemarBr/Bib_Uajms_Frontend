@@ -240,7 +240,10 @@ Archivo de `POST /libros/importar` (RF4.2):
 
 ## 7. Catálogo público (RF6)
 
-- `GET /catalogo/libros?q&idBiblioteca&idFacultad&materia&autor&disponibilidad&clasificacionDewey` → `Pagina<LibroCatalogoResponse>`
+Todo el catálogo público muestra solo libros activos (RF4.5 y RF4.7); un libro inactivo pedido por su id responde 404.
+
+- `GET /catalogo/libros?q&idBiblioteca&idFacultad&materia&autor&disponibilidad&clasificacionDewey` → `Pagina<LibroCatalogoResponse>`. `q`: título, autor, materia o clasificación Dewey (RF6.1.3). `disponibilidad`: `disponible` (al menos un ejemplar disponible) o `no_disponible` (ninguno, también sin ejemplares). `idBiblioteca` e `idFacultad`: libros con algún ejemplar en esa biblioteca o en una biblioteca de la facultad o de sus carreras.
+- `GET /catalogo/opciones-filtro` → `OpcionesFiltroLibroResponse` (sección 6), calculado solo con los libros activos: valores de los desplegables de materia, autor y clasificación de P6.1 (RF6.1.1.3); los de biblioteca y facultad salen de `GET /bibliotecas` y `GET /facultades`.
 - `GET /catalogo/libros/{id}` → `LibroDetalleResponse` (registra la visualización en `registro_uso`)
 - `GET /catalogo/libros/{id}/ejemplar-reservable` → `EjemplarReservableResponse` [RESERVA_REALIZAR] (P7.1). Si no hay ejemplar disponible responde 409 con `ErrorRespuesta`.
 - `GET /catalogo/novedades` → `NovedadResponse[]`
@@ -267,9 +270,12 @@ Archivo de `POST /libros/importar` (RF4.2):
 ```
 
 ```json
-// NovedadResponse (RF6.2.5)
-{ "idLibro": 1, "titulo": "Introducción a la Programación", "portadaUrl": "/api/v1/catalogo/libros/1/portada", "fechaIncorporacion": "2026-07-20" }
+// NovedadResponse (RF6.2.5; autor y materia: tarjeta de Figma 9:7). Los libros activos más recientes por fechaIncorporacion, tantos como biblioteca.catalogo.cantidad-novedades
+{ "idLibro": 1, "titulo": "Introducción a la Programación", "autor": "Ana Torres", "materia": "Informática",
+  "portadaUrl": "/api/v1/catalogo/libros/1/portada", "fechaIncorporacion": "2026-07-15" }
 ```
+
+`ubicaciones` de `LibroDetalleResponse`: una entrada por biblioteca donde el libro tiene al menos un ejemplar con ubicación física registrada, ordenadas por nombre (`disponibles` y `total` cuentan todos los ejemplares del libro en esa biblioteca). Vacía si el libro no tiene ejemplares o si ninguno tiene ubicación física: la interfaz indica entonces que aún no se asignó una ubicación (RF6.1.2.2, curso alternativo). `ejemplaresDisponibles` y `ejemplaresTotales` *(calculados)*: ejemplares con estado `disponible` y todos los del libro.
 
 ## 8. Ejemplares (RF5)
 

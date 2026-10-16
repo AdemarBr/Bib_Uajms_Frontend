@@ -14,4 +14,13 @@ export class DatosCatalogo {
   readonly libros = signal<LibroMock[]>(LIBROS_MOCK);
   readonly ejemplares = signal<EjemplarMock[]>(EJEMPLARES_MOCK);
   readonly historial = signal<HistorialMock[]>(HISTORIAL_LIBROS_MOCK);
+  /** Tabla registro_uso: fecha de cada visualización del detalle de un libro (RF6.1.2.5), para RF13. */
+  readonly registroUso = signal<{ idLibro: number; fecha: string }[]>([]);
+}
+
+/** Fecha de hoy en ISO 8601 («2026-10-15»), en la hora local. */
+export function hoy(): string {
+  const d = new Date();
+  const dos = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${dos(d.getMonth() + 1)}-${dos(d.getDate())}`;
 }
