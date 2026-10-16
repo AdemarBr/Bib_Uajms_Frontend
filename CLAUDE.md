@@ -188,6 +188,7 @@ features/<feature>/
   - P9.5: los préstamos coincidentes se listan bajo la búsqueda («No se encontró un préstamo vigente con ese criterio.», la búsqueda sigue editable); línea «EJ — título — usuario — vence dd/mm/aaaa» (o «— en sala»); «Observaciones» deshabilitado con «Buen estado»; etiqueta «Sin retraso — dentro del plazo» o «Con retraso — N días» (`tono="alerta"`), sin etiqueta en sala. Tras registrar: «Devolución registrada» / «El ejemplar EJ-… ahora está disponible.» (o «no disponible»).
   - P9.6: campo «Buscar por usuario o ejemplar…» y «Desde»/«Hasta» (fecha de devolución); vacío «No hay devoluciones en el historial para el periodo consultado.».
   - Datos falsos en `docs/usuarios-falsos.md` («Préstamos»).
+  - Datos que cambian mientras se usa la pantalla (otro usuario, 409 o 400 del servicio): tras un 409 al registrar, P9.1 y P9.3 vuelven a pedir los ejemplares (el no disponible desaparece); la ventana de ampliación de P9.4 muestra también el mensaje del campo `fechaNueva` y, al cerrarla tras un error, la tabla se vuelve a pedir. Igual en P8.1: cerrar una ventana con error recarga la lista.
 - Perfil (P1.2): servicio `Perfil` (`features/autenticacion/data-access/perfil.ts`, `obtenerPerfil()` = `GET /auth/perfil`); qué se muestra según el usuario está en `docs/usuarios-falsos.md` («Perfil (P1.2)»).
 
 ## Guards, menú y permisos

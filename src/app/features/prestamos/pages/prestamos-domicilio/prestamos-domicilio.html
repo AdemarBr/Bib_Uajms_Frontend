@@ -75,6 +75,10 @@
     <p class="text-body text-gray-600">Nueva fecha límite propuesta: {{ a.fechaNueva | fecha }}.</p>
     @if (errorAmpliacion(); as e) {
       <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+      <!-- 400 de la ampliación: el mensaje viene en errores[] del campo fechaNueva. -->
+      @if (e | errorCampo: 'fechaNueva'; as m) {
+        <p class="text-label text-gray-900">{{ m }}</p>
+      }
     }
   </app-modal-confirmacion>
 }

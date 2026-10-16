@@ -192,7 +192,13 @@ export abstract class RegistroPrestamo {
         },
         error: (error: unknown) => {
           this.enviando.set(false);
-          this.error.set(comoErrorRespuesta(error));
+          const respuesta = comoErrorRespuesta(error);
+          this.error.set(respuesta);
+          // 409: el ejemplar o la reserva cambiaron mientras tanto; se vuelve a pedir la lista de ejemplares.
+          const libro = this.libro();
+          if (respuesta.status === 409 && libro) {
+            this.cargarEjemplares(libro.idLibro, this.reserva()?.idReserva ?? null, idEjemplar);
+          }
         },
       });
   }

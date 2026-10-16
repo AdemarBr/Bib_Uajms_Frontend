@@ -10,6 +10,7 @@ import { Celda } from '../../../../shared/components/tabla/celda';
 import { ColumnaTabla, Tabla } from '../../../../shared/components/tabla/tabla';
 import { ErrorRespuesta, comoErrorRespuesta } from '../../../../shared/models/error-respuesta';
 import { TienePermiso } from '../../../../shared/directives/tiene-permiso';
+import { ErrorCampoPipe } from '../../../../shared/pipes/error-campo-pipe';
 import { FechaPipe } from '../../../../shared/pipes/fecha-pipe';
 import { Prestamos } from '../../data-access/prestamos';
 import { fechaAmpliada } from '../../fechas-prestamo';
@@ -21,7 +22,16 @@ import { PrestamoResponse } from '../../models/prestamo-response';
  * vigente, las ampliaciones y la nueva fecha propuesta: max(fecha límite, hoy) + 7 días, de solo lectura.
  */
 @Component({
-  imports: [Alerta, Celda, FechaPipe, ModalConfirmacion, Paginador, Tabla, TienePermiso],
+  imports: [
+    Alerta,
+    Celda,
+    ErrorCampoPipe,
+    FechaPipe,
+    ModalConfirmacion,
+    Paginador,
+    Tabla,
+    TienePermiso,
+  ],
   selector: 'app-prestamos-domicilio',
   styleUrl: './prestamos-domicilio.css',
   templateUrl: './prestamos-domicilio.html',
@@ -83,7 +93,9 @@ export class PrestamosDomicilio {
     });
   }
 
+  /** Si la ampliación falló (el préstamo cambió mientras tanto), se vuelve a pedir la lista. */
   protected cerrar(): void {
+    if (this.errorAmpliacion()) this.recarga.update((n) => n + 1);
     this.ampliando.set(null);
     this.errorAmpliacion.set(null);
   }
