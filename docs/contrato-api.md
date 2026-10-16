@@ -275,7 +275,7 @@ Todo el catálogo público muestra solo libros activos (RF4.5 y RF4.7); un libro
   "portadaUrl": "/api/v1/catalogo/libros/1/portada", "fechaIncorporacion": "2026-07-15" }
 ```
 
-`ubicaciones` de `LibroDetalleResponse`: una entrada por biblioteca con ejemplares del libro, ordenadas por nombre; vacía si el libro no tiene ejemplares. `ejemplaresDisponibles` y `ejemplaresTotales` *(calculados)*: ejemplares con estado `disponible` y todos los del libro.
+`ubicaciones` de `LibroDetalleResponse`: una entrada por biblioteca donde el libro tiene al menos un ejemplar con ubicación física registrada, ordenadas por nombre (`disponibles` y `total` cuentan todos los ejemplares del libro en esa biblioteca). Vacía si el libro no tiene ejemplares o si ninguno tiene ubicación física: la interfaz indica entonces que aún no se asignó una ubicación (RF6.1.2.2, curso alternativo). `ejemplaresDisponibles` y `ejemplaresTotales` *(calculados)*: ejemplares con estado `disponible` y todos los del libro.
 
 ## 8. Ejemplares (RF5)
 

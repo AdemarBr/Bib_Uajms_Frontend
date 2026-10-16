@@ -3,7 +3,10 @@
     <h1 class="text-[24px] font-bold text-gray-900">{{ l.titulo }}</h1>
 
     <div class="flex items-start gap-2xl">
-      <!-- RF6.1.2.3: portada legible o, si no fue cargada, la imagen genérica (recuadro gris de Figma). -->
+      <!--
+        RF6.1.2.3: portada legible o, si no fue cargada, la imagen genérica (recuadro gris de Figma)
+        con el texto que indica que no está disponible (curso alternativo).
+      -->
       @if (l.portadaUrl) {
         <img
           [src]="l.portadaUrl"
@@ -12,10 +15,10 @@
         />
       } @else {
         <div
-          class="h-[300px] w-[220px] shrink-0 rounded-md bg-gray-100"
-          role="img"
-          aria-label="Portada no cargada"
-        ></div>
+          class="flex h-[300px] w-[220px] shrink-0 items-center justify-center rounded-md bg-gray-100 p-lg text-center"
+        >
+          <p class="text-caption text-gray-600">Portada no disponible</p>
+        </div>
       }
 
       <div class="flex min-w-0 flex-1 flex-col items-start gap-5">

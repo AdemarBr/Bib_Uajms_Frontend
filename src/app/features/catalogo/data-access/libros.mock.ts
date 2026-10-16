@@ -269,4 +269,15 @@ export const LIBROS_MOCK: LibroMock[] = [
     '978-99954-4-201-1',
     '2026-04-08',
   ),
+  // Activo y sin ejemplares registrados: curso alternativo de RF6.1.2 en P6.2.
+  libro(
+    25,
+    'Sistemas Distribuidos',
+    'Lucía Méndez',
+    'Editorial Tecnológica',
+    'Informática',
+    '004.36',
+    '978-99954-3-110-5',
+    '2026-04-02',
+  ),
 ];

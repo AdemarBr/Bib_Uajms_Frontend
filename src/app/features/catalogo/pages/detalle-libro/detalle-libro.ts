@@ -1,5 +1,7 @@
-import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
+import { EMPTY, catchError, switchMap, tap } from 'rxjs';
 
 import { Sesion } from '../../../../core/auth/sesion';
 import { PERMISOS } from '../../../../core/config/permisos';
@@ -19,7 +21,7 @@ import { LibroDetalleResponse } from '../../models/libro-detalle-response';
   styleUrl: './detalle-libro.css',
   templateUrl: './detalle-libro.html',
 })
-export class DetalleLibro implements OnInit {
+export class DetalleLibro {
   private readonly catalogo = inject(Catalogo);
   private readonly router = inject(Router);
   /** Sin sesión, la página pone su propio padding (con sesión lo pone el layout). */
@@ -61,11 +63,28 @@ export class DetalleLibro implements OnInit {
     () => !this.sesion.haySesion() || this.sesion.tienePermiso(PERMISOS.RESERVA_REALIZAR),
   );
 
-  ngOnInit(): void {
-    this.catalogo.obtenerDetalle(Number(this.id())).subscribe({
-      next: (libro) => this.libro.set(libro),
-      error: (error: unknown) => this.error.set(comoErrorRespuesta(error)),
-    });
+  /**
+   * Carga el libro de `:id` y vuelve a cargarlo si cambia sin salir de la pantalla (por ejemplo, con
+   * «atrás» o «adelante» entre dos detalles, que reutilizan este componente).
+   */
+  constructor() {
+    toObservable(this.id)
+      .pipe(
+        tap(() => {
+          this.libro.set(null);
+          this.error.set(null);
+        }),
+        switchMap((id) =>
+          this.catalogo.obtenerDetalle(Number(id)).pipe(
+            catchError((error: unknown) => {
+              this.error.set(comoErrorRespuesta(error));
+              return EMPTY;
+            }),
+          ),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((libro) => this.libro.set(libro));
   }
 
   /** P7.1 Confirmar reserva de libro (RF7.1). */

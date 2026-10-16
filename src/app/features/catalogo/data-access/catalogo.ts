@@ -90,7 +90,9 @@ export class Catalogo {
 
     const ejemplares = this.ejemplaresDe(idLibro);
     const bibliotecas = this.estructura.bibliotecas();
-    const ubicaciones = [...new Set(ejemplares.map((e) => e.idBiblioteca))]
+    // Solo bibliotecas con algún ejemplar con ubicación física: sin ninguna, RF6.1.2.2 (curso alternativo).
+    const conUbicacion = ejemplares.filter((e) => e.ubicacionFisica);
+    const ubicaciones = [...new Set(conUbicacion.map((e) => e.idBiblioteca))]
       .map((idBiblioteca) => {
         const deBiblioteca = ejemplares.filter((e) => e.idBiblioteca === idBiblioteca);
         return {
