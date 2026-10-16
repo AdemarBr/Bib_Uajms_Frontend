@@ -1,16 +1,36 @@
 @if (abierto()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-1000/40">
     <div
-      class="flex w-[360px] flex-col gap-md rounded-lg bg-gray-0 p-xl shadow-[0px_4px_10px_0px_rgba(0,0,0,0.16)]"
+      class="flex flex-col rounded-lg bg-gray-0 shadow-[0px_4px_10px_0px_rgba(0,0,0,0.16)]"
+      [class]="variante() === 'modal' ? 'w-[560px] gap-lg px-2xl py-xl' : 'w-[360px] gap-md p-xl'"
       role="alertdialog"
       aria-modal="true"
       aria-labelledby="modal-confirmacion-titulo"
     >
-      <h2 id="modal-confirmacion-titulo" class="text-subtitulo font-bold text-gray-900">
-        {{ titulo() }}
-      </h2>
+      <div class="flex items-center justify-between gap-md">
+        <h2
+          id="modal-confirmacion-titulo"
+          class="font-bold text-gray-900"
+          [class]="variante() === 'modal' ? 'text-h3' : 'text-subtitulo'"
+        >
+          {{ titulo() }}
+        </h2>
+        @if (cerrable()) {
+          <button
+            type="button"
+            class="cursor-pointer text-subtitulo text-gray-600 hover:text-gray-900 disabled:cursor-default"
+            aria-label="Cerrar"
+            [disabled]="procesando()"
+            (click)="alCancelar()"
+          >
+            ✕
+          </button>
+        }
+      </div>
       @if (mensaje()) {
-        <p class="text-tabla text-gray-600">{{ mensaje() }}</p>
+        <p class="text-gray-600" [class]="variante() === 'modal' ? 'text-body' : 'text-tabla'">
+          {{ mensaje() }}
+        </p>
       }
       <ng-content />
       <div class="flex justify-end gap-md">

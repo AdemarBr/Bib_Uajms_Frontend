@@ -1,0 +1,60 @@
+<div class="flex flex-col gap-5">
+  <h1 class="text-h2 text-gray-900">Mis reservas</h1>
+
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
+  @if (lista(); as reservas) {
+    <app-tabla
+      [columnas]="columnas"
+      [filas]="reservas"
+      mensajeVacio="Aún no tiene reservas registradas."
+    >
+      <ng-template appCelda="fecha" let-fila>{{ fila.fecha | fecha }}</ng-template>
+
+      <!-- RF7.5.4: etiqueta de color; verde si está confirmada. -->
+      <ng-template appCelda="estado" let-fila>
+        <app-badge-estado
+          [texto]="fila.estado"
+          [tono]="fila.estado === 'Confirmada' ? 'acento' : 'neutral'"
+        />
+      </ng-template>
+
+      <!-- RF7.4.3: «Cancelar» solo si el estado lo permite; si no, «—». -->
+      <ng-template appCelda="accion" let-fila>
+        <ng-template #sinAccion>—</ng-template>
+        @if (puedeCancelarse(fila)) {
+          <button
+            *appTienePermiso="permisoCancelar; else sinAccion"
+            type="button"
+            class="cursor-pointer text-tabla text-gray-900 hover:underline"
+            (click)="pendiente.set(fila)"
+          >
+            Cancelar
+          </button>
+        } @else {
+          —
+        }
+      </ng-template>
+    </app-tabla>
+  }
+</div>
+
+<!-- RF7.4.4: Modal de Figma 324:39. -->
+<app-modal-confirmacion
+  variante="modal"
+  titulo="Cancelar reserva"
+  textoCancelar="Volver"
+  textoConfirmar="Cancelar reserva"
+  [cerrable]="true"
+  [abierto]="!!pendiente()"
+  [mensaje]="mensajeCancelar()"
+  [procesando]="procesando()"
+  (confirmar)="confirmarCancelacion()"
+  (cancelar)="volver()"
+>
+  @if (errorCancelar(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+</app-modal-confirmacion>

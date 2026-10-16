@@ -97,7 +97,7 @@
       <ng-template appCelda="disponible" let-fila>
         <app-badge-estado
           [texto]="fila.disponible ? 'Disponible' : (fila.estado | estadoEjemplar)"
-          [tono]="fila.disponible ? 'disponible' : 'neutral'"
+          [tono]="fila.disponible ? 'acento' : 'neutral'"
         />
       </ng-template>
     </app-tabla>

@@ -1,10 +1,11 @@
 import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { Sesion } from '../../../../core/auth/sesion';
+import { PERMISOS } from '../../../../core/config/permisos';
 import { Alerta } from '../../../../shared/components/alerta/alerta';
 import { BadgeEstado } from '../../../../shared/components/badge-estado/badge-estado';
 import { Paginador } from '../../../../shared/components/paginador/paginador';
@@ -39,6 +40,12 @@ export class BuscarCatalogo implements OnInit {
   private readonly catalogo = inject(Catalogo);
   /** Sin sesión, la página pone su propio padding (con sesión lo pone el layout). */
   protected readonly sesion = inject(Sesion);
+  private readonly router = inject(Router);
+
+  /** Como en P6.2: un visitante ve «Reservar» (lo lleva a iniciar sesión); con sesión, solo con RESERVA_REALIZAR. */
+  protected readonly puedeReservar = computed(
+    () => !this.sesion.haySesion() || this.sesion.tienePermiso(PERMISOS.RESERVA_REALIZAR),
+  );
 
   /** Parámetros de consulta `?q=` e `?idBiblioteca=`. */
   readonly q = input<string>();
@@ -151,6 +158,11 @@ export class BuscarCatalogo implements OnInit {
   protected buscar(): void {
     this.pagina.set(0);
     this.busqueda.set(this.criterio.value.trim());
+  }
+
+  /** P7.1 Confirmar reserva de libro (RF7.2). */
+  protected reservar(idLibro: number): void {
+    this.router.navigate(['/mis-reservas/nueva', idLibro]);
   }
 
   protected limpiarFiltros(): void {

@@ -1,0 +1,40 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Confirmar reserva</h1>
+
+  <div
+    class="flex w-[482px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+  >
+    @if (ejemplar(); as e) {
+      <p class="text-label text-gray-600">Libro</p>
+      <p class="text-dato text-gray-900">{{ e.libroTitulo }}</p>
+
+      <!-- RF7.1, paso 2: los datos del libro y del ejemplar. -->
+      <p class="text-label text-gray-600">Ejemplar</p>
+      <p class="text-dato text-gray-900">{{ e.codigoEjemplar }} · {{ e.bibliotecaNombre }}</p>
+    }
+
+    <!-- RF7.1.4 y RF7.3.4 -->
+    <p class="text-label text-gray-600">Disponibilidad verificada</p>
+    @if (ejemplar()) {
+      <p class="text-body text-gray-600" aria-live="polite">{{ mensajeDisponibilidad() }}</p>
+    } @else if (errorDisponibilidad(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
+
+    <!-- Habilitado solo con la disponibilidad verificada (RF7.1, curso alternativo). -->
+    <button
+      type="button"
+      class="btn-primario w-full"
+      [disabled]="!ejemplar() || enviando() || !!registrada()"
+      (click)="confirmar()"
+    >
+      Confirmar reserva
+    </button>
+
+    @if (registrada()) {
+      <app-alerta tono="exito" titulo="Reserva registrada" [mensaje]="confirmacion()" />
+    } @else if (error(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
+  </div>
+</div>
