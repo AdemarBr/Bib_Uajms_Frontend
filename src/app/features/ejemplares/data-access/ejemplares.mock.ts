@@ -26,7 +26,7 @@ const FILAS: Fila[] = [
   ['EJ-00124', 1, CENTRAL, 'Estante 4B, Dewey 005.1', 'prestado'],
   ['EJ-00301', 2, FCYT, 'Estante 2A, Dewey 515', 'reservado'],
   ['EJ-00125', 1, FCYT, 'Estante 1C, Dewey 005.1', 'disponible'],
-  ['EJ-00302', 2, FCYT, 'Estante 2A, Dewey 515', 'disponible'],
+  ['EJ-00302', 2, FCYT, 'Estante 2A, Dewey 515', 'reservado'],
   ['EJ-00410', 3, DERECHO, 'Estante 3B, Dewey 346', 'desactivado'],
   ['EJ-00126', 4, FCYT, 'Estante 1C, Dewey 005.73', 'disponible'],
   ['EJ-00127', 5, FCYT, 'Estante 1C, Dewey 005.75', 'disponible'],
@@ -53,6 +53,8 @@ const FILAS: Fila[] = [
   ['EJ-00130', 23, FCYT, 'Estante 1D, Dewey 004.6', 'disponible'],
   ['EJ-00701', 24, POSTGRADO, 'Estante 1A, Dewey 001.42', 'disponible'],
   ['EJ-00702', 24, CENTRAL, 'Estante 6A, Dewey 001.42', 'disponible'],
+  // Tercer ejemplar de Cálculo I (RF8): EJ-00301 y EJ-00302 están reservados y el libro sigue disponible.
+  ['EJ-00311', 2, CENTRAL, 'Estante 4C, Dewey 515', 'disponible'],
 ];
 
 export const EJEMPLARES_MOCK: EjemplarMock[] = FILAS.map(

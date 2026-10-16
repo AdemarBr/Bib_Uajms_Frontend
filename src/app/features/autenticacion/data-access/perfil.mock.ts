@@ -42,6 +42,18 @@ export const PERFILES_MOCK: PerfilResponse[] = [
     carreraNombre: null,
   },
   {
+    idUsuario: 17,
+    nombre: 'Estudiante Rojas',
+    nombreUsuario: '2022003456',
+    correo: null,
+    ru: '2022003456',
+    rolNombre: 'Estudiante',
+    tipoUsuario: 'académico',
+    bibliotecaNombre: null,
+    facultadNombre: 'Facultad de Ciencias y Tecnología',
+    carreraNombre: 'Ingeniería de Sistemas',
+  },
+  {
     idUsuario: 5,
     nombre: 'Carla Ríos',
     nombreUsuario: 'bibliotecario.central',

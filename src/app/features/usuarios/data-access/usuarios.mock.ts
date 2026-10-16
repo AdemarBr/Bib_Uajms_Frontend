@@ -93,4 +93,5 @@ export const USUARIOS_MOCK: UsuarioMock[] = [
   academico(12, 'Estudiante Pérez', '2019001234', 1, 'Estudiante', SISTEMAS),
   academico(13, 'Docente Gómez', '1998005678', 2, 'Docente', SISTEMAS),
   academico(14, 'Académico Vargas', '2020009999', 3, 'Usuario académico', SIN_CARRERA),
+  academico(17, 'Estudiante Rojas', '2022003456', 1, 'Estudiante', SISTEMAS),
 ];

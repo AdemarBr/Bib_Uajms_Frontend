@@ -36,11 +36,15 @@ export class Select implements ControlValueAccessor {
   private alCambiar: (valor: ValorSelect) => void = () => {};
   protected alTocar: () => void = () => {};
 
-  protected seleccionar(indice: string): void {
-    const i = Number(indice);
+  protected seleccionar(select: HTMLSelectElement): void {
+    const i = Number(select.value);
     const valor = i < 0 ? null : this.opciones()[i].valor;
     this.valor.set(valor);
     this.alCambiar(valor);
+    // Si el formulario cambió el valor en el mismo evento (p. ej. lo devolvió a «sin elegir» para abrir una
+    // ventana de confirmación), el `<select>` del navegador seguiría mostrando la opción elegida: se alinea aquí.
+    const esperado = String(this.indiceActual());
+    if (select.value !== esperado) select.value = esperado;
   }
 
   writeValue(valor: ValorSelect): void {

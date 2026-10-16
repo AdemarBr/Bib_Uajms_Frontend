@@ -6,13 +6,11 @@ import { ErrorRespuesta } from '../../../shared/models/error-respuesta';
 import { DatosCatalogo, hoy } from '../../catalogo/data-access/datos-catalogo';
 import {
   DEMORA_MS,
-  DatosEstructura,
   noEncontrado,
   siguienteId,
 } from '../../estructura/data-access/datos-estructura';
-import { USUARIOS_MOCK } from '../../usuarios/data-access/usuarios.mock';
 import { EjemplarReservableResponse } from '../models/ejemplar-reservable-response';
-import { EstadoReserva, puedeCancelarse } from '../models/estado-reserva';
+import { esActiva, puedeCancelarse } from '../models/estado-reserva';
 import { ReservaRequest } from '../models/reserva-request';
 import { ReservaResponse } from '../models/reserva-response';
 import { DatosReservas } from './datos-reservas';
@@ -27,7 +25,6 @@ import { ReservaMock } from './reservas.mock';
 export class Reservas {
   private readonly datos = inject(DatosReservas);
   private readonly catalogo = inject(DatosCatalogo);
-  private readonly estructura = inject(DatosEstructura);
   private readonly sesion = inject(Sesion);
 
   /** GET /catalogo/libros/{id}/ejemplar-reservable (RF7.3): el primer ejemplar disponible del libro. */
@@ -52,7 +49,7 @@ export class Reservas {
       ejemplaresDisponibles: disponibles.length,
       idEjemplar: ejemplar.idEjemplar,
       codigoEjemplar: ejemplar.codigoEjemplar,
-      bibliotecaNombre: this.nombreBiblioteca(ejemplar.idBiblioteca),
+      bibliotecaNombre: this.datos.nombreBiblioteca(ejemplar.idBiblioteca),
     }).pipe(delay(DEMORA_MS));
   }
 
@@ -70,10 +67,9 @@ export class Reservas {
     }
     if (this.tieneReservaActiva(libro.idLibro)) return reservaDuplicada();
 
-    const fecha = hoy();
     const nueva: ReservaMock = {
       idReserva: siguienteId(this.datos.reservas(), (r) => r.idReserva),
-      fecha,
+      fecha: hoy(),
       estado: 'Pendiente',
       atendida: false,
       motivo: null,
@@ -81,8 +77,8 @@ export class Reservas {
       idEjemplar: ejemplar.idEjemplar,
     };
     this.datos.reservas.update((lista) => [...lista, nueva]);
-    this.anotar(nueva.idReserva, null, 'Pendiente');
-    return of(this.aRespuesta(nueva)).pipe(delay(DEMORA_MS));
+    this.datos.anotar(nueva.idReserva, null, 'Pendiente');
+    return of(this.datos.aRespuesta(nueva)).pipe(delay(DEMORA_MS));
   }
 
   /** GET /reservas/mias (RF7.5): de la más reciente a la más antigua. */
@@ -92,7 +88,7 @@ export class Reservas {
       .reservas()
       .filter((r) => r.idUsuario === idUsuario)
       .sort((a, b) => b.fecha.localeCompare(a.fecha) || b.idReserva - a.idReserva)
-      .map((r) => this.aRespuesta(r));
+      .map((r) => this.datos.aRespuesta(r));
     return of(mias).pipe(delay(DEMORA_MS));
   }
 
@@ -113,21 +109,13 @@ export class Reservas {
       );
     }
     if (reserva.estado === 'Confirmada') {
-      this.catalogo.ejemplares.update((lista) =>
-        lista.map((e) =>
-          e.idEjemplar === reserva.idEjemplar ? { ...e, estado: 'disponible' } : e,
-        ),
-      );
+      this.datos.cambiarEstadoEjemplar(reserva.idEjemplar, 'disponible');
     }
-    const cancelada: ReservaMock = { ...reserva, estado: 'Cancelada' };
-    this.datos.reservas.update((lista) =>
-      lista.map((r) => (r.idReserva === idReserva ? cancelada : r)),
-    );
-    this.anotar(idReserva, reserva.estado, 'Cancelada');
-    return of(this.aRespuesta(cancelada)).pipe(delay(DEMORA_MS));
+    const cancelada = this.datos.cambiarEstado(reserva, 'Cancelada');
+    return of(this.datos.aRespuesta(cancelada)).pipe(delay(DEMORA_MS));
   }
 
-  /** Reserva Pendiente o Confirmada del usuario de la sesión para un ejemplar de ese libro. */
+  /** Reserva activa (Pendiente, o Confirmada sin atender) del usuario de la sesión para ese libro. */
   private tieneReservaActiva(idLibro: number): boolean {
     const idUsuario = this.sesion.usuario()?.idUsuario;
     const ejemplaresDelLibro = this.catalogo
@@ -138,50 +126,12 @@ export class Reservas {
       .reservas()
       .some(
         (r) =>
-          r.idUsuario === idUsuario &&
-          (r.estado === 'Pendiente' || r.estado === 'Confirmada') &&
-          ejemplaresDelLibro.includes(r.idEjemplar),
+          r.idUsuario === idUsuario && esActiva(r) && ejemplaresDelLibro.includes(r.idEjemplar),
       );
-  }
-
-  private anotar(
-    idReserva: number,
-    estadoAnterior: EstadoReserva | null,
-    estadoNuevo: EstadoReserva,
-  ): void {
-    this.datos.historial.update((historial) => [
-      ...historial,
-      {
-        idHistorialReserva: siguienteId(historial, (h) => h.idHistorialReserva),
-        fecha: hoy(),
-        estadoAnterior,
-        estadoNuevo,
-        idReserva,
-      },
-    ]);
-  }
-
-  private nombreBiblioteca(idBiblioteca: number): string {
-    return this.estructura.bibliotecas().find((b) => b.idBiblioteca === idBiblioteca)?.nombre ?? '';
-  }
-
-  /** Arma la respuesta con el usuario, el ejemplar, el libro y la biblioteca (join como en el backend). */
-  private aRespuesta(r: ReservaMock): ReservaResponse {
-    const ejemplar = this.catalogo.ejemplares().find((e) => e.idEjemplar === r.idEjemplar);
-    const libro = this.catalogo.libros().find((l) => l.idLibro === ejemplar?.idLibro);
-    return {
-      ...r,
-      usuarioNombre: USUARIOS_MOCK.find((u) => u.idUsuario === r.idUsuario)?.nombre ?? '',
-      ejemplarCodigo: ejemplar?.codigoEjemplar ?? '',
-      idLibro: libro?.idLibro ?? 0,
-      libroTitulo: libro?.titulo ?? '',
-      idBiblioteca: ejemplar?.idBiblioteca ?? 0,
-      bibliotecaNombre: ejemplar ? this.nombreBiblioteca(ejemplar.idBiblioteca) : '',
-    };
   }
 }
 
-function conflicto(titulo: string, detalle: string): Observable<never> {
+export function conflicto(titulo: string, detalle: string): Observable<never> {
   const error: ErrorRespuesta = { status: 409, titulo, detalle, errores: [] };
   return throwError(() => error).pipe(delay(DEMORA_MS));
 }

@@ -33,6 +33,12 @@ const RU_VIGENTES: RuVigente[] = [
     carreraNombre: null,
     rolNombre: 'Usuario académico',
   },
+  {
+    ru: '2022003456',
+    nombre: 'Estudiante Rojas',
+    carreraNombre: 'Ingeniería de Sistemas',
+    rolNombre: 'Estudiante',
+  },
   // Vigente pero no registrado: se registra con sus datos mínimos en la primera validación.
   {
     ru: '2021004321',
@@ -47,6 +53,7 @@ const REGISTRADOS = new Map<string, number>([
   ['2019001234', 12],
   ['1998005678', 13],
   ['2020009999', 14],
+  ['2022003456', 17],
 ]);
 
 let siguienteIdUsuario = 100;

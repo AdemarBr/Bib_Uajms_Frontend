@@ -119,6 +119,17 @@ export const USUARIOS_MOCK: UsuarioMock[] = [
     ...SIN_CARRERA,
   },
   {
+    idUsuario: 17,
+    nombre: 'Estudiante Rojas',
+    nombreUsuario: '2022003456',
+    contrasena: 'demo123',
+    activo: true,
+    rol: 'Estudiante',
+    tipoUsuario: 'académico',
+    ...SIN_BIBLIOTECA,
+    ...SISTEMAS,
+  },
+  {
     idUsuario: 5,
     nombre: 'Carla Ríos',
     nombreUsuario: 'bibliotecario.central',

@@ -1,0 +1,42 @@
+<div class="flex flex-col gap-5">
+  <h1 class="text-h2 text-gray-900">Historial de reservas</h1>
+
+  <!-- RF8.7, curso alternativo: «el periodo consultado». -->
+  <form
+    class="flex flex-wrap items-end gap-md"
+    [formGroup]="periodo"
+    (submit)="$event.preventDefault()"
+  >
+    <div class="flex w-[180px] flex-col gap-xs">
+      <label for="desde" class="text-label text-gray-600">Desde</label>
+      <input id="desde" type="date" class="campo-texto" formControlName="desde" />
+    </div>
+    <div class="flex w-[180px] flex-col gap-xs">
+      <label for="hasta" class="text-label text-gray-600">Hasta</label>
+      <input id="hasta" type="date" class="campo-texto" formControlName="hasta" />
+    </div>
+  </form>
+
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
+  @if (resultado(); as r) {
+    <app-tabla
+      [columnas]="columnas"
+      [filas]="r.contenido"
+      mensajeVacio="No hay reservas en el historial para el periodo consultado."
+    >
+      <ng-template appCelda="fecha" let-fila>{{ fila.fecha | fecha }}</ng-template>
+    </app-tabla>
+
+    @if (r.totalElementos > r.tamanio) {
+      <app-paginador
+        [pagina]="r.pagina"
+        [tamanio]="r.tamanio"
+        [totalElementos]="r.totalElementos"
+        (cambio)="pagina.set($event)"
+      />
+    }
+  }
+</div>

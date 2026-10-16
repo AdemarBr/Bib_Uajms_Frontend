@@ -8,7 +8,7 @@
 | biblioteca | Una biblioteca pertenece a una facultad o a una carrera, nunca a las dos; la Biblioteca Central y la de postgrado no pertenecen a ninguna. |
 | ejemplar | El estado solo admite disponible, reservado, prestado, no disponible, en mantenimiento o desactivado. |
 | mensaje | El estado solo admite Pendiente o Respondido. |
-| reserva | El estado solo admite los valores Pendiente, Confirmada, Rechazada o Cancelada. |
+| reserva | El estado solo admite los valores Pendiente, Confirmada, Rechazada o Cancelada. Un usuario no puede tener dos reservas activas (Pendiente, o Confirmada no atendida) del mismo libro: la segunda se rechaza con 409 «Ya tiene una reserva activa de este libro.». Una reserva Pendiente no aparta el ejemplar; al confirmarla, el ejemplar pasa a «reservado», y al cancelar una reserva Confirmada vuelve a «disponible». |
 | prestamo | El estado solo admite activo o inactivo. La fecha límite de devolución es obligatoria en los préstamos a domicilio y debe estar vacía en los préstamos en sala. Cada reserva origina como máximo un préstamo. El tipo de un préstamo registrado no puede modificarse. |
 | ampliacion_prestamo | La nueva fecha límite debe ser posterior a la fecha anterior. Solo se admiten ampliaciones de préstamos a domicilio; los préstamos en sala no tienen fecha límite, porque el ejemplar se devuelve al salir de la biblioteca. |
 | devolucion | Cada préstamo tiene como máximo una devolución. El estado del ejemplar solo admite Buen estado, Con observaciones o Dañado, y las observaciones son obligatorias cuando no es Buen estado. |

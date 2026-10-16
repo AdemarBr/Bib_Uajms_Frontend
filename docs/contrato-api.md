@@ -327,10 +327,23 @@ Validación de `EjemplarRequest` y `EjemplarActualizarRequest` (400 con `errores
 
 Reglas de las reservas propias (RF7):
 
-- `POST /reservas`: la reserva queda en `Pendiente`, con la fecha de hoy y `atendida: false`, asociada al usuario del token; su estado inicial se anota en el historial (`estadoAnterior: null`). Una reserva pendiente **no aparta** el ejemplar: su estado sigue `disponible`. Responde 409 si el ejemplar ya no está disponible o su libro está inactivo («Ejemplar no disponible» / «El ejemplar ya no se encuentra disponible.», RF7.1) y si el usuario ya tiene una reserva activa (`Pendiente` o `Confirmada`) de ese mismo libro («Reserva duplicada» / «Ya tiene una reserva activa de este libro.»).
+- `POST /reservas`: la reserva queda en `Pendiente`, con la fecha de hoy y `atendida: false`, asociada al usuario del token; su estado inicial se anota en el historial (`estadoAnterior: null`). Una reserva pendiente **no aparta** el ejemplar: su estado sigue `disponible`. Responde 409 si el ejemplar ya no está disponible o su libro está inactivo («Ejemplar no disponible» / «El ejemplar ya no se encuentra disponible.», RF7.1) y si el usuario ya tiene una reserva activa (`Pendiente`, o `Confirmada` con `atendida: false`) de ese mismo libro («Reserva duplicada» / «Ya tiene una reserva activa de este libro.»).
 - `GET /reservas/mias`: las del usuario del token, de la más reciente a la más antigua.
 - `PATCH /reservas/{id}/cancelar`: solo reservas del propio usuario (si no, 404) en estado `Pendiente` o `Confirmada` con `atendida: false`; en otro caso, 409 («Reserva no cancelable» / «La reserva ya no puede cancelarse debido a su estado actual.», RF7.4). Pasa a `Cancelada` y se anota en el historial; si estaba `Confirmada`, su ejemplar vuelve a `disponible` (RF7.4, paso 7).
 - Al confirmar una reserva (RF8.3) su ejemplar pasa a `reservado`.
+
+Reglas de la administración de reservas (RF8):
+
+- Ámbito (RF8.2): si el usuario del token tiene biblioteca responsable (`usuario.id_biblioteca`), `GET /reservas` y `GET /reservas/historial` devuelven solo las reservas de ejemplares de esa biblioteca e ignoran `idBiblioteca`; sin biblioteca asignada, se filtra por cualquiera.
+- `GET /reservas`: `q` busca en el nombre del usuario, el título del libro y el nombre de la biblioteca; `estado` es uno de los cuatro; `desde` y `hasta` (fechas, inclusivas) filtran por la fecha de la reserva. De la más reciente a la más antigua.
+- `GET /reservas/historial`: una fila por cambio de estado (`historial_estado_reserva`), de la más reciente a la más antigua; `desde` y `hasta` filtran por la fecha del cambio (P8.2 solo usa el periodo).
+- `GET /reservas/{id}`: responde 409 («Reserva no vigente» / «La reserva ya no se encuentra vigente.», RF8.8.3) si no está `Confirmada` con `atendida: false`. Lo usan «Prestar» de P8.1 antes de derivar y P9.1/P9.3 al precargar.
+- `PATCH /reservas/{id}/confirmar`: solo desde `Pendiente` (si no, 409 «Reserva ya atendida» / «La reserva ya fue atendida.»); el ejemplar debe estar `disponible` (si no, 409 «Ejemplar no disponible» / «El ejemplar ya no se encuentra disponible.») y pasa a `reservado`.
+- `PATCH /reservas/{id}/rechazar` `MotivoRequest`: solo desde `Pendiente` (si no, el mismo 409 «La reserva ya fue atendida.»). El ejemplar no cambia.
+- `PATCH /reservas/{id}/cancelar-administrativa` `MotivoRequest`: solo desde `Confirmada` con `atendida: false` (RF8.5.5; si no, 409 «Reserva no activa» / «La reserva ya no está activa.»); el ejemplar vuelve a `disponible`.
+- `MotivoRequest`: `{ "motivo": "..." }`; el motivo es opcional (`null` o vacío) y se guarda en `reserva.motivo`, que el usuario ve en P7.2.
+- Cada cambio de estado se anota en el historial con la fecha de hoy.
+- Regla general (RF8.6, curso alternativo): cualquier acción sobre una reserva cuyo estado actual no la permite responde 409, aunque la interfaz no la ofrezca. Los casos de arriba usan el texto de su caso de uso; cualquier otra transición no permitida responde 409 con `titulo` «Transición no permitida» y `detalle` «La transición de estado solicitada no está permitida.».
 
 El desplegable de estado de cada fila de P8.1 (RF8.6) solo ofrece los cambios permitidos desde el estado actual: Confirmada llama a `/confirmar`; Rechazada, a `/rechazar`, y Cancelada, a `/cancelar-administrativa`. Estas dos últimas piden el motivo. No existe un endpoint genérico de cambio de estado.
 

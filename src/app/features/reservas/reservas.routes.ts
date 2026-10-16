@@ -24,3 +24,23 @@ export const RUTAS_MIS_RESERVAS: Routes = [
       import('./pages/confirmar-reserva/confirmar-reserva').then((m) => m.ConfirmarReserva),
   },
 ];
+
+/** RF8 Administración de reservas (P8.1 y P8.2) (`/reservas`, con `sesionGuard`). */
+export const RUTAS_RESERVAS: Routes = [
+  {
+    path: '',
+    title: 'Listado de reservas registradas · Biblioteca UAJMS',
+    canActivate: [permisoGuard],
+    data: { permisos: [PERMISOS.RESERVA_CONSULTAR] },
+    loadComponent: () =>
+      import('./pages/listado-reservas/listado-reservas').then((m) => m.ListadoReservas),
+  },
+  {
+    path: 'historial',
+    title: 'Historial de reservas · Biblioteca UAJMS',
+    canActivate: [permisoGuard],
+    data: { permisos: [PERMISOS.RESERVA_HISTORIAL_CONSULTAR] },
+    loadComponent: () =>
+      import('./pages/historial-reservas/historial-reservas').then((m) => m.HistorialReservas),
+  },
+];

@@ -9,6 +9,7 @@ Datos falsos que viven en el frontend (`core/auth/usuarios.mock.ts`). Sirven par
 | Estudiante | `2019001234` (RU) | `demo123` | Estudiante Pérez, Ingeniería de Sistemas |
 | Docente | `1998005678` (RU) | `demo123` | Docente Gómez, Ingeniería de Sistemas |
 | Usuario académico | `2020009999` (RU) | `demo123` | Académico Vargas; usuario sin tipo informado por el servicio, sin carrera |
+| Estudiante | `2022003456` (RU) | `demo123` | Estudiante Rojas, Ingeniería de Sistemas (aparece en P8.1, P8.2 y P12.1 de Figma) |
 | Bibliotecario | `bibliotecario.central` | `demo123` | Carla Ríos (ejemplo de `UsuarioResponse` del contrato), Biblioteca Central |
 | Catalogador | `catalogador.central` | `demo123` | Marco Salazar, Biblioteca Central |
 | Administrador de biblioteca | `admin.biblioteca` | `demo123` | Julia Altamirano (Administradora de biblioteca en P2.2), Biblioteca Central |
@@ -21,12 +22,12 @@ Datos falsos que viven en el frontend (`core/auth/usuarios.mock.ts`). Sirven par
 Los datos de `GET /auth/perfil` están en `features/autenticacion/data-access/perfil.mock.ts`:
 
 - Internos: correo `<usuario>@uajms.edu.bo` (como `admin.general@uajms.edu.bo` en Figma) y sin RU.
-- Académicos: sin correo (la fila no se muestra) y con su RU. Estudiante Pérez y Docente Gómez: Facultad de Ciencias y Tecnología / Ingeniería de Sistemas; Académico Vargas: sin facultad ni carrera («—»).
+- Académicos: sin correo (la fila no se muestra) y con su RU. Estudiante Pérez, Docente Gómez y Estudiante Rojas: Facultad de Ciencias y Tecnología / Ingeniería de Sistemas; Académico Vargas: sin facultad ni carrera («—»).
 - Sección «Biblioteca / facultad relacionada»: Administrador general → «Facultad / Carrera: No aplica — acceso a todas» (Figma); académicos → «Facultad / Carrera: <facultad> / <carrera>»; internos con biblioteca → «Biblioteca: <nombre>»; internos sin biblioteca (Responsable de tesis) → «Biblioteca: No aplica».
 
 ## Usuarios de P2.2 (RF2)
 
-La lista de «Consultar usuarios del sistema» (`features/usuarios/data-access/usuarios.mock.ts`) tiene 14 usuarios, como el contador de Figma: los nueve de la tabla anterior, «Bibliotecario FCyT» (`bibliotecario.fcyt`, inactivo, Biblioteca FCyT; fila de Figma) y cuatro internos ficticios: Lucía Fernández (`catalogador.fcyt`, Catalogador, Biblioteca FCyT), Pedro Cruz (`bibliotecario.derecho`, Bibliotecario, Biblioteca Facultad de Derecho), Ana Quiroga (`admin.derecho`, Administrador de biblioteca, Biblioteca Facultad de Derecho) y Mario Vaca (`catalogador.derecho`, Catalogador, Biblioteca Facultad de Derecho).
+La lista de «Consultar usuarios del sistema» (`features/usuarios/data-access/usuarios.mock.ts`) tiene 15 usuarios (uno más que el contador de Figma, por Estudiante Rojas, agregado en RF8): los diez de la tabla anterior, «Bibliotecario FCyT» (`bibliotecario.fcyt`, inactivo, Biblioteca FCyT; fila de Figma) y cuatro internos ficticios: Lucía Fernández (`catalogador.fcyt`, Catalogador, Biblioteca FCyT), Pedro Cruz (`bibliotecario.derecho`, Bibliotecario, Biblioteca Facultad de Derecho), Ana Quiroga (`admin.derecho`, Administrador de biblioteca, Biblioteca Facultad de Derecho) y Mario Vaca (`catalogador.derecho`, Catalogador, Biblioteca Facultad de Derecho).
 
 - Esta lista es independiente de `core/auth/usuarios.mock.ts`: los cinco usuarios añadidos y los que se registran en P2.1 no pueden iniciar sesión, y activar, desactivar o editar un usuario en P2.2/P2.3 no cambia su login en el prototipo (en la Iteración 5 ambos leen la misma tabla `usuario`).
 - Bibliotecas: las de «Bibliotecas, facultades y carreras» (sección siguiente). La validación de P2.1 y P2.3 usa los datos iniciales de `bibliotecas.mock.ts`: renombrar o crear una biblioteca en P3.4/P3.5 no cambia los nombres que se ven en P2.2 ni las opciones de P2.1 y P2.3 durante la sesión (decisión del estudiante; en la Iteración 5 todo sale de la misma tabla `biblioteca`).
