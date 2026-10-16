@@ -84,6 +84,12 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/prestamos/prestamos.routes').then((m) => m.RUTAS_PRESTAMOS),
       },
+      {
+        path: 'gestion-tesis',
+        canActivate: [sesionGuard],
+        loadChildren: () =>
+          import('./features/tesis/tesis.routes').then((m) => m.RUTAS_GESTION_TESIS),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

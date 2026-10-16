@@ -1,0 +1,155 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Actualizar datos de tesis</h1>
+
+  @if (tesis(); as t) {
+    <!-- RF10.4.3: campos en el orden de Figma (24:2464). -->
+    <form
+      class="flex w-[562px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+      novalidate
+      [formGroup]="formulario"
+      (ngSubmit)="guardar()"
+    >
+      <div class="flex flex-col gap-1.5">
+        <label for="titulo" class="text-label text-gray-600">Título de la tesis</label>
+        <input
+          id="titulo"
+          type="text"
+          class="campo-texto"
+          formControlName="titulo"
+          [attr.aria-invalid]="!!mensajeCampo('titulo')"
+        />
+        @if (mensajeCampo('titulo'); as m) {
+          <p class="text-label text-gray-900">{{ m }}</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label for="autor" class="text-label text-gray-600">Autor(es)</label>
+        <input
+          id="autor"
+          type="text"
+          class="campo-texto"
+          formControlName="autor"
+          [attr.aria-invalid]="!!mensajeCampo('autor')"
+        />
+        @if (mensajeCampo('autor'); as m) {
+          <p class="text-label text-gray-900">{{ m }}</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label for="tutor" class="text-label text-gray-600">Tutor</label>
+        <input
+          id="tutor"
+          type="text"
+          class="campo-texto"
+          formControlName="tutor"
+          [attr.aria-invalid]="!!mensajeCampo('tutor')"
+        />
+        @if (mensajeCampo('tutor'); as m) {
+          <p class="text-label text-gray-900">{{ m }}</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <span class="text-label text-gray-600" aria-hidden="true">Carrera</span>
+        <app-select
+          class="w-60"
+          etiqueta="Seleccione la carrera…"
+          nombreAccesible="Carrera"
+          formControlName="idCarrera"
+          [opciones]="opcionesCarrera()"
+        />
+        @if (mensajeCampo('idCarrera'); as m) {
+          <p class="text-label text-gray-900">{{ m }}</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <span class="text-label text-gray-600" aria-hidden="true">Facultad</span>
+        <app-select
+          class="w-60"
+          etiqueta="Seleccione la facultad…"
+          nombreAccesible="Facultad"
+          formControlName="idFacultad"
+          [opciones]="opcionesFacultad()"
+        />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label for="gestion" class="text-label text-gray-600">Año / gestión</label>
+        <input
+          id="gestion"
+          type="text"
+          inputmode="numeric"
+          maxlength="4"
+          class="campo-texto"
+          formControlName="gestion"
+          [attr.aria-invalid]="!!mensajeCampo('gestion')"
+        />
+        @if (mensajeCampo('gestion'); as m) {
+          <p class="text-label text-gray-900">{{ m }}</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label for="palabrasClave" class="text-label text-gray-600">Palabras clave</label>
+        <input
+          id="palabrasClave"
+          type="text"
+          class="campo-texto"
+          formControlName="palabrasClave"
+          [attr.aria-invalid]="!!mensajeCampo('palabrasClave')"
+        />
+        @if (mensajeCampo('palabrasClave'); as m) {
+          <p class="text-label text-gray-900">{{ m }}</p>
+        }
+      </div>
+
+      <!-- RF10.4.3: el estado se cambia solo con «Desactivar/Activar tesis» (decisión del estudiante). -->
+      <div class="flex flex-col gap-1.5">
+        <span class="text-label text-gray-600">Estado de la tesis</span>
+        <p class="text-body text-gray-900">{{ t.estado ? 'Activa' : 'Inactiva' }}</p>
+      </div>
+
+      <div class="flex gap-md">
+        <button type="submit" class="btn-primario" [disabled]="enviando()">Guardar cambios</button>
+        <!-- RF10.6.5 y RF10.7.5: «Activar tesis» reemplaza a «Desactivar tesis» mientras está inactiva. -->
+        <button
+          *appTienePermiso="permisoEstado"
+          type="button"
+          class="btn-secundario"
+          [disabled]="enviando()"
+          (click)="confirmandoEstado.set(true)"
+        >
+          {{ t.estado ? 'Desactivar tesis' : 'Activar tesis' }}
+        </button>
+      </div>
+
+      @if (error(); as e) {
+        <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+      }
+    </form>
+
+    @if (confirmandoEstado()) {
+      <app-modal-confirmacion
+        [abierto]="true"
+        [titulo]="t.estado ? '¿Desactivar esta tesis?' : '¿Activar esta tesis?'"
+        [mensaje]="
+          t.estado
+            ? 'La tesis dejará de aparecer en el catálogo público. Podrás reactivarla después.'
+            : 'La tesis volverá a aparecer en el catálogo público.'
+        "
+        [procesando]="procesandoEstado()"
+        (confirmar)="confirmarCambioEstado()"
+        (cancelar)="cancelarCambioEstado()"
+      >
+        @if (errorEstado(); as e) {
+          <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+        }
+      </app-modal-confirmacion>
+    }
+  } @else if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+</div>

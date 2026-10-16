@@ -1,0 +1,146 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Registrar tesis</h1>
+
+  <!-- RF10.1.3: campos en el orden de Figma (24:2159). -->
+  <form
+    class="flex w-[562px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    novalidate
+    [formGroup]="formulario"
+    (ngSubmit)="registrar()"
+  >
+    <div class="flex flex-col gap-1.5">
+      <label for="titulo" class="text-label text-gray-600">Título de la tesis</label>
+      <input
+        id="titulo"
+        type="text"
+        class="campo-texto"
+        placeholder="Ingrese el título completo…"
+        formControlName="titulo"
+        [attr.aria-invalid]="!!mensajeCampo('titulo')"
+      />
+      @if (mensajeCampo('titulo'); as m) {
+        <p class="text-label text-gray-900">{{ m }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label for="autor" class="text-label text-gray-600">Autor(es)</label>
+      <input
+        id="autor"
+        type="text"
+        class="campo-texto"
+        placeholder="Nombre completo del/los autor(es)…"
+        formControlName="autor"
+        [attr.aria-invalid]="!!mensajeCampo('autor')"
+      />
+      @if (mensajeCampo('autor'); as m) {
+        <p class="text-label text-gray-900">{{ m }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label for="tutor" class="text-label text-gray-600">Tutor</label>
+      <input
+        id="tutor"
+        type="text"
+        class="campo-texto"
+        placeholder="Nombre del docente tutor…"
+        formControlName="tutor"
+        [attr.aria-invalid]="!!mensajeCampo('tutor')"
+      />
+      @if (mensajeCampo('tutor'); as m) {
+        <p class="text-label text-gray-900">{{ m }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <span class="text-label text-gray-600" aria-hidden="true">Carrera</span>
+      <app-select
+        class="w-60"
+        etiqueta="Seleccione la carrera…"
+        nombreAccesible="Carrera"
+        formControlName="idCarrera"
+        [opciones]="opcionesCarrera()"
+      />
+      @if (mensajeCampo('idCarrera'); as m) {
+        <p class="text-label text-gray-900">{{ m }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <span class="text-label text-gray-600" aria-hidden="true">Facultad</span>
+      <app-select
+        class="w-60"
+        etiqueta="Seleccione la facultad…"
+        nombreAccesible="Facultad"
+        formControlName="idFacultad"
+        [opciones]="opcionesFacultad()"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label for="gestion" class="text-label text-gray-600">Año / gestión</label>
+      <input
+        id="gestion"
+        type="text"
+        inputmode="numeric"
+        maxlength="4"
+        class="campo-texto"
+        placeholder="Ej. 2026"
+        formControlName="gestion"
+        [attr.aria-invalid]="!!mensajeCampo('gestion')"
+      />
+      @if (mensajeCampo('gestion'); as m) {
+        <p class="text-label text-gray-900">{{ m }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label for="numeroInventario" class="text-label text-gray-600">Número de inventario</label>
+      <input
+        id="numeroInventario"
+        type="text"
+        class="campo-texto"
+        placeholder="Ingrese el número de inventario asignado…"
+        formControlName="numeroInventario"
+        [attr.aria-invalid]="!!mensajeCampo('numeroInventario')"
+      />
+      @if (mensajeCampo('numeroInventario'); as m) {
+        <p class="text-label text-gray-900">{{ m }}</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label for="palabrasClave" class="text-label text-gray-600">Palabras clave</label>
+      <input
+        id="palabrasClave"
+        type="text"
+        class="campo-texto"
+        placeholder="Ej. deserción, modelo predictivo, minería de datos"
+        formControlName="palabrasClave"
+        [attr.aria-invalid]="!!mensajeCampo('palabrasClave')"
+      />
+      @if (mensajeCampo('palabrasClave'); as m) {
+        <p class="text-label text-gray-900">{{ m }}</p>
+      }
+    </div>
+
+    <!-- RF10.1.4 -->
+    <div class="flex gap-md">
+      <button type="submit" class="btn-primario" [disabled]="enviando()">Registrar tesis</button>
+      <button type="button" class="btn-secundario" [disabled]="enviando()" (click)="cancelar()">
+        Cancelar
+      </button>
+    </div>
+
+    @if (error(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    } @else if (registrado()) {
+      <app-alerta
+        tono="exito"
+        titulo="Tesis registrada"
+        mensaje="La tesis se registró correctamente."
+      />
+    }
+  </form>
+</div>
