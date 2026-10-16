@@ -1,0 +1,35 @@
+<div class="flex flex-col gap-5">
+  <h1 class="text-h2 text-gray-900">Préstamos en sala vigentes</h1>
+
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
+  @if (resultado(); as r) {
+    <!-- RF9.1.5, curso alternativo: sin préstamos en sala activos. -->
+    <app-tabla
+      [columnas]="columnas"
+      [filas]="r.contenido"
+      mensajeVacio="No hay material en uso dentro de la sala."
+    >
+      <ng-template appCelda="ejemplar" let-fila>
+        {{ fila.ejemplarCodigo }} — {{ fila.libroTitulo }}
+      </ng-template>
+      <ng-template appCelda="fechaPrestamo" let-fila>
+        {{ fila.fechaPrestamo | fecha }} {{ fila.fechaPrestamo.slice(11, 16) }}
+      </ng-template>
+      <ng-template appCelda="estado" let-fila>
+        {{ fila.estado === 'activo' ? 'Activo' : 'Inactivo' }}
+      </ng-template>
+    </app-tabla>
+
+    @if (r.totalElementos > r.tamanio) {
+      <app-paginador
+        [pagina]="r.pagina"
+        [tamanio]="r.tamanio"
+        [totalElementos]="r.totalElementos"
+        (cambio)="pagina.set($event)"
+      />
+    }
+  }
+</div>

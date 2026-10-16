@@ -242,7 +242,7 @@ Archivo de `POST /libros/importar` (RF4.2):
 
 Todo el catálogo público muestra solo libros activos (RF4.5 y RF4.7); un libro inactivo pedido por su id responde 404.
 
-- `GET /catalogo/libros?q&idBiblioteca&idFacultad&materia&autor&disponibilidad&clasificacionDewey` → `Pagina<LibroCatalogoResponse>`. `q`: título, autor, materia o clasificación Dewey (RF6.1.3). `disponibilidad`: `disponible` (al menos un ejemplar disponible) o `no_disponible` (ninguno, también sin ejemplares). `idBiblioteca` e `idFacultad`: libros con algún ejemplar en esa biblioteca o en una biblioteca de la facultad o de sus carreras.
+- `GET /catalogo/libros?q&idBiblioteca&idFacultad&materia&autor&disponibilidad&clasificacionDewey` → `Pagina<LibroCatalogoResponse>`. `q`: título, autor, materia, clasificación Dewey o ISBN (RF6.1.3; el ISBN se agrega para «Buscar libro» de P9.1 y P9.3, RF9.1.10). `disponibilidad`: `disponible` (al menos un ejemplar disponible) o `no_disponible` (ninguno, también sin ejemplares). `idBiblioteca` e `idFacultad`: libros con algún ejemplar en esa biblioteca o en una biblioteca de la facultad o de sus carreras.
 - `GET /catalogo/opciones-filtro` → `OpcionesFiltroLibroResponse` (sección 6), calculado solo con los libros activos: valores de los desplegables de materia, autor y clasificación de P6.1 (RF6.1.1.3); los de biblioteca y facultad salen de `GET /bibliotecas` y `GET /facultades`.
 - `GET /catalogo/libros/{id}` → `LibroDetalleResponse` (registra la visualización en `registro_uso`)
 - `GET /catalogo/libros/{id}/ejemplar-reservable` → `EjemplarReservableResponse` [RESERVA_REALIZAR] (P7.1, RF7.3): el primer ejemplar con estado `disponible` del libro (menor `idEjemplar`). Responde 409 con `ErrorRespuesta` si no hay ninguno («Sin ejemplares disponibles» / «El libro no tiene ejemplares disponibles para reserva en este momento.») o si el usuario ya tiene una reserva activa de ese libro (sección 9).
@@ -348,9 +348,10 @@ Reglas de la administración de reservas (RF8):
 El desplegable de estado de cada fila de P8.1 (RF8.6) solo ofrece los cambios permitidos desde el estado actual: Confirmada llama a `/confirmar`; Rechazada, a `/rechazar`, y Cancelada, a `/cancelar-administrativa`. Estas dos últimas piden el motivo. No existe un endpoint genérico de cambio de estado.
 
 ```json
-// ReservaResponse (P7.2 y P8.1: usuario, libro, fecha, biblioteca, estado, RF8.1.4)
+// ReservaResponse (P7.2 y P8.1: usuario, libro, fecha, biblioteca, estado, RF8.1.4; usuarioRu y usuarioCarreraNombre precargan P9.1 y P9.3 sin pedir el RU, RF9.1.6 y RF9.2.10)
 { "idReserva": 3, "fecha": "2026-07-26", "estado": "Pendiente", "atendida": false, "motivo": null,
-  "idUsuario": 12, "usuarioNombre": "Estudiante Pérez", "idEjemplar": 7, "ejemplarCodigo": "EJ-00123",
+  "idUsuario": 12, "usuarioNombre": "Estudiante Pérez", "usuarioRu": "2019001234", "usuarioCarreraNombre": "Ingeniería de Sistemas",
+  "idEjemplar": 7, "ejemplarCodigo": "EJ-00123",
   "idLibro": 1, "libroTitulo": "Introducción a la Programación", "idBiblioteca": 1, "bibliotecaNombre": "Biblioteca Central" }
 ```
 
@@ -362,16 +363,37 @@ El desplegable de estado de cada fila de P8.1 (RF8.6) solo ofrece los cambios pe
 
 ## 10. Préstamos y devoluciones (RF9)
 
+- `GET /prestamos/ejemplares-disponibles?idLibro&idReserva` → `EjemplarPrestableResponse[]` [PRESTAMO_SALA_REGISTRAR o PRESTAMO_DOMICILIO_REGISTRAR] (lista «Ejemplares disponibles del libro seleccionado» de P9.1 y P9.3, RF9.1.2 y RF9.2.2: los ejemplares `disponible` del libro; con `idReserva`, además el ejemplar apartado por esa reserva confirmada)
 - `POST /prestamos/sala` `PrestamoSalaRequest` → `PrestamoResponse` [PRESTAMO_SALA_REGISTRAR]
 - `POST /prestamos/domicilio` `PrestamoDomicilioRequest` → `PrestamoResponse` [PRESTAMO_DOMICILIO_REGISTRAR]
-- `GET /prestamos?tipoPrestamo&estado&idBiblioteca&q` → `Pagina<PrestamoResponse>` [PRESTAMO_CONSULTAR] (`q` busca por código de ejemplar, usuario o número de préstamo, RF9.3.6)
-- `POST /prestamos/{id}/ampliaciones` `{ "fechaNueva": "2026-08-20" }` → `AmpliacionResponse` [PRESTAMO_AMPLIAR]
+- `GET /prestamos?tipoPrestamo&estado&q&pagina&tamanio` → `Pagina<PrestamoResponse>` [PRESTAMO_CONSULTAR o DEVOLUCION_REGISTRAR] (`q` busca por código de ejemplar, usuario o número de préstamo, RF9.3.6; P9.2 y P9.4 usan `estado=activo` y su tipo; P9.5, `estado=activo` y `q`)
+- `POST /prestamos/{id}/ampliaciones` `AmpliacionRequest` → `AmpliacionResponse` [PRESTAMO_AMPLIAR]
 - `POST /devoluciones` `DevolucionRequest` → `DevolucionResponse` [DEVOLUCION_REGISTRAR]
-- `GET /devoluciones?q&desde&hasta` → `Pagina<DevolucionResponse>` [DEVOLUCION_HISTORIAL_CONSULTAR]
+- `GET /devoluciones?q&desde&hasta&pagina&tamanio` → `Pagina<DevolucionResponse>` [DEVOLUCION_HISTORIAL_CONSULTAR] (`q`: usuario, código de ejemplar o título del libro; `desde` y `hasta`: fecha de devolución)
 
-Antes de registrar el préstamo, el frontend llama a `POST /usuarios/validar-ru` (sección 4) para mostrar los datos verificados.
+Antes de registrar el préstamo, el frontend llama a `POST /usuarios/validar-ru` (sección 4) para mostrar los datos verificados. Busca el libro con `GET /catalogo/libros?q` (sección 7), porque el Bibliotecario no tiene LIBRO_CONSULTAR ni EJEMPLAR_CONSULTAR.
 
-Préstamo desde una reserva confirmada (RF8.8): el botón «Prestar» de P8.1 abre `/prestamos/sala/registrar?idReserva=N` o `/prestamos/domicilio/registrar?idReserva=N`; la pantalla carga la reserva con `GET /reservas/{id}` y precarga el usuario y el ejemplar.
+Préstamo desde una reserva confirmada (RF8.8): el botón «Prestar» de P8.1 abre `/prestamos/sala/registrar?idReserva=N` o `/prestamos/domicilio/registrar?idReserva=N`; la pantalla carga la reserva con `GET /reservas/{id}` y precarga el usuario (`usuarioRu`, `usuarioNombre`, `usuarioCarreraNombre`) y el ejemplar, sin pedir el RU (RF9.1.6 y RF9.2.10).
+
+Reglas del registro de préstamos (RF9.1 y RF9.2):
+
+- Ámbito (como RF8.2): un usuario con biblioteca responsable solo presta ejemplares de su biblioteca y solo ve los préstamos y devoluciones de ejemplares de su biblioteca (`GET /prestamos`, `GET /devoluciones` y `GET /prestamos/ejemplares-disponibles`); sin biblioteca, todos.
+- `ru`: el usuario debe estar vigente en el servicio institucional (si aún no está en `usuario`, se registra con sus datos mínimos, `docs/reglas-negocio.md`) y activo; si no, 409 «Usuario no habilitado» / «El usuario no está habilitado para solicitar préstamos.».
+- `idEjemplar`: debe estar `disponible` (o ser el apartado por la reserva de `idReserva`) y en el ámbito del usuario; si no, 409 «Ejemplar no disponible» / «El ejemplar no está disponible.». A domicilio, además, `soloSala` debe ser `false`; si no, 409 «Ejemplar de uso exclusivo en sala» / «El ejemplar es de uso exclusivo en sala.» (RF9.2.3).
+- `idReserva` (opcional): una reserva Confirmada sin atender del mismo usuario; si no, 409 «Reserva no vigente» / «La reserva ya no se encuentra vigente.». Se puede prestar otro ejemplar disponible del mismo libro (RF9.1.6); entonces el ejemplar apartado vuelve a `disponible`. La reserva queda `atendida: true` (su estado no cambia).
+- `fechaLimiteDevolucion` (solo a domicilio, obligatoria): entre mañana y hoy + `biblioteca.prestamo.plazo-maximo-dias` (30); si no, 400 con «La fecha de devolución debe estar entre el DD/MM/AAAA y el DD/MM/AAAA.» en ese campo. La interfaz propone hoy + 30 y, si se ajusta fuera de ese rango, restablece la fecha calculada (RF9.2.5).
+- `celularContacto` (solo a domicilio, obligatorio): exactamente 8 dígitos; si no, 400 con «El celular de contacto debe tener 8 dígitos.».
+- Al registrar, el préstamo queda `activo`, con la fecha y hora actuales, y el ejemplar pasa a `prestado` (en sala y a domicilio, RF9.1.4 y RF9.2.6); `ejemplarEstado` de la respuesta lo muestra enseguida.
+
+Reglas de las ampliaciones (RF9.2.8): solo préstamos a domicilio activos (si no, 409 «Préstamo no ampliable» / «Solo se amplían préstamos a domicilio vigentes.»), vencidos o no, sin límite de cantidad. Nueva fecha límite = max(fecha límite vigente, hoy) + `DIAS_AMPLIACION_PRESTAMO` (7), de solo lectura: la interfaz la calcula con la misma regla para mostrarla en la ventana y la envía en `fechaNueva`; el backend la vuelve a calcular y responde 400 si no coincide («La fecha propuesta ya no es válida. Vuelva a abrir la ampliación.» en `fechaNueva`). Se guardan la fecha anterior y la nueva en `ampliacion_prestamo`, y la nueva en `prestamo`. Configurable como el plazo: `biblioteca.prestamo.dias-ampliacion=7`.
+
+Reglas de las devoluciones (RF9.3): solo préstamos activos (si no, 409 «Préstamo no vigente» / «El préstamo ya fue devuelto.»); `observaciones` obligatorias si `estadoEjemplar` no es «Buen estado» (400 con «Las observaciones son obligatorias cuando el estado no es «Buen estado».»). La devolución lleva la fecha de hoy; el préstamo pasa a `inactivo` y el ejemplar a `disponible` («Buen estado») o `no disponible` («Con observaciones» o «Dañado»), RF9.3.4. `conRetraso`: solo a domicilio, si la fecha de devolución es posterior a la fecha límite; en sala nunca (RF9.3.1).
+
+```json
+// EjemplarPrestableResponse (código, autor y ubicación física de cada ejemplar, RF9.1.10; soloSala para RF9.2.3)
+{ "idEjemplar": 7, "codigoEjemplar": "EJ-00123", "libroTitulo": "Introducción a la Programación", "autor": "Ana Torres",
+  "ubicacionFisica": "Estante 4B, Dewey 005.1", "estado": "disponible", "soloSala": true }
+```
 
 ```json
 // PrestamoSalaRequest (idReserva solo si viene de una reserva confirmada, RF8.8)
@@ -379,7 +401,7 @@ Préstamo desde una reserva confirmada (RF8.8): el botón «Prestar» de P8.1 ab
 ```
 
 ```json
-// PrestamoDomicilioRequest (fecha límite: hoy + plazo; al registrar no puede superar 30 días)
+// PrestamoDomicilioRequest (fecha límite: hoy + plazo, ajustable hacia atrás hasta mañana)
 { "ru": "2019001234", "idEjemplar": 7, "fechaLimiteDevolucion": "2026-08-10", "celularContacto": "70000000", "idReserva": null }
 ```
 
@@ -388,11 +410,16 @@ Préstamo desde una reserva confirmada (RF8.8): el botón «Prestar» de P8.1 ab
 { "idPrestamo": 15, "fechaPrestamo": "2026-07-26T09:15:00", "estado": "activo", "tipoPrestamo": "domicilio",
   "fechaLimiteDevolucion": "2026-08-10", "celularContacto": "70000000",
   "idUsuario": 12, "usuarioNombre": "Estudiante Pérez", "usuarioRu": "2019001234",
-  "idEjemplar": 7, "ejemplarCodigo": "EJ-00123", "libroTitulo": "Introducción a la Programación",
+  "idEjemplar": 7, "ejemplarCodigo": "EJ-00123", "ejemplarEstado": "prestado", "libroTitulo": "Introducción a la Programación",
   "idReserva": null, "vencido": false, "cantidadAmpliaciones": 0 }
 ```
 
-`vencido` y `cantidadAmpliaciones` *(calculados)*: P9.4 señala los vencidos y la ventana de ampliación muestra cuántas hubo (RF9.2.8).
+`vencido` y `cantidadAmpliaciones` *(calculados)*: P9.4 señala los vencidos (fecha límite anterior a hoy) y la ventana de ampliación muestra cuántas hubo (RF9.2.8). `ejemplarEstado`: estado actual del ejemplar, que P9.1 y P9.3 muestran tras registrar (RF9.1.4.3 y RF9.2.6.3).
+
+```json
+// AmpliacionRequest (fechaNueva = max(fecha límite vigente, hoy) + 7)
+{ "fechaNueva": "2026-08-20" }
+```
 
 ```json
 // AmpliacionResponse
@@ -407,11 +434,11 @@ Préstamo desde una reserva confirmada (RF8.8): el botón «Prestar» de P8.1 ab
 ```json
 // DevolucionResponse (P9.6: usuario, ejemplar, fecha de préstamo, fecha de devolución, estado del ejemplar y observaciones, RF9.3.5.4)
 { "idDevolucion": 4, "fechaDevolucion": "2026-08-09", "estadoEjemplar": "Buen estado", "observaciones": null,
-  "idPrestamo": 15, "usuarioNombre": "Estudiante Pérez", "ejemplarCodigo": "EJ-00123",
-  "fechaPrestamo": "2026-07-26T09:15:00", "conRetraso": false }
+  "idPrestamo": 15, "usuarioNombre": "Estudiante Pérez", "ejemplarCodigo": "EJ-00123", "libroTitulo": "Introducción a la Programación",
+  "ejemplarEstado": "disponible", "fechaPrestamo": "2026-07-26T09:15:00", "conRetraso": false }
 ```
 
-`conRetraso` *(calculado)*: la devolución fue posterior a la fecha límite (RF9.3.3).
+`conRetraso` *(calculado)*: la devolución fue posterior a la fecha límite (RF9.3.3). `ejemplarEstado`: estado del ejemplar tras la devolución (RF9.3.4.4). P9.6 lista de la devolución más reciente a la más antigua.
 
 ## 11. Tesis: gestión (RF10)
 

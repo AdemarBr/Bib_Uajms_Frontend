@@ -1,0 +1,55 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Consultar historial de devoluciones</h1>
+
+  <!-- RF9.3.5.5: búsqueda por usuario o ejemplar y rango de fechas. -->
+  <form class="flex flex-col gap-md" [formGroup]="filtros" (submit)="$event.preventDefault()">
+    <input
+      type="search"
+      class="campo-texto"
+      placeholder="Buscar por usuario o ejemplar…"
+      aria-label="Buscar por usuario o ejemplar"
+      formControlName="q"
+    />
+    <div class="flex flex-wrap items-end gap-md">
+      <div class="flex w-[180px] flex-col gap-xs">
+        <label for="desde" class="text-label text-gray-600">Desde</label>
+        <input id="desde" type="date" class="campo-texto" formControlName="desde" />
+      </div>
+      <div class="flex w-[180px] flex-col gap-xs">
+        <label for="hasta" class="text-label text-gray-600">Hasta</label>
+        <input id="hasta" type="date" class="campo-texto" formControlName="hasta" />
+      </div>
+    </div>
+  </form>
+
+  @if (error(); as e) {
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+  }
+
+  @if (resultado(); as r) {
+    <!-- RF9.3.5, curso alternativo: historial vacío para el periodo consultado. -->
+    <app-tabla
+      [columnas]="columnas"
+      [filas]="r.contenido"
+      mensajeVacio="No hay devoluciones en el historial para el periodo consultado."
+    >
+      <ng-template appCelda="ejemplar" let-fila>
+        {{ fila.ejemplarCodigo }} — {{ fila.libroTitulo }}
+      </ng-template>
+      <ng-template appCelda="fechaPrestamo" let-fila>{{ fila.fechaPrestamo | fecha }}</ng-template>
+      <ng-template appCelda="fechaDevolucion" let-fila>
+        {{ fila.fechaDevolucion | fecha }}
+      </ng-template>
+      <ng-template appCelda="observaciones" let-fila>{{ fila.observaciones ?? '—' }}</ng-template>
+    </app-tabla>
+
+    @if (r.totalElementos > r.tamanio) {
+      <app-paginador
+        [pagina]="r.pagina"
+        [tamanio]="r.tamanio"
+        [totalElementos]="r.totalElementos"
+        (cambio)="pagina.set($event)"
+      />
+    }
+  }
+</div>

@@ -10,6 +10,9 @@ export interface ReservaResponse {
   motivo: string | null;
   idUsuario: number;
   usuarioNombre: string;
+  /** RU y carrera del usuario: precargan P9.1 y P9.3 sin pedir el RU (RF9.1.6 y RF9.2.10). */
+  usuarioRu: string | null;
+  usuarioCarreraNombre: string | null;
   idEjemplar: number;
   ejemplarCodigo: string;
   idLibro: number;

@@ -78,6 +78,12 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/reservas/reservas.routes').then((m) => m.RUTAS_RESERVAS),
       },
+      {
+        path: 'prestamos',
+        canActivate: [sesionGuard],
+        loadChildren: () =>
+          import('./features/prestamos/prestamos.routes').then((m) => m.RUTAS_PRESTAMOS),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

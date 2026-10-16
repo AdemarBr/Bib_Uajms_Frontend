@@ -1,0 +1,101 @@
+<div class="flex flex-col gap-xl">
+  <h1 class="text-h2 text-gray-900">Registrar devolución de libro</h1>
+
+  <form
+    class="flex w-[522px] max-w-full flex-col gap-lg rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    novalidate
+    [formGroup]="formulario"
+    (ngSubmit)="registrar()"
+  >
+    <!-- RF9.3.6 y RF9.3.2.3 -->
+    <label for="busqueda" class="text-label text-gray-600">Buscar préstamo vigente</label>
+    <input
+      id="busqueda"
+      type="search"
+      class="campo-texto"
+      placeholder="Código de ejemplar, usuario o número de préstamo…"
+      autocomplete="off"
+      [formControl]="busqueda"
+      (input)="alEscribir()"
+    />
+    <!-- RF9.3.2.4: préstamos coincidentes con el usuario y el material. -->
+    @if (coincidencias(); as lista) {
+      @if (lista.length > 0) {
+        <ul
+          class="flex max-h-60 flex-col overflow-y-auto rounded-sm border border-gray-300"
+          aria-label="Préstamos vigentes encontrados"
+        >
+          @for (p of lista; track p.idPrestamo) {
+            <li class="border-b border-gray-300 last:border-b-0">
+              <button
+                type="button"
+                class="w-full cursor-pointer px-md py-sm text-left text-body text-gray-900 hover:bg-gray-100"
+                (click)="elegir(p)"
+              >
+                {{ descripcion(p, p.fechaLimiteDevolucion | fecha) }}
+              </button>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-caption text-gray-600" aria-live="polite">
+          No se encontró un préstamo vigente con ese criterio.
+        </p>
+      }
+    }
+    @if (prestamo(); as p) {
+      <p class="text-body text-gray-900">{{ descripcion(p, p.fechaLimiteDevolucion | fecha) }}</p>
+    }
+
+    <!-- RF9.3.8 -->
+    <fieldset class="flex flex-col gap-lg">
+      <legend class="mb-lg text-label text-gray-600">Estado del ejemplar devuelto</legend>
+      <div class="flex gap-5">
+        @for (estado of estados; track estado) {
+          <label class="flex cursor-pointer items-center gap-sm text-body text-gray-900">
+            <input type="radio" class="radio" formControlName="estadoEjemplar" [value]="estado" />
+            {{ estado }}
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <!-- RF9.3.9 -->
+    <label for="observaciones" class="text-label text-gray-600">Observaciones</label>
+    <textarea
+      id="observaciones"
+      rows="2"
+      class="campo-texto resize-none"
+      placeholder="Detalle de la condición del material (obligatorio si no es «Buen estado»)…"
+      formControlName="observaciones"
+      [attr.aria-invalid]="!!(mensajeObservaciones() || (error() | errorCampo: 'observaciones'))"
+    ></textarea>
+    @if (mensajeObservaciones() || (error() | errorCampo: 'observaciones'); as m) {
+      <p class="text-label text-gray-900">{{ m }}</p>
+    }
+
+    <!-- RF9.3.3.4: control de retraso (los préstamos en sala no tienen fecha límite). -->
+    @if (diasRetraso(); as dias) {
+      <span>
+        <app-badge-estado
+          tono="alerta"
+          [texto]="'Con retraso — ' + dias + (dias === 1 ? ' día' : ' días')"
+        />
+      </span>
+    } @else if (diasRetraso() === 0) {
+      <span><app-badge-estado texto="Sin retraso — dentro del plazo" /></span>
+    }
+
+    <!-- RF9.3.7 -->
+    <button type="submit" class="btn-primario w-full" [disabled]="!prestamo() || enviando()">
+      Registrar devolución
+    </button>
+
+    @if (error(); as e) {
+      <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    }
+    @if (exito(); as x) {
+      <app-alerta tono="exito" [titulo]="x.titulo" [mensaje]="x.mensaje" />
+    }
+  </form>
+</div>

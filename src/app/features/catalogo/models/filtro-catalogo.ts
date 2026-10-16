@@ -3,7 +3,7 @@ export type Disponibilidad = 'disponible' | 'no_disponible';
 
 /** Parámetros de GET /catalogo/libros (búsqueda RF6.1 y filtros RF6.1.1) y de la paginación. */
 export interface FiltroCatalogo {
-  /** Título, autor, materia o clasificación Dewey. */
+  /** Título, autor, materia, clasificación Dewey o ISBN (el ISBN, para «Buscar libro» de P9.1 y P9.3). */
   q?: string;
   idBiblioteca?: number | null;
   idFacultad?: number | null;

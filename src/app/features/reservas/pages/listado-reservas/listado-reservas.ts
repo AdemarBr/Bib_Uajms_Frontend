@@ -227,7 +227,9 @@ export class ListadoReservas {
     this.pendiente.set({ tipo, reserva, modalidad: modalidad ?? undefined });
   }
 
+  /** Si la acción falló (la reserva o el ejemplar cambiaron mientras tanto), se vuelve a pedir la lista. */
   protected cerrar(): void {
+    if (this.errorAccion()) this.recarga.update((n) => n + 1);
     this.pendiente.set(null);
     this.errorAccion.set(null);
   }
