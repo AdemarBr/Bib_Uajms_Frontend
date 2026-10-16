@@ -245,7 +245,7 @@ Todo el catálogo público muestra solo libros activos (RF4.5 y RF4.7); un libro
 - `GET /catalogo/libros?q&idBiblioteca&idFacultad&materia&autor&disponibilidad&clasificacionDewey` → `Pagina<LibroCatalogoResponse>`. `q`: título, autor, materia o clasificación Dewey (RF6.1.3). `disponibilidad`: `disponible` (al menos un ejemplar disponible) o `no_disponible` (ninguno, también sin ejemplares). `idBiblioteca` e `idFacultad`: libros con algún ejemplar en esa biblioteca o en una biblioteca de la facultad o de sus carreras.
 - `GET /catalogo/opciones-filtro` → `OpcionesFiltroLibroResponse` (sección 6), calculado solo con los libros activos: valores de los desplegables de materia, autor y clasificación de P6.1 (RF6.1.1.3); los de biblioteca y facultad salen de `GET /bibliotecas` y `GET /facultades`.
 - `GET /catalogo/libros/{id}` → `LibroDetalleResponse` (registra la visualización en `registro_uso`)
-- `GET /catalogo/libros/{id}/ejemplar-reservable` → `EjemplarReservableResponse` [RESERVA_REALIZAR] (P7.1). Si no hay ejemplar disponible responde 409 con `ErrorRespuesta`.
+- `GET /catalogo/libros/{id}/ejemplar-reservable` → `EjemplarReservableResponse` [RESERVA_REALIZAR] (P7.1, RF7.3): el primer ejemplar con estado `disponible` del libro (menor `idEjemplar`). Responde 409 con `ErrorRespuesta` si no hay ninguno («Sin ejemplares disponibles» / «El libro no tiene ejemplares disponibles para reserva en este momento.») o si el usuario ya tiene una reserva activa de ese libro (sección 9).
 - `GET /catalogo/novedades` → `NovedadResponse[]`
 - `GET /catalogo/libros/{id}/portada` → imagen de la portada (público; si no tiene, la interfaz muestra el detalle sin imagen, RF6.1.2.3.3)
 
@@ -324,6 +324,13 @@ Validación de `EjemplarRequest` y `EjemplarActualizarRequest` (400 con `errores
 - `PATCH /reservas/{id}/rechazar` `{ "motivo": "..." }` [RESERVA_RECHAZAR]
 - `PATCH /reservas/{id}/cancelar-administrativa` `{ "motivo": "..." }` [RESERVA_CANCELAR]
 - `GET /reservas/historial?idBiblioteca&estado&desde&hasta&q` → `Pagina<HistorialReservaResponse>` [RESERVA_HISTORIAL_CONSULTAR]
+
+Reglas de las reservas propias (RF7):
+
+- `POST /reservas`: la reserva queda en `Pendiente`, con la fecha de hoy y `atendida: false`, asociada al usuario del token; su estado inicial se anota en el historial (`estadoAnterior: null`). Una reserva pendiente **no aparta** el ejemplar: su estado sigue `disponible`. Responde 409 si el ejemplar ya no está disponible o su libro está inactivo («Ejemplar no disponible» / «El ejemplar ya no se encuentra disponible.», RF7.1) y si el usuario ya tiene una reserva activa (`Pendiente` o `Confirmada`) de ese mismo libro («Reserva duplicada» / «Ya tiene una reserva activa de este libro.»).
+- `GET /reservas/mias`: las del usuario del token, de la más reciente a la más antigua.
+- `PATCH /reservas/{id}/cancelar`: solo reservas del propio usuario (si no, 404) en estado `Pendiente` o `Confirmada` con `atendida: false`; en otro caso, 409 («Reserva no cancelable» / «La reserva ya no puede cancelarse debido a su estado actual.», RF7.4). Pasa a `Cancelada` y se anota en el historial; si estaba `Confirmada`, su ejemplar vuelve a `disponible` (RF7.4, paso 7).
+- Al confirmar una reserva (RF8.3) su ejemplar pasa a `reservado`.
 
 El desplegable de estado de cada fila de P8.1 (RF8.6) solo ofrece los cambios permitidos desde el estado actual: Confirmada llama a `/confirmar`; Rechazada, a `/rechazar`, y Cancelada, a `/cancelar-administrativa`. Estas dos últimas piden el motivo. No existe un endpoint genérico de cambio de estado.
 

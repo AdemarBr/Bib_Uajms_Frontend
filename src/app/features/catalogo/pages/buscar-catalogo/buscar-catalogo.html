@@ -87,10 +87,23 @@
                 Autor: {{ libro.autor }}
               </app-tarjeta>
             </a>
-            <app-badge-estado
-              [texto]="libro.ejemplaresDisponibles > 0 ? 'Disponible' : 'No disponible'"
-              [tono]="libro.ejemplaresDisponibles > 0 ? 'disponible' : 'neutral'"
-            />
+            <div class="flex items-center gap-md">
+              <app-badge-estado
+                [texto]="libro.ejemplaresDisponibles > 0 ? 'Disponible' : 'No disponible'"
+                [tono]="libro.ejemplaresDisponibles > 0 ? 'acento' : 'neutral'"
+              />
+              <!-- RF7.2.3 y RF7.2.4: «Reservar» también en los resultados; deshabilitado sin disponibles. -->
+              @if (puedeReservar()) {
+                <button
+                  type="button"
+                  class="btn-primario"
+                  [disabled]="libro.ejemplaresDisponibles === 0"
+                  (click)="reservar(libro.idLibro)"
+                >
+                  Reservar
+                </button>
+              }
+            </div>
           </li>
         }
       </ul>
