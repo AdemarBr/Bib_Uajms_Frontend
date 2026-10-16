@@ -5,7 +5,7 @@
     [class.text-gray-900]="indiceActual() >= 0"
     [attr.aria-label]="nombreAccesible()"
     [disabled]="deshabilitado()"
-    (change)="seleccionar($any($event.target).value)"
+    (change)="seleccionar($any($event.target))"
     (blur)="alTocar()"
   >
     @if (etiqueta()) {

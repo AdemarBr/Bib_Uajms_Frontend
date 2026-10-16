@@ -72,6 +72,12 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/reservas/reservas.routes').then((m) => m.RUTAS_MIS_RESERVAS),
       },
+      {
+        path: 'reservas',
+        canActivate: [sesionGuard],
+        loadChildren: () =>
+          import('./features/reservas/reservas.routes').then((m) => m.RUTAS_RESERVAS),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

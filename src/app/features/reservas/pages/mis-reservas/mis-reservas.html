@@ -19,6 +19,10 @@
           [texto]="fila.estado"
           [tono]="fila.estado === 'Confirmada' ? 'acento' : 'neutral'"
         />
+        <!-- RF8.4 y RF8.5, paso 7: la notificación al usuario incluye el motivo registrado. -->
+        @if ((fila.estado === 'Rechazada' || fila.estado === 'Cancelada') && fila.motivo) {
+          <p class="mt-xs text-caption text-gray-600">Motivo: {{ fila.motivo }}</p>
+        }
       </ng-template>
 
       <!-- RF7.4.3: «Cancelar» solo si el estado lo permite; si no, «—». -->

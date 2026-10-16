@@ -77,6 +77,53 @@ export const RESERVAS_MOCK: ReservaMock[] = [
     idUsuario: 14,
     idEjemplar: 25,
   },
+  // Figma P8.1 (22:1730): Docente Gómez · Cálculo I (EJ-00302) y Estudiante Rojas · Bases de Datos Avanzadas.
+  {
+    idReserva: 7,
+    fecha: '2026-07-25',
+    estado: 'Confirmada',
+    atendida: false,
+    motivo: null,
+    idUsuario: 13,
+    idEjemplar: 11,
+  },
+  {
+    idReserva: 8,
+    fecha: '2026-07-26',
+    estado: 'Pendiente',
+    atendida: false,
+    motivo: null,
+    idUsuario: 17,
+    idEjemplar: 15,
+  },
+  // Figma P8.2 (22:1821), con fechas de agosto: la «Atendida» es Confirmada con atendida = true (EJ-00124, prestado).
+  {
+    idReserva: 9,
+    fecha: '2026-08-20',
+    estado: 'Confirmada',
+    atendida: true,
+    motivo: null,
+    idUsuario: 12,
+    idEjemplar: 8,
+  },
+  {
+    idReserva: 10,
+    fecha: '2026-08-15',
+    estado: 'Cancelada',
+    atendida: false,
+    motivo: 'El usuario no se presentó a retirar el libro.',
+    idUsuario: 13,
+    idEjemplar: 9,
+  },
+  {
+    idReserva: 11,
+    fecha: '2026-08-02',
+    estado: 'Rechazada',
+    atendida: false,
+    motivo: 'El ejemplar está en restauración.',
+    idUsuario: 17,
+    idEjemplar: 12,
+  },
 ];
 
 /** Registro inicial (Pendiente) de cada reserva y su cambio de estado, el mismo día. */
