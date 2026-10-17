@@ -18,7 +18,7 @@ import { OpcionesFiltroTesisResponse } from '../models/opciones-filtro-tesis-res
 import { TesisRequest } from '../models/tesis-request';
 import { TesisResponse } from '../models/tesis-response';
 import { TipoSeccion } from '../models/tipo-seccion';
-import { DatosTesis } from './datos-tesis';
+import { DatosTesis, aDocumento } from './datos-tesis';
 import { TesisMock } from './tesis.mock';
 
 const TAMANIO_PAGINA = 20;
@@ -117,7 +117,8 @@ export class Tesis {
   /** GET /tesis/{id}/documentos, en el orden de las secciones. */
   listarDocumentos(idTesis: number): Observable<DocumentoTesisResponse[]> {
     if (!this.buscar(idTesis)) return noEncontrado();
-    return of(this.datos.documentos().filter((d) => d.idTesis === idTesis)).pipe(delay(DEMORA_MS));
+    const documentos = this.datos.documentos().filter((d) => d.idTesis === idTesis);
+    return of(documentos.map((d) => aDocumento(d))).pipe(delay(DEMORA_MS));
   }
 
   /** POST /tesis/{id}/documentos (RF10.2): un documento por sección; solo PDF de hasta 20 MB. */
@@ -159,11 +160,11 @@ export class Tesis {
     if (!actual) return noEncontrado();
     const invalido = validarArchivo(archivo);
     if (invalido) return invalido;
-    const reemplazado = { ...actual, nombreArchivo: archivo.name };
+    const reemplazado = { ...actual, nombreArchivo: archivo.name, archivoDisponible: true };
     this.datos.documentos.update((lista) =>
       lista.map((d) => (d.idDocumento === idDocumento ? reemplazado : d)),
     );
-    return of(reemplazado).pipe(delay(DEMORA_MS));
+    return of(aDocumento(reemplazado)).pipe(delay(DEMORA_MS));
   }
 
   private buscar(idTesis: number): TesisMock | undefined {

@@ -29,6 +29,11 @@ export const routes: Routes = [
           import('./features/catalogo/catalogo.routes').then((m) => m.RUTAS_CATALOGO_PUBLICO),
       },
       {
+        path: 'tesis',
+        loadChildren: () =>
+          import('./features/tesis/tesis.routes').then((m) => m.RUTAS_TESIS_PUBLICAS),
+      },
+      {
         path: 'iniciar-sesion',
         canActivate: [sinSesionGuard],
         loadChildren: () =>

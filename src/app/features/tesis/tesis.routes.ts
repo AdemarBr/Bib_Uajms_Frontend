@@ -51,3 +51,20 @@ export const RUTAS_GESTION_TESIS: Routes = [
       ),
   },
 ];
+
+/** RF11 Consulta de tesis (P11.1 y P11.2) (`/tesis`): públicas, sin guard. */
+export const RUTAS_TESIS_PUBLICAS: Routes = [
+  {
+    path: '',
+    title: 'Consultar tesis digitales · Biblioteca UAJMS',
+    loadComponent: () =>
+      import('./pages/consultar-tesis-digitales/consultar-tesis-digitales').then(
+        (m) => m.ConsultarTesisDigitales,
+      ),
+  },
+  {
+    path: ':id',
+    title: 'Detalle de tesis · Biblioteca UAJMS',
+    loadComponent: () => import('./pages/detalle-tesis/detalle-tesis').then((m) => m.DetalleTesis),
+  },
+];

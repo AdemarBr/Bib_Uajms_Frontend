@@ -1,0 +1,92 @@
+<div class="flex flex-col gap-xl" [class.p-3xl]="!sesion.haySesion()">
+  @if (detalle(); as d) {
+    <h1 class="text-h2 text-gray-900">{{ d.tesis.titulo }}</h1>
+
+    <div
+      class="flex w-[682px] max-w-full flex-col gap-md rounded-lg border border-gray-300 bg-gray-0 p-2xl"
+    >
+      <!-- RF11.1.2, paso 4, y RF11.1.2.3: datos generales. -->
+      <h2 class="text-body-strong text-gray-900">Datos generales</h2>
+      <dl class="flex flex-col gap-md text-body">
+        <div class="flex gap-sm">
+          <dt class="shrink-0 font-semibold text-gray-600">Carrera:</dt>
+          <dd class="text-gray-900">{{ d.tesis.carreraNombre }}</dd>
+        </div>
+        <div class="flex gap-sm">
+          <dt class="shrink-0 font-semibold text-gray-600">Facultad:</dt>
+          <dd class="text-gray-900">{{ d.tesis.facultadNombre }}</dd>
+        </div>
+        <div class="flex gap-sm">
+          <dt class="shrink-0 font-semibold text-gray-600">Gestión:</dt>
+          <dd class="text-gray-900">{{ d.tesis.gestion }}</dd>
+        </div>
+        <div class="flex gap-sm">
+          <dt class="shrink-0 font-semibold text-gray-600">Número de inventario:</dt>
+          <dd class="text-gray-900">{{ d.tesis.numeroInventario }}</dd>
+        </div>
+        @if (d.tesis.palabrasClave) {
+          <div class="flex gap-sm">
+            <dt class="shrink-0 font-semibold text-gray-600">Palabras clave:</dt>
+            <dd class="text-gray-900">{{ d.tesis.palabrasClave }}</dd>
+          </div>
+        }
+      </dl>
+
+      <!-- RF11.1.2, pasos 5 y 6. -->
+      <h2 class="text-body-strong text-gray-900">Autor y tutor</h2>
+      <dl class="flex flex-col gap-md text-body">
+        <div class="flex gap-sm">
+          <dt class="shrink-0 font-semibold text-gray-600">Autor(es):</dt>
+          <dd class="text-gray-900">{{ d.tesis.autor }}</dd>
+        </div>
+        <div class="flex gap-sm">
+          <dt class="shrink-0 font-semibold text-gray-600">Tutor:</dt>
+          <dd class="text-gray-900">{{ d.tesis.tutor }}</dd>
+        </div>
+      </dl>
+
+      <!-- RF11.1.2.1.4 y RF11.1.2.1.6: un ícono PDF por documento, con el nombre de su sección. -->
+      <h2 class="text-body-strong text-gray-900">Documentos electrónicos</h2>
+      @if (d.documentos.length > 0) {
+        <span><app-badge-estado texto="Documentos disponibles para visualización" /></span>
+        <ul class="flex flex-wrap gap-xl">
+          @for (doc of d.documentos; track doc.idDocumento) {
+            <li>
+              <button
+                type="button"
+                class="flex cursor-pointer flex-col items-center gap-1.5"
+                [attr.aria-label]="
+                  'Abrir ' + doc.tipoSeccion + ' (' + doc.nombreArchivo + ') en otra pestaña'
+                "
+                (click)="abrir(doc)"
+              >
+                <app-icono-pdf />
+                <span class="text-caption text-gray-600">{{ doc.tipoSeccion }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+        @if (errorDocumento(); as e) {
+          <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+        }
+      } @else {
+        <!-- RF11.1.2, curso alternativo. -->
+        <p class="text-body text-gray-600">La tesis no cuenta con documentos digitales cargados.</p>
+      }
+
+      <div>
+        <button type="button" class="btn-secundario" (click)="volverAlListado()">
+          Volver al listado
+        </button>
+      </div>
+    </div>
+  } @else if (error(); as e) {
+    <h1 class="text-h2 text-gray-900">Detalle de tesis</h1>
+    <app-alerta [titulo]="e.titulo" [mensaje]="e.detalle" />
+    <div>
+      <button type="button" class="btn-secundario" (click)="volverAlListado()">
+        Volver al listado
+      </button>
+    </div>
+  }
+</div>

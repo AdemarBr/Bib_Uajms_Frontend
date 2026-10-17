@@ -1,6 +1,7 @@
 import { Service, inject, signal } from '@angular/core';
 
 import { DatosEstructura } from '../../estructura/data-access/datos-estructura';
+import { DocumentoTesisResponse } from '../models/documento-tesis-response';
 import { TesisResponse } from '../models/tesis-response';
 import { DOCUMENTOS_TESIS_MOCK, DocumentoTesisMock, TESIS_MOCK, TesisMock } from './tesis.mock';
 
@@ -25,4 +26,14 @@ export class DatosTesis {
       facultadNombre: facultad?.nombre ?? '',
     };
   }
+}
+
+/** `DocumentoTesisResponse` sin los datos internos de la fila (como el backend, que no envía la ruta del archivo). */
+export function aDocumento(d: DocumentoTesisMock): DocumentoTesisResponse {
+  return {
+    idDocumento: d.idDocumento,
+    tipoSeccion: d.tipoSeccion,
+    nombreArchivo: d.nombreArchivo,
+    idTesis: d.idTesis,
+  };
 }

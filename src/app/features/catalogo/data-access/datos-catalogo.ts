@@ -14,9 +14,17 @@ export class DatosCatalogo {
   readonly libros = signal<LibroMock[]>(LIBROS_MOCK);
   readonly ejemplares = signal<EjemplarMock[]>(EJEMPLARES_MOCK);
   readonly historial = signal<HistorialMock[]>(HISTORIAL_LIBROS_MOCK);
-  /** Tabla registro_uso: fecha de cada visualización del detalle de un libro (RF6.1.2.5), para RF13. */
-  readonly registroUso = signal<{ idLibro: number; fecha: string }[]>([]);
+  /**
+   * Tabla registro_uso, para RF13: fecha de cada visualización del detalle de un libro (RF6.1.2.5) o de una tesis
+   * (RF11.1.2.4) y de cada apertura de un documento de tesis (RF11.1.2.1.7). Cada registro se refiere a uno solo.
+   */
+  readonly registroUso = signal<RegistroUso[]>([]);
 }
+
+/** Fila de registro_uso: exactamente uno de idLibro, idTesis o idDocumento (docs/reglas-negocio.md). */
+export type RegistroUso = { fecha: string } & (
+  { idLibro: number } | { idTesis: number } | { idDocumento: number }
+);
 
 /** Fecha de hoy en ISO 8601 («2026-10-15»), en la hora local. */
 export function hoy(): string {

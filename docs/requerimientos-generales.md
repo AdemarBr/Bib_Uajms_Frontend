@@ -320,7 +320,7 @@ Fuente: documento del proyecto. Incluye los requerimientos funcionales y no func
 - RF37: La interfaz debe mostrar el estado de disponibilidad del ejemplar mediante un indicador visual antes de continuar con el registro del préstamo.
 - RF38: La interfaz debe mostrar la fecha de devolución calculada automáticamente, con la opción de ajustarla dentro de los límites permitidos.
 - RF39: La interfaz debe incluir un botón «Confirmar fecha» para confirmar la fecha asignada.
-- RF40: La interfaz debe incluir un control para seleccionar el archivo digital desde el equipo del actor y un botón («Subir archivo» o «Reemplazar documento») para confirmar la carga.
+- RF40: La interfaz debe incluir un control para seleccionar el archivo digital desde el equipo del actor y un botón («Subir archivo» o «Reemplazar documento») para confirmar la carga; solo se admiten archivos PDF de hasta 20 MB.
 - RF41: La interfaz debe presentar la información de la tesis organizada en secciones: datos generales, autor y tutor, y archivo digital asociado.
 - RF42: La interfaz debe representar cada documento digital como un ícono de PDF con el nombre de su sección, que al hacer clic abre el documento en una nueva pestaña del navegador, sin requerir que el usuario lo descargue por separado para revisarlo.
 - RF43: La interfaz debe incluir un área de texto para redactar la consulta y un botón «Enviar consulta» para enviarla; esta interfaz se abre desde el botón «Nueva consulta» de la Bandeja de Mensajes (P12.1).
@@ -378,7 +378,7 @@ Fuente: documento del proyecto. Incluye los requerimientos funcionales y no func
 - RF43: La interfaz debe mostrar el historial en una tabla con columnas de usuario, ejemplar, fecha de préstamo, fecha de devolución, estado del ejemplar y observaciones.
 - RF44: La interfaz debe mostrar los préstamos activos en una tabla con columnas de usuario, ejemplar, fecha de préstamo y fecha límite de devolución.
 - RF45: La interfaz debe mostrar los préstamos activos en una tabla con columnas de usuario, ejemplar, fecha de inicio y estado (activo o inactivo).
-- RF46: La interfaz debe presentar un formulario prellenado con los datos actuales de la tesis (título, autor, tutor, carrera, facultad, año o gestión, palabras clave y estado de la tesis), habilitando los campos editables.
+- RF46: La interfaz debe presentar un formulario prellenado con los datos actuales de la tesis (título, autor, tutor, carrera, facultad, año o gestión, palabras clave), habilitando los campos editables, y mostrar el estado de la tesis como dato de solo lectura, que se cambia únicamente con los botones «Desactivar tesis» o «Activar tesis».
 - RF47: La interfaz debe mostrar las tesis en una tabla con columnas de título, autor, carrera, facultad, gestión y estado.
 - RF48: La interfaz debe incluir un campo de texto para ingresar el criterio de búsqueda (título, autor o número de inventario).
 - RF49: La interfaz debe presentar los filtros disponibles (carrera y gestión) como controles desplegables.
