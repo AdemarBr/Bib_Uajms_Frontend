@@ -4,8 +4,11 @@ import { TesisResponse } from '../models/tesis-response';
 /** Fila de la tabla `tesis`: la carrera y la facultad se leen de `DatosEstructura` al responder. */
 export type TesisMock = Omit<TesisResponse, 'carreraNombre' | 'idFacultad' | 'facultadNombre'>;
 
-/** Fila de la tabla `documento_tesis` (la ruta del archivo no se simula). */
-export type DocumentoTesisMock = DocumentoTesisResponse;
+/**
+ * Fila de la tabla `documento_tesis` (la ruta del archivo no se simula). `archivoDisponible: false` simula un
+ * archivo que falta en el almacenamiento, para el curso alternativo de RF11.1.2.1.
+ */
+export type DocumentoTesisMock = DocumentoTesisResponse & { archivoDisponible?: boolean };
 
 function tesis(
   idTesis: number,
@@ -269,7 +272,8 @@ export const TESIS_MOCK: TesisMock[] = [
 
 /**
  * Documentos: la tesis 1 tiene cargados «Marco Teórico» y «Bibliografía», como en Figma P10.2 (24:2290) y P10.5
- * (24:2543, «marco_teorico_v1.pdf»); la 2 tiene las cinco secciones; la 4, solo el «Resumen».
+ * (24:2543, «marco_teorico_v1.pdf»); la 2 tiene las cinco secciones (sus «Anexos», sin archivo, para el «Documento no
+ * disponible» de P11.2); la 4, solo el «Resumen».
  */
 export const DOCUMENTOS_TESIS_MOCK: DocumentoTesisMock[] = [
   {
@@ -283,6 +287,12 @@ export const DOCUMENTOS_TESIS_MOCK: DocumentoTesisMock[] = [
   { idDocumento: 4, tipoSeccion: 'Resumen', nombreArchivo: 'resumen.pdf', idTesis: 2 },
   { idDocumento: 5, tipoSeccion: 'Marco Teórico', nombreArchivo: 'marco_teorico.pdf', idTesis: 2 },
   { idDocumento: 6, tipoSeccion: 'Bibliografía', nombreArchivo: 'bibliografia.pdf', idTesis: 2 },
-  { idDocumento: 7, tipoSeccion: 'Anexos', nombreArchivo: 'anexos.pdf', idTesis: 2 },
+  {
+    idDocumento: 7,
+    tipoSeccion: 'Anexos',
+    nombreArchivo: 'anexos.pdf',
+    idTesis: 2,
+    archivoDisponible: false,
+  },
   { idDocumento: 8, tipoSeccion: 'Resumen', nombreArchivo: 'resumen.pdf', idTesis: 4 },
 ];

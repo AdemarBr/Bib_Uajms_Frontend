@@ -56,7 +56,8 @@ Datos de `features/tesis/data-access/tesis.mock.ts` (usuario de prueba: `respons
 
 - 25 tesis (dos páginas en P10.3). Las tres primeras son las de Figma P10.3: «Modelo predictivo de deserción estudiantil» (Estudiante Rojas, tutor Docente Gómez, Ingeniería de Sistemas, 2026, EJ-TES-0142), «Análisis estructural de puentes en zonas sísmicas» (Estudiante Pérez, Ingeniería Civil, 2025) e «Impacto del riego tecnificado en la vid tarijeña» (Estudiante Mamani, Ingeniería Química, 2024, inactiva; en Figma, «Estudiante Gómez» e «Ing. Agronómica», que no existen en los datos). Las demás son ficticias, de 2018 a 2024; los números de inventario van de EJ-TES-0142 a EJ-TES-0166.
 - La tesis 24 («Control interno en las cooperativas de ahorro y crédito») es de Contaduría Pública, carrera inactiva: P10.4 la muestra como «Contaduría Pública (inactiva)».
-- Documentos: la tesis 1 tiene «Marco Teórico» (marco_teorico_v1.pdf) y «Bibliografía» (bibliografia.pdf), como Figma P10.2 y P10.5; la 2, las cinco secciones; la 4, el «Resumen»; la 3 no tiene ninguno («La tesis no tiene documentos cargados.» en P10.5).
+- Documentos: la tesis 1 tiene «Marco Teórico» (marco_teorico_v1.pdf) y «Bibliografía» (bibliografia.pdf), como Figma P10.2 y P10.5; la 2, las cinco secciones (sus «Anexos» no tienen archivo: en P11.2 dan «Documento no disponible»); la 4, el «Resumen»; la 3 no tiene ninguno («La tesis no tiene documentos cargados.» en P10.5).
+- Consulta pública (RF11): solo las tesis activas (24 de 25; la 3 está inactiva y por URL da «Tesis no encontrada»). Para «La tesis no cuenta con documentos digitales cargados.», cualquier tesis sin documentos, por ejemplo la 5. Al abrir un documento se genera un PDF de prueba de una página («Documento de prueba: <archivo>», «Sección: <sección>»).
 
 ## Préstamos (RF9)
 

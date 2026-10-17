@@ -484,14 +484,17 @@ La ruta interna del archivo no se envía al frontend; el archivo se abre por su 
 
 ## 12. Tesis: consulta pública (RF11)
 
-- `GET /catalogo/tesis?q&idCarrera&gestion` → `Pagina<TesisResponse>` (lista de P11.1: título, autor, carrera y año, RF11.1.4)
-- `GET /catalogo/tesis/{id}` → `TesisDetalleResponse` (registra la visualización)
-- `GET /catalogo/tesis/documentos/{idDocumento}/archivo` → PDF (registra la apertura)
+Públicos, sin sesión. Solo muestran tesis activas: una tesis inactiva o inexistente responde 404 («Tesis no encontrada» / «La tesis solicitada no existe o no está disponible.»).
+
+- `GET /catalogo/tesis?q&idCarrera&gestion&pagina&tamanio` → `Pagina<TesisResponse>` (lista de P11.1: título, autor, carrera y año, RF11.1.4). `q`: título, autor, carrera, facultad o palabras clave (RF11.1.1 y RF11.1.3). De la gestión más reciente a la más antigua.
+- `GET /catalogo/tesis/opciones-filtro` → `OpcionesFiltroTesisResponse` (gestiones de las tesis activas, para el desplegable «Gestión» de P11.1, RF11.1.1.3; las carreras salen de `GET /carreras`)
+- `GET /catalogo/tesis/{id}` → `TesisDetalleResponse` (registra la visualización en `registro_uso` con `id_tesis` y la fecha de hoy, RF11.1.2.4)
+- `GET /catalogo/tesis/documentos/{idDocumento}/archivo` → PDF (registra la apertura en `registro_uso` con `id_documento` y la fecha de hoy, RF11.1.2.1.7). Si el documento o su archivo no están disponibles, o su tesis está inactiva, 404 («Documento no disponible» / «El documento no se encuentra disponible para su visualización en este momento.», RF11.1.2.1).
 
 ```json
-// TesisDetalleResponse (P11.2, RF11.1.2.2)
+// TesisDetalleResponse (P11.2, RF11.1.2.2; documentos en el orden de RF10.2.3)
 { "tesis": { "idTesis": 1, "titulo": "Modelo predictivo de deserción estudiantil", "...": "mismos campos de TesisResponse" },
-  "documentos": [ { "idDocumento": 3, "tipoSeccion": "Resumen", "nombreArchivo": "resumen.pdf", "idTesis": 1 } ] }
+  "documentos": [ { "idDocumento": 1, "tipoSeccion": "Marco Teórico", "nombreArchivo": "marco_teorico_v1.pdf", "idTesis": 1 } ] }
 ```
 
 ## 13. Comunicación (RF12)
