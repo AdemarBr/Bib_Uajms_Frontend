@@ -100,7 +100,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 - 3.- El actor selecciona el tipo de documento que va a cargar.
 - 4.- El sistema muestra los tipos disponibles: Preliminares, Resumen, Marco Teórico, Bibliografía y Anexos.
 - 5.- El actor carga el archivo correspondiente a esa sección con el botón «Subir archivo».
-- 6.- El sistema toma el archivo y verifica su formato y tamaño.
+- 6.- El sistema toma el archivo y verifica que sea un PDF de hasta 20 MB.
 - 7.- El actor repite la operación para cada sección de la tesis.
 - 8.- El sistema clasifica el documento por tipo de sección, lo asocia a la tesis y permite cargar un documento por cada tipo de sección, sin limitarse a un único archivo. Cada documento se crea en la tabla documento_tesis, vinculado a la tabla tesis. La acción queda registrada en la tabla bitacora.
 
@@ -113,7 +113,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 - RF10.2.1: Este caso de uso permite cargar uno o más documentos digitales de una tesis dentro del sistema, cada uno clasificado por tipo de sección, de manera que puedan ser visualizados posteriormente según las reglas establecidas.
 - RF10.2.2: El sistema debe garantizar que cada documento digital queda cargado, clasificado por tipo y asociado a la tesis correspondiente.
 - [Interfaz] RF10.2.3: La interfaz debe incluir un control para seleccionar el tipo de documento (Preliminares, Resumen, Marco Teórico, Bibliografía, Anexos) y cargar el archivo correspondiente, permitiendo repetir la operación para cada sección.
-- [Interfaz] RF10.2.4: La interfaz debe incluir un botón «Subir archivo» por cada sección, e indicar su estado como «Pendiente» o «Cargado».
+- [Interfaz] RF10.2.4: La interfaz debe incluir un botón «Subir archivo» por cada sección, e indicar su estado como «Pendiente» o «Cargado»; el botón se deshabilita en las secciones ya cargadas, cuyo documento se reemplaza en la interfaz P10.5. Solo se admiten archivos PDF de hasta 20 MB; si el archivo no cumple, la interfaz muestra «Solo se admiten archivos PDF.» o «El archivo supera el tamaño máximo de 20 MB.».
 
 ## RF10.3 Consultar tesis registradas
 
@@ -253,7 +253,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 - 1.- El actor selecciona la tesis a modificar desde el listado de la interfaz P10.3.
 - 2.- El sistema abre la interfaz P10.4 con el formulario prellenado con los datos actuales de la tesis.
 - 3.- El actor modifica los datos editables de la tesis.
-- 4.- El sistema habilita los campos de título, autor, tutor, carrera, facultad, año o gestión, palabras clave y estado de la tesis.
+- 4.- El sistema habilita los campos de título, autor, tutor, carrera, facultad, año o gestión y palabras clave, y muestra el estado de la tesis como dato de solo lectura.
 - 5.- El actor hace clic en el botón «Guardar cambios» para guardar los cambios de la tesis.
 - 6.- El sistema valida los datos modificados antes de guardarlos.
 - 7.- El sistema actualiza los datos de la tesis y los deja registrados en el sistema. Los cambios se guardan en la tabla tesis. La acción queda registrada en la tabla bitacora.
@@ -266,7 +266,7 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 
 - RF10.4.1: Este caso de uso permite modificar la información registrada de una tesis académica dentro del sistema.
 - RF10.4.2: El sistema debe garantizar que los datos de la tesis quedan actualizados en el sistema.
-- [Interfaz] RF10.4.3: La interfaz debe presentar un formulario prellenado con los datos actuales de la tesis (título, autor, tutor, carrera, facultad, año o gestión, palabras clave y estado de la tesis), habilitando los campos editables.
+- [Interfaz] RF10.4.3: La interfaz debe presentar un formulario prellenado con los datos actuales de la tesis (título, autor, tutor, carrera, facultad, año o gestión, palabras clave), habilitando los campos editables, y mostrar el estado de la tesis como dato de solo lectura, que se cambia únicamente con los botones «Desactivar tesis» o «Activar tesis».
 - [Interfaz] RF10.4.4: La interfaz debe incluir un botón «Guardar cambios» que aplica las modificaciones realizadas a la tesis.
 
 ## RF10.5 Actualizar documento digital de tesis
@@ -295,20 +295,20 @@ Fuente: documento del proyecto, versión de la Iteración 4 (casos de uso detall
 - 3.- El actor selecciona en el campo «Sección a reemplazar» el tipo de sección del documento que desea reemplazar.
 - 4.- El sistema identifica el documento seleccionado dentro de la tesis y lo muestra en el panel «Archivo actual».
 - 5.- El actor carga el nuevo archivo desde su equipo.
-- 6.- El sistema toma el archivo y verifica su formato antes del reemplazo.
+- 6.- El sistema toma el archivo y verifica que sea un PDF de hasta 20 MB antes del reemplazo.
 - 7.- El actor hace clic en el botón «Reemplazar documento» para confirmar el reemplazo.
 - 8.- El sistema reemplaza únicamente el documento seleccionado, sin afectar los demás documentos digitales de la tesis. El cambio se guarda en la tabla documento_tesis. La acción queda registrada en la tabla bitacora.
 
 **Curso alternativo de eventos:**
 
-- ¿El nuevo archivo cumple el formato admitido? En caso negativo, el sistema descarta la carga y conserva el documento anterior.
+- ¿El nuevo archivo cumple el formato y el tamaño admitidos? En caso negativo, el sistema descarta la carga y conserva el documento anterior.
 
 **Requerimientos (RF10.5):**
 
 - RF10.5.1: Este caso de uso permite reemplazar o actualizar uno de los documentos digitales asociados a una tesis registrada, seleccionado por tipo de sección.
 - RF10.5.2: El sistema debe garantizar que el documento digital seleccionado queda actualizado en el sistema, sin afectar los demás documentos de la tesis.
 - [Interfaz] RF10.5.3: La interfaz debe permitir seleccionar el documento digital a reemplazar mediante el campo «Sección a reemplazar», mostrar el panel «Archivo actual», y cargar el nuevo archivo desde el equipo del actor, sin afectar los demás documentos de la tesis.
-- [Interfaz] RF10.5.4: La interfaz debe incluir un botón «Reemplazar documento» que confirma la sustitución del archivo seleccionado.
+- [Interfaz] RF10.5.4: La interfaz debe incluir un botón «Reemplazar documento» que confirma la sustitución del archivo seleccionado. Solo se admiten archivos PDF de hasta 20 MB; si el nuevo archivo no cumple, la interfaz muestra «Solo se admiten archivos PDF.» o «El archivo supera el tamaño máximo de 20 MB.» y conserva el documento anterior.
 
 ## RF10.6 Desactivar tesis
 
